@@ -1,4 +1,4 @@
-    # Python
+# Python
 *.pyc
 *.pyo
 *.pyd
@@ -15,9 +15,7 @@ local_settings.py
 db.sqlite3
 media
 staticfiles
-
-# PyCharm
-.idea/
+migrations/
 
 # VS Code
 .vscode/
@@ -28,13 +26,3 @@ ENV/
 env/
 .venv/
 *.env
-
-# Mac
-.DS_Store
-
-# Windows
-Thumbs.db
-Desktop.ini
-
-# Linux
-*.swp
