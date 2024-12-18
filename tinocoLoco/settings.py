@@ -37,10 +37,10 @@ INSTALLED_APPS = [
     "cloudinary",
     "cloudinary_storage",
     # Apps propias
-    "evento.apps.EventoConfig",
-    "alquiler.apps.AlquilerConfig",
-    "registro.apps.RegistroConfig",
-    "servicio.apps.ServicioConfig",
+    "eventos.apps.EventosConfig",
+    "alquileres.apps.AlquileresConfig",
+    "servicios.apps.ServiciosConfig",
+    "usuarios.apps.UsuariosConfig",
 ]
 
 
@@ -62,6 +62,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
 ]
 
 ROOT_URLCONF = "tinocoLoco.urls"
@@ -84,6 +85,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "tinocoLoco.wsgi.application"
 
+
+
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_USE_TLS = env("EMAIL_USE_TLS")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -136,3 +148,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+
+LOGIN_URL = "usuarios:iniciar_sesion"
+LOGIN_REDIRECT_URL = "usuarios:perfil" #Cambiar cuando este listo
+LOGOUT_REDIRECT_URL = "usuarios:iniciar_sesion"

@@ -7,7 +7,6 @@ __pycache__/
 *.pyo
 *.pyd
 *.db
-*.sqlite3
 
 # Django
 *.log
@@ -25,4 +24,3 @@ venv/
 ENV/
 env/
 .venv/
-*.env

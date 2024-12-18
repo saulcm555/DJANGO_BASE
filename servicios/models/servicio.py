@@ -8,6 +8,7 @@ class Servicio(models.Model):
         ("completado", "Completado"),
         ("cancelado", "Cancelado"),
     ]
+    nombre_servicio = models.CharField(max_length=100)
     descripcion_servicio = models.CharField(max_length=500)
     valor_unidad = models.FloatField()
     estado_servicio = models.CharField(
@@ -16,6 +17,7 @@ class Servicio(models.Model):
     fecha_entrega = models.DateTimeField()
     descripcion_unidad = models.CharField(max_length=500)
     fecha_actualizacion_precio = models.DateTimeField(auto_created=True)
+    
 
     def __str__(self):
         return f"{self.descripcion_servicio} - {self.estado_servicio}"

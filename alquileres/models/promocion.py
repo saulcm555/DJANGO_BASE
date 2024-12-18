@@ -13,6 +13,6 @@ class Promocion(models.Model):
     porcentaje_promocion = models.IntegerField()
     fecha_vigencia = models.DateField()
     fecha_caducidad = models.DateField()
-    estado_promocion = models.CharField(
+    estado_promocion = models.CharField(max_length=100,
         choices=ESTADO_ALQUILER_CHOICES, default="proximo"
     )
