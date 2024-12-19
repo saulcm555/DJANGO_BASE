@@ -30,7 +30,7 @@ class Eventualidad(models.Model):
     )
 
     monto_penalidad_eventualidad = models.DecimalField(max_digits=10, decimal_places=2)
-    fecha_ocurrencia_eventualidad = models.DateTimeField(auto_now_add=True)
+    fecha_ocurrencia_eventualidad = models.DateTimeField()
 
     def __str__(self):
         return f"Eventualidad ocurrida en el evento {self.alquiler.id} en {self.fecha_ocurrencia_eventualidad}"

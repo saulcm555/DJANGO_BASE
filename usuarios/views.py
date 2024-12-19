@@ -11,8 +11,14 @@ from .forms import (
 )
 
 from .models import PerfilUsuario
-
+from .decoradores import admin_required
 from utilidades import ValidadorUsuario
+
+
+@admin_required
+def usuarios(request):
+    perfiles = PerfilUsuario.objects.all()
+    return render(request, "usuarios/usuarios.html", {"perfiles": perfiles})
 
 
 def crear_cuenta(request):

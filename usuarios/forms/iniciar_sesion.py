@@ -3,25 +3,19 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 
 
-INPUT_STYLE = " "
-CHECKBOX_STYLE = ""
-
-
 class IniciarSesionFormulario(AuthenticationForm):
-    username = forms.CharField(
+    username = forms.CharField(label="Usuario",
         widget=forms.TextInput(
             attrs={
-                "class": INPUT_STYLE,
                 "placeholder": "Ingrese su usuario",
             }
         )
     )
 
-    password = forms.CharField(
+    password = forms.CharField(label="Contraseña",
         widget=forms.PasswordInput(
             attrs={
-                "class": INPUT_STYLE,
-                "placeholder": "Ingrese su contrasena",
+                "placeholder": "Ingrese su contraseña",
             }
         )
     )
@@ -32,6 +26,7 @@ class IniciarSesionFormulario(AuthenticationForm):
             "username",
             "password",
         )
+
 
     def clean_username(self):
         username = self.cleaned_data.get("username")
@@ -48,6 +43,6 @@ class IniciarSesionFormulario(AuthenticationForm):
             user = User.objects.get(username=username)
             if not user.check_password(password):
                 raise forms.ValidationError(
-                    "La contrasena es incorrecta", code="invalid_password"
+                    "La contraseña es incorrecta", code="invalid_password"
                 )
         return password

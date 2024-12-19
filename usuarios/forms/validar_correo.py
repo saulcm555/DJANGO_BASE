@@ -1,13 +1,16 @@
 from django import forms
 from usuarios.models import PerfilUsuario
 
-INPUT_STYLE = " "
 
 class ValidarCorreoFormulario(forms.Form):
     codigo_verificacion = forms.CharField(
         label="Código de verificación",
-        widget=forms.TextInput(attrs={"class": INPUT_STYLE}),
+        widget=forms.TextInput(attrs={"placeholder": "Ingrese el código de verificación"}),
     )
+    
+    class Meta:
+        fields = ("codigo_verificacion",)
+    
 
     def clean(self):
         cleaned_data = super().clean()

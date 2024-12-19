@@ -1,23 +1,18 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Servicio(models.Model):
-    ESTADO_SERVICIO_CHOICES = [
-        ("pendiente", "Pendiente"),
-        ("confirmado", "Confirmado"),
-        ("completado", "Completado"),
-        ("cancelado", "Cancelado"),
-    ]
-    nombre_servicio = models.CharField(max_length=100)
-    descripcion_servicio = models.CharField(max_length=500)
-    valor_unidad = models.FloatField()
-    estado_servicio = models.CharField(
-        max_length=50, choices=ESTADO_SERVICIO_CHOICES, default="pendiente"
+
+    agregado_por = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="servicios"
     )
-    fecha_entrega = models.DateTimeField()
+    nombre = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=500)
+    valor_unidad = models.FloatField()
+    vigencia = models.BooleanField(default=True)
     descripcion_unidad = models.CharField(max_length=500)
-    fecha_actualizacion_precio = models.DateTimeField(auto_created=True)
-    
+    fecha_actualizacion_precio = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.descripcion_servicio} - {self.estado_servicio}"
+        return f"{self.descripcion} - Activo: {self.vigencia}"

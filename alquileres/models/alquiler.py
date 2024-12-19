@@ -16,8 +16,9 @@ class Alquiler(models.Model):
     ]
     cliente = models.ForeignKey(User, on_delete=models.CASCADE)
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
-    fecha_alquiler = models.DateField(auto_now_add=True)
-    horainicio_reserva = models.DateTimeField(auto_now_add=True)
+    fecha_alquiler = models.DateField()
+    fecha_creacion = models.DateField(auto_now_add=True)
+    horainicio_reserva = models.DateTimeField()
     horafin_planificada_reserva = models.DateTimeField()
     horafin_real_reserva = models.DateTimeField(null=True, blank=True)
     costo_alquiler = models.FloatField(default=0.0)
@@ -42,7 +43,6 @@ class Alquiler(models.Model):
         Promocion, blank=True, related_name="alquileres"
     )
 
-    servicios = models.ManyToManyField(Servicio, blank=True, related_name="alquileres")
 
     Estado_de_alquiler = models.CharField(
         max_length=20, choices=ESTADO_ALQUILER_CHOICES, default="pendiente"
