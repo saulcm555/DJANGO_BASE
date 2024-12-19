@@ -9,7 +9,8 @@ from .forms import (
     AlquilerServicioFormulario,
     CalificacionAlquilerFormulario,
     FotoAlquilerFormulario,
-    EventualidadFormulario
+    EventualidadFormulario,
+    ConfirmarAlquilerFormulario,
 )
 
 
@@ -76,7 +77,7 @@ def calificaciones_alquiler(request, id):
         return HttpResponseBadRequest("Alquiler no encontrado")
     calificaciones = alquiler.calificacion_alquiler.all()
     if request.method == "POST":
-        if not request.user.is_authenticated:
+        if not alquiler.cliente == request.user or not request.user.is_superuser:
             return redirect("usuarios:iniciar_sesion")
         formulario = CalificacionAlquilerFormulario(request.POST)
         if formulario.is_valid():
@@ -125,6 +126,7 @@ def fotos_alquiler(request, id):
         },
     )
 
+
 def eventualidades_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
@@ -158,7 +160,7 @@ def servicios_alquiler(request, id):
         return HttpResponseBadRequest("Alquiler no encontrado")
     servicios = alquiler.servicios.all()
     if request.method == "POST":
-        if not request.user.is_superuser:
+        if not request.user.is_superuser or not alquiler.cliente == request.user:
             return HttpResponseForbidden()
         formulario = AlquilerServicioFormulario(request.POST)
         if formulario.is_valid():
@@ -174,6 +176,28 @@ def servicios_alquiler(request, id):
         {
             "alquiler": alquiler,
             "servicios": servicios,
+            "form": formulario,
+        },
+    )
+
+
+def confirmar_alquiler(request, id):
+    alquiler = Alquiler.objects.filter(id=id).first()
+    if not alquiler:
+        return HttpResponseBadRequest("Alquiler no encontrado")
+    if request.method == "POST":
+        formulario = ConfirmarAlquilerFormulario(request.POST, alquiler=alquiler)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect("alquileres:alquileres")
+    else:
+        formulario = ConfirmarAlquilerFormulario(alquiler=alquiler)
+
+    return render(
+        request,
+        "alquileres/confirmar_alquiler.html",
+        {
+            "alquiler": alquiler,
             "form": formulario,
         },
     )

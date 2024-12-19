@@ -1,7 +1,9 @@
 from django.core.mail import send_mail
 from django.conf import settings
+import random
 
 from usuarios.models import PerfilUsuario
+from alquileres.models import Alquiler
 
 
 class EmailEnviador:
@@ -22,3 +24,25 @@ class EmailEnviador:
         recipient_list = [perfil.correo_electronico]
 
         EmailEnviador.enviar_email(subject, message, recipient_list)
+
+
+def enviar_codigo_confirmacion(alquiler:Alquiler):
+
+    codigo_confirmacion = alquiler.generar_codigo_confirmacion()
+    alquiler.save()
+
+    asunto = "Confirmación de Alquiler"
+    mensaje = f"""
+    Estimado/a {alquiler.cliente},
+    
+    Gracias por realizar su reserva para el evento "{alquiler.evento}".
+    Por favor, use el siguiente código para confirmar su reserva:
+    
+    Código de confirmación: {codigo_confirmacion}
+    
+    Saludos,
+    Equipo de Gestión de Alquileres
+    """
+    destinatarios = [alquiler.cliente.email] 
+
+    EmailEnviador.send_email(asunto, mensaje, destinatarios)

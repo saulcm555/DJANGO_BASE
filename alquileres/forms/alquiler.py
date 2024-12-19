@@ -1,5 +1,6 @@
 from django import forms
 from ..models import Alquiler
+from utilidades.enviar_email import EmailEnviador
 
 
 class AlquilerFormulario(forms.ModelForm):

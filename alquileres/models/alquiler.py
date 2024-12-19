@@ -1,6 +1,7 @@
 from django.db import models
 from eventos.models import Evento
 from django.contrib.auth.models import User
+from django.utils.crypto import get_random_string
 
 from servicios.models import Servicio
 from .promocion import Promocion
@@ -47,3 +48,14 @@ class Alquiler(models.Model):
     Estado_de_alquiler = models.CharField(
         max_length=20, choices=ESTADO_ALQUILER_CHOICES, default="pendiente"
     )
+
+
+    codigo_confirmacion = models.CharField(max_length=10, blank=True, default="")
+    
+    
+    def generar_codigo_confirmacion(self):
+        if self.codigo_confirmacion:
+            return self.codigo_confirmacion
+        self.codigo_confirmacion = get_random_string(length=6)
+        self.save()
+        return self.codigo_confirmacion
