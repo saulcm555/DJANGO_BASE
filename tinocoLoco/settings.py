@@ -37,10 +37,12 @@ INSTALLED_APPS = [
     "cloudinary",
     "cloudinary_storage",
     # Apps propias
+    "negocio.apps.NegocioConfig",
     "eventos.apps.EventosConfig",
     "alquileres.apps.AlquileresConfig",
     "servicios.apps.ServiciosConfig",
     "usuarios.apps.UsuariosConfig",
+    "core.apps.CoreConfig",
 ]
 
 
@@ -130,9 +132,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/Guayaquil"
 
 USE_I18N = True
 
@@ -152,5 +154,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 LOGIN_URL = "usuarios:iniciar_sesion"
-LOGIN_REDIRECT_URL = "usuarios:perfil" #Cambiar cuando este listo
+LOGIN_REDIRECT_URL = "core:home"
 LOGOUT_REDIRECT_URL = "usuarios:iniciar_sesion"

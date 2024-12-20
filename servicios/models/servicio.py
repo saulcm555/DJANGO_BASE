@@ -15,4 +15,4 @@ class Servicio(models.Model):
     fecha_actualizacion_precio = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.descripcion} - Activo: {self.vigencia}"
+        return f"{self.nombre} "

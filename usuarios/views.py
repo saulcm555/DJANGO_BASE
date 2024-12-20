@@ -22,6 +22,8 @@ def usuarios(request):
 
 
 def crear_cuenta(request):
+    if request.user.is_authenticated:
+        return redirect("usuarios:perfil")
     if request.method == "POST":
         form = CrearCuentaFormulario(request.POST)
         if form.is_valid():
@@ -35,6 +37,8 @@ def crear_cuenta(request):
 
 
 def iniciar_sesion(request):
+    if request.user.is_authenticated:
+        return redirect("usuarios:perfil")
     if request.method == "POST":
 
         form = IniciarSesionFormulario(data=request.POST)

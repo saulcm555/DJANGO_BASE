@@ -28,7 +28,8 @@ class EmailEnviador:
 
 def enviar_codigo_confirmacion(alquiler:Alquiler):
 
-    codigo_confirmacion = alquiler.generar_codigo_confirmacion()
+    alquiler.generar_codigo_confirmacion()
+    codigo_confirmacion = alquiler.codigo_confirmacion
     alquiler.save()
 
     asunto = "Confirmación de Alquiler"
