@@ -13,6 +13,7 @@ from .models import (
 class FotoAlquilerInline(admin.TabularInline):
     model = FotoAlquiler
     extra = 1
+    readonly_fields = ("foto_view",)
 
 
 class EventualidadInline(admin.TabularInline):
@@ -20,13 +21,14 @@ class EventualidadInline(admin.TabularInline):
     extra = 1
 
 
-# class CalificacionAlquilerInline(admin.TabularInline):
-#     model = CalificacionAlquiler
-#     extra = 1
+class CalificacionAlquilerInline(admin.TabularInline):
+    model = CalificacionAlquiler
+    extra = 1
 
 
 class AlquilerAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "cliente",
         "evento",
         "fecha_alquiler",
@@ -55,6 +57,7 @@ class AlquilerAdmin(admin.ModelAdmin):
 
 class EventualidadAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "alquiler",
         "descripcion_eventualidad",
         "categoria_eventualidad",
@@ -78,8 +81,9 @@ class EventualidadAdmin(admin.ModelAdmin):
 
 class FotoAlquilerAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
+        "foto_view",
         "alquiler",
-        "foto",
         "descripcion",
         "fecha_publicacion",
         "numero_likes",
@@ -88,23 +92,20 @@ class FotoAlquilerAdmin(admin.ModelAdmin):
     search_fields = (
         "alquiler__cliente__username",
         "alquiler__evento__nombre",
-        "foto",
     )
 
     list_filter = ("fecha_publicacion", "numero_likes", "alquiler")
+    readonly_fields = ("foto_view",)
 
 
 class CalificacionAlquilerAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "alquiler",
         "usuario",
         "calificacion",
         "comentario",
         "fecha_calificacion",
-    )
-    list_display_links = (
-        "usuario",
-        "alquiler",
     )
     search_fields = (
         "alquiler__usuario__username",
@@ -118,6 +119,7 @@ class CalificacionAlquilerAdmin(admin.ModelAdmin):
 
 class PromocionAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "nombre_promocion",
         "descripcion_promocion",
         "fecha_vigencia",
@@ -142,7 +144,7 @@ class PromocionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(
-    Alquiler, AlquilerAdmin, inlines=[FotoAlquilerInline, EventualidadInline]
+    Alquiler, AlquilerAdmin, inlines=[FotoAlquilerInline, EventualidadInline, CalificacionAlquilerInline]
 )
 admin.site.register(Eventualidad, EventualidadAdmin)
 admin.site.register(FotoAlquiler, FotoAlquilerAdmin)

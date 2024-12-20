@@ -16,8 +16,6 @@ class PerfilUsuarioAdmin(admin.ModelAdmin):
         "fecha_nacimiento",
     )
 
-    list_display_links = ("id", "usuario")
-
     search_fields = (
         "usuario__username",
         "identificacion_cliente",
@@ -33,5 +31,6 @@ class PerfilUsuarioAdmin(admin.ModelAdmin):
         "datos_completos",
     )
 
+    ordering = ("id", "usuario", "nombres", "apellidos")
 
 admin.site.register(PerfilUsuario, PerfilUsuarioAdmin)

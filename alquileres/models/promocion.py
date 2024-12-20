@@ -8,7 +8,6 @@ class Promocion(models.Model):
     ESTADO_ALQUILER_CHOICES = [
         ("activo", "Activo"),
         ("caducado", "Caducado"),
-        ("proximo", "Proximo"),
     ]
     
     nombre_promocion = models.CharField(
@@ -41,3 +40,5 @@ class Promocion(models.Model):
         default="proximo",
         verbose_name="Estado de la Promoción"
     )
+    def __str__(self):
+        return self.nombre_promocion

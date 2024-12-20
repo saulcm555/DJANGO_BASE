@@ -27,6 +27,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -46,11 +47,21 @@ INSTALLED_APPS = [
 ]
 
 
+JAZZMIN_SETTINGS = {
+    "site_title": "Tinocoloco Admin",
+    "site_header": "Tinocoloco",
+    "site_brand": "Tinocoloco",
+    "site_logo": None,
+    "login_logo": None,
+    "login_logo_dark": None,
+}
+
+
 # Configuración de Cloudinary
 cloudinary.config(
-    cloud_name=env("cloud_name"),
-    api_key=env("api_key"),
-    api_secret=env("api_secret"),
+    cloud_name="dj34q6boj",
+    api_key="179729115289615",
+    api_secret="fqwB9EsbAEpSjl9whJGGRCmjqDw",
 )
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
@@ -64,7 +75,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-
 ]
 
 ROOT_URLCONF = "tinocoLoco.urls"
@@ -88,16 +98,13 @@ TEMPLATES = [
 WSGI_APPLICATION = "tinocoLoco.wsgi.application"
 
 
-
-
-
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT = env("EMAIL_PORT")
-EMAIL_USE_TLS = env("EMAIL_USE_TLS")
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "saulcmtrabajos@gmail.com"
+EMAIL_HOST_PASSWORD = "fdcutlymsupkyrgt"
+DEFAULT_FROM_EMAIL = "saulcmtrabajos@gmail.com"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -132,7 +139,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = "es"
+
 
 TIME_ZONE = "America/Guayaquil"
 
@@ -150,7 +158,6 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 
 
 LOGIN_URL = "usuarios:iniciar_sesion"

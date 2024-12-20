@@ -63,4 +63,4 @@ class Alquiler(models.Model):
 
 
     def __str__(self):
-        return f"Alquiler de {self.cliente.username} para {self.evento.nombre} el {self.fecha_alquiler}"
+        return f"Alquiler para {self.evento.nombre} el {self.fecha_alquiler}"
