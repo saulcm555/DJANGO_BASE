@@ -14,7 +14,10 @@ from .forms import (
 
 def alquileres(request):
     query = request.GET.get("query", "")
-    alquileres = Alquiler.objects.filter(vigencia=True)
+    if not request.user.is_superuser:
+        alquileres = Alquiler.objects.filter(cliente=request.user)
+    else:
+        alquileres = Alquiler.objects.filter()
     if query:
         alquileres = alquileres.filter(
             Q(cliente__username__icontains=query)
@@ -22,7 +25,23 @@ def alquileres(request):
             | Q(observacion__icontains=query)
         )
 
-    return render(request, "alquileres/alquileres.html", {"alquileres": alquileres})
+    queryset = []
+    for alquiler in alquileres:
+        primera_foto = alquiler.fotos.first()
+
+
+        if primera_foto:
+            imagen_url = primera_foto.foto.url
+        else:
+            imagen_url = None
+        queryset.append(
+            {
+                "alquiler": alquiler,
+                "imagen_url": imagen_url,
+            }
+        )
+
+    return render(request, "alquileres/alquileres.html", {"alquileres": queryset})
 
 
 @admin_required
