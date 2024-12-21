@@ -35,15 +35,17 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="{% url 'servicios:servicios' %}">Servicios</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="{% url 'alquileres:alquileres' %}">
-                        {% if request.user.is_superuser %}
-                            Reservas de eventos
-                        {% else %}
-                            Mis Reservas
-                        {% endif %}
-                    </a>
-                </li>
+                {% if not request.user.is_anonimous %}
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{% url 'alquileres:alquileres' %}">
+                            {% if request.user.is_superuser %}
+                                Reservas de eventos
+                            {% else %}
+                                Mis Reservas
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
             <!-- Icons Section -->
             <div class="d-flex align-items-center">
@@ -53,7 +55,7 @@
                    data-bs-target="#templatemo_search">
                     <i class="fa fa-fw fa-search text-dark"></i>
                 </a>
-                <a class="nav-icon text-decoration-none position-relative me-3" href="#">
+                <a class="nav-icon text-decoration-none position-relative me-3" href="usuarios:perfil">
                     <i class="fa fa-fw fa-user text-dark"></i>
                     <span class="badge position-absolute top-0 start-100 translate-middle bg-light text-dark rounded-pill"></span>
                 </a>

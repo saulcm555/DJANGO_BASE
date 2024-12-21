@@ -64,7 +64,7 @@ def alquiler_detalle(request, id):
         return HttpResponseBadRequest("Alquiler no encontrado")
 
     if request.method == "GET":
-        fotos = alquiler.fotos_alquiler.all()
+        fotos = alquiler.fotos.all()
 
         return render(
             request,
