@@ -108,7 +108,7 @@ class CalificacionAlquilerAdmin(admin.ModelAdmin):
         "fecha_calificacion",
     )
     search_fields = (
-        "alquiler__usuario__username",
+        "alquiler__cliente__username",
         "usuario__username",
     )
     list_filter = (

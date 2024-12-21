@@ -25,7 +25,7 @@ class ServicioAdmin(admin.ModelAdmin):
         "agregado_por",
         "vigencia",
     )
-    search_fields = ("id", "nombre", "descripcion", "valor_unidad", "agregado_por")
+    search_fields = ("id", "nombre", "descripcion", "valor_unidad", "agregado_por__username")
     list_filter = (
         "vigencia",
         "fecha_actualizacion_precio",
@@ -43,7 +43,7 @@ class CalificacionServicioAdmin(admin.ModelAdmin):
         "fecha",
         "servicio",
     )
-    search_fields = ("id", "calificacion", "fecha", "servicio", "usuario")
+    search_fields = ("id", "calificacion", "fecha", "servicio__nombre", "usuario__username")
     list_per_page = 10  
 
 
@@ -59,7 +59,7 @@ class FotoServicioAdmin(admin.ModelAdmin):
     )
     search_fields = (
         "id",
-        "servicio",
+        "servicio__nombre",
     )
     readonly_fields = ("foto_view",)
     
