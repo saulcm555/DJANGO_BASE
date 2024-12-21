@@ -4,11 +4,10 @@ from django.db.models import Q
 
 
 from usuarios.decoradores import admin_required
-from .models import Servicio
+from .models import Servicio, FotoServicio
 from .forms import (
     ServicioFormulario,
     CalificacionServicioFormulario,
-    FotoServicioFormulario,
 )
 
 
@@ -25,20 +24,6 @@ def servicios(request):
     return render(request, "servicios/servicios.html", {"servicios": servicios})
 
 
-@admin_required
-def nuevo_servicio(request):
-    if request.method == "POST":
-        formulario = ServicioFormulario(request.POST)
-        if formulario.is_valid():
-            servicio = formulario.save(commit=False)
-            servicio.agregado_por = request.user
-            servicio.save()
-            return redirect("servicios")
-    else:
-        formulario = ServicioFormulario()
-    return render(request, "servicios/nuevo_servicio.html", {"form": formulario})
-
-
 def servicio_detalle(request, id):
     servicio = Servicio.objects.filter(id=id).first()
     if not servicio:
@@ -48,23 +33,6 @@ def servicio_detalle(request, id):
         return render(
             request, "servicios/detalle_servicio.html", {"servicio": servicio}
         )
-
-    if request.method == "POST":
-        if not request.user.is_superuser:
-            return HttpResponseForbidden()
-
-        formulario = ServicioFormulario(request.POST, instance=servicio)
-        if formulario.is_valid():
-            formulario.save()
-            return redirect("servicios:servicios")
-
-    if request.method == "DELETE":
-        if not request.user.is_superuser:
-            return HttpResponseForbidden()
-
-        servicio.delete()
-
-        return redirect("servicios")
 
     return HttpResponseForbidden("Método no permitido")
 
@@ -102,17 +70,8 @@ def fotos_servicio(request, id):
     servicio = Servicio.objects.filter(id=id).first()
     if not servicio:
         return HttpResponseBadRequest("Servicio no encontrado")
-    fotos = servicio.fotos_servicio.all()
-    if request.method == "POST" and request.user.is_superuser:
-        formulario = FotoServicioFormulario(request.POST, request.FILES)
-        if formulario.is_valid():
-            foto = formulario.save(commit=False)
-            foto.servicio = servicio
-            foto.save()
-            return redirect("servicios")
 
-    else:
-        formulario = FotoServicioFormulario() if request.user.is_superuser else None
+    fotos = servicio.fotos.all()
 
     return render(
         request,
@@ -120,6 +79,5 @@ def fotos_servicio(request, id):
         {
             "servicio": servicio,
             "fotos": fotos,
-            "form": formulario,
         },
     )

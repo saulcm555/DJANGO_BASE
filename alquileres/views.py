@@ -8,8 +8,6 @@ from .forms import (
     AlquilerFormulario,
     AlquilerServicioFormulario,
     CalificacionAlquilerFormulario,
-    FotoAlquilerFormulario,
-    EventualidadFormulario,
     ConfirmarAlquilerFormulario,
 )
 
@@ -52,21 +50,13 @@ def alquiler_detalle(request, id):
         )
 
     if request.method == "POST":
-        if not request.user.is_superuser:
-            return HttpResponseForbidden()
-
         formulario = AlquilerFormulario(request.POST, instance=alquiler)
         if formulario.is_valid():
-            formulario.save()
+
+            alquiler = formulario.save(commit=False)
+            alquiler.cliente = request.user
+            alquiler.save()
             return redirect("alquileres:alquileres")
-
-    if request.method == "DELETE":
-        if not request.user.is_superuser:
-            return HttpResponseForbidden()
-
-        alquiler.delete()
-
-        return redirect("alquileres")
 
     return HttpResponseForbidden("Método no permitido")
 
@@ -105,16 +95,6 @@ def fotos_alquiler(request, id):
     if not alquiler:
         return HttpResponseBadRequest("Alquiler no encontrado")
     fotos = alquiler.fotos_alquiler.all()
-    if request.method == "POST" and request.user.is_superuser:
-        formulario = FotoAlquilerFormulario(request.POST, request.FILES)
-        if formulario.is_valid():
-            foto = formulario.save(commit=False)
-            foto.alquiler = alquiler
-            foto.save()
-            return redirect("alquileres")
-
-    else:
-        formulario = FotoAlquilerFormulario() if request.user.is_superuser else None
 
     return render(
         request,
@@ -122,7 +102,6 @@ def fotos_alquiler(request, id):
         {
             "alquiler": alquiler,
             "fotos": fotos,
-            "form": formulario,
         },
     )
 
@@ -132,16 +111,6 @@ def eventualidades_alquiler(request, id):
     if not alquiler:
         return HttpResponseBadRequest("Alquiler no encontrado")
     eventualidades = alquiler.eventualidades.all()
-    if request.method == "POST":
-        if not request.user.is_superuser:
-            return HttpResponseForbidden()
-        formulario = EventualidadFormulario(request.POST)
-        if formulario.is_valid():
-            eventualidad = formulario.save()
-            alquiler.eventualidades.add(eventualidad)
-            return redirect("alquileres:alquileres")
-    else:
-        formulario = EventualidadFormulario()
 
     return render(
         request,
@@ -149,7 +118,6 @@ def eventualidades_alquiler(request, id):
         {
             "alquiler": alquiler,
             "eventualidades": eventualidades,
-            "form": formulario,
         },
     )
 

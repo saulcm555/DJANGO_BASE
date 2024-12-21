@@ -51,7 +51,7 @@ class FotoEventoAdmin(admin.ModelAdmin):
 
 
 class CalificacionEventoAdmin(admin.ModelAdmin):
-    list_display = ("id", "evento", "usuario", "calificacion")
+    list_display = ("id", "usuario","evento", "calificacion", "comentario", "fecha_publicacion")
     search_fields = ("evento__nombre", "usuario__username")
     list_filter = (
         "calificacion",
