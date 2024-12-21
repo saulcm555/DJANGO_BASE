@@ -1,25 +1,16 @@
 {% extends "servicios/layout/base.html" %}
 {% load static %}
 {% block content %}
-    <section class="bg-success py-5">
-        <div class="container"
-             style="display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 2em">
+<section class=" py-5">
+    <div class="container " style="width: 100%;">
+
+        <div class="" style="display: flex; flex-wrap: wrap; gap: 2em; justify-content: center; align-items: center;">
             {% for servicio_item in servicios %}
-                <div class="card" style="width: 18rem; border-radius: 20px;">
-                    <h2>{{ servicio_item.servicio.id }}</h2>
-                    <h2>{{ servicio_item.servicio.nombre }}</h2>
-                    <p>{{ servicio_item.promedio_calificaciones }}</p>
-                    {% if servicio_item.imagen_url %}
-                        <img src="{{ servicio_item.imagen_url }}" alt="Imagen del servicio">
-                    {% else %}
-                        <p>No hay imagen</p>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
+            {% include 'core/components/utils/card.html' with nombre=servicio_item.servicio.nombre descripcion=servicio_item.servicio.descripcion valor_referencial=servicio_item.valor_referencial promedio_calificaciones=servicio_item.promedio_calificaciones imagen_url=servicio_item.imagen_url id_item=servicio_item.servicio.id link_url='servicio_detalle' %}
+            {% endfor %}
+        </div>
+    </div>
+
     </div>
 </section>
 {% endblock %}

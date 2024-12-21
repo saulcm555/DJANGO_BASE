@@ -2,31 +2,18 @@
 {% load static %}
 
 {% block content %}
-<section class="bg-success py-5">
-    <div class="container col-3" style="display: flex; justify-content: center; align-items: center; gap: 2em;">
+<section class=" py-5">
+    <div class="container "
+        style="width: 100%;">
 
-        {% for evento_item in eventos %}
+        <div class="" style="display: flex; flex-wrap: wrap; gap: 2em; justify-content: center; align-items: center;">
+            {% for evento_item in eventos %}
 
-        <div class="card h-100">
-            <a href="">
-                <img width="100%"
-                    src="{% if evento_item.imagen_url %}{{ evento_item.imagen_url }}{% else %}{% static 'img/404.jpg' %}{% endif %}"
-                    class="card-img-top" alt="...">
-            </a>
-            <div class="card-body">
-                <ul class="list-unstyled d-flex justify-content-between">
-                    <li>
-                        {% for i in evento_item.promedio_calificaciones %}
-                        <i class="text-warning fa fa-star"></i>
-                        {% endfor %}
-                    </li>
-                    <li class="text-muted text-right">{{ evento_item.valor_referencial }}</li>
-                </ul>
-                <a href="" class="h2 text-decoration-none text-dark">{{evento_item.evento.nombre }}</a>
-            </div>
+            {% include 'core/components/utils/card.html' with nombre=evento_item.evento.nombre descripcion=evento_item.evento.descripcion valor_referencial=evento_item.valor_referencial promedio_calificaciones=evento_item.promedio_calificaciones imagen_url=evento_item.imagen_url id_item=evento_item.evento.id link_url='evento_detalle' %}
+
+            {% endfor %}
         </div>
 
-        {% endfor %}
     </div>
 </section>
 {% endblock %}
