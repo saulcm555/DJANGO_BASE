@@ -27,6 +27,10 @@ class ConfiguracionNegocio(models.Model):
         blank=True, null=True, verbose_name="Red Social Facebook"
     )
     red_social_x = models.URLField(blank=True, null=True, verbose_name="Red Social X")
+    red_social_instagram = models.URLField(
+        blank=True, null=True, verbose_name="Red Social Instagram"
+    )
+    
     nombre_banco = models.CharField(max_length=50, verbose_name="Nombre del Banco")
     tipo_cuenta = models.CharField(max_length=20, verbose_name="Tipo de Cuenta")
     numero_cuenta = models.CharField(max_length=20, verbose_name="Número de Cuenta")
