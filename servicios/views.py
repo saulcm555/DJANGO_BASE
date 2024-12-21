@@ -65,7 +65,7 @@ def servicio_detalle(request, id):
         {
             "servicio": servicio,
             "fotos": fotos,
-            "promedio_range": range(0, promedio_calificaciones),
+            "promedio_range": range(0, int(promedio_calificaciones)),
             "promedio_calificaciones": promedio_calificaciones,
         },
     )
