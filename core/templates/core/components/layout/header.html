@@ -1,53 +1,69 @@
-<nav class="navbar navbar-expand-lg navbar-light shadow">
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm py-3">
     <div class="container d-flex justify-content-between align-items-center">
-
-        <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">
-            {{configuracion_negocio.nombre}}
+        <!-- Brand Logo or Name -->
+        <a class="navbar-brand text-success h1 align-self-center"
+           href="{% url 'core:home' %}">
+            {% if configuracion_negocio.logo %}
+                <img src="{{ configuracion_negocio.logo.url }}"
+                     alt="{{ configuracion_negocio.nombre }}"
+                     style="max-height: 50px;
+                            border-radius: 5px">
+            {% else %}
+                <span class="fw-bold">{{ configuracion_negocio.nombre }}</span>
+            {% endif %}
         </a>
-
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- Toggle Button for Mobile -->
+        <button class="navbar-toggler border-0"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#templatemo_main_nav"
+                aria-controls="templatemo_main_nav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
-        <div class="align-self-center collapse navbar-collapse flex-fill  d-lg-flex justify-content-lg-between" id="templatemo_main_nav">
-            <div class="flex-fill">
-                <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'indexHome' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="shop.html">Shop</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="navbar align-self-center d-flex">
-                <div class="d-lg-none flex-sm-fill mt-3 mb-4 col-7 col-sm-auto pr-3">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="inputMobileSearch" placeholder="Search ...">
-                        <div class="input-group-text">
-                            <i class="fa fa-fw fa-search"></i>
-                        </div>
-                    </div>
-                </div>
-                <a class="nav-icon d-none d-lg-inline" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
-                    <i class="fa fa-fw fa-search text-dark mr-2"></i>
+        <!-- Navigation Links -->
+        <div class="collapse navbar-collapse justify-content-between align-items-center"
+             id="templatemo_main_nav">
+            <ul class="nav navbar-nav mx-lg-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="{% url 'core:home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="about.html">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="shop.html">Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="contact.html">Contact</a>
+                </li>
+            </ul>
+            <!-- Icons Section -->
+            <div class="d-flex align-items-center">
+                <a class="nav-icon text-decoration-none d-lg-inline me-3"
+                   href="#"
+                   data-bs-toggle="modal"
+                   data-bs-target="#templatemo_search">
+                    <i class="fa fa-fw fa-search text-dark"></i>
                 </a>
-                <a class="nav-icon position-relative text-decoration-none" href="#">
-                    <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
-                    <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span>
+                <a class="nav-icon text-decoration-none position-relative me-3" href="#">
+                    <i class="fa fa-fw fa-cart-arrow-down text-dark"></i>
+                    <span class="badge position-absolute top-0 start-100 translate-middle bg-light text-dark rounded-pill">7</span>
                 </a>
-                <a class="nav-icon position-relative text-decoration-none" href="#">
-                    <i class="fa fa-fw fa-user text-dark mr-3"></i>
-                    <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">+99</span>
+                <a class="nav-icon text-decoration-none position-relative me-3" href="#">
+                    <i class="fa fa-fw fa-user text-dark"></i>
+                    <span class="badge position-absolute top-0 start-100 translate-middle bg-light text-dark rounded-pill">+99</span>
                 </a>
+                <!-- Panel de Control -->
+                {% if request.user.is_superuser %}
+                    <a class="nav-icon text-decoration-none d-flex align-items-center text-dark fw-bold"
+                       href="{% url 'admin:index' %}">
+                        Panel de Control
+                        <i class="fa fa-fw fa-cogs me-2"></i>
+                    </a>
+                {% endif %}
             </div>
         </div>
-
     </div>
 </nav>
