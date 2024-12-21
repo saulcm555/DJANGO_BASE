@@ -18,7 +18,31 @@ def eventos(request):
             Q(nombre__icontains=query) | Q(descripcion__icontains=query)
         )
 
-    return render(request, "eventos/eventos.html", {"eventos": eventos})
+    queryset = []
+    for evento in eventos:
+        primera_foto = evento.fotos.first()
+        calificaciones = evento.calificacion_evento.all()
+        promedio_calificaciones = 0
+        if calificaciones:
+            promedio_calificaciones = sum(
+                [calificacion.calificacion for calificacion in calificaciones]
+            ) / len(calificaciones)
+
+        if primera_foto:
+            imagen_url = primera_foto.foto.url
+        else:
+            imagen_url = None
+
+        queryset.append(
+            {
+                "evento": evento,
+                "imagen_url": imagen_url,
+                "promedio_calificaciones": promedio_calificaciones,
+            }
+        )
+
+    return render(request, "eventos/eventos.html", {"eventos": queryset})
+
 
 
 def evento_detalle(request, id):

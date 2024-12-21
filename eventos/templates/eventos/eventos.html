@@ -1,6 +1,13 @@
-{% for servicio in servicios%}
-    <div class="servicio">
-        <h2>{{ servicio.nombre }}</h2>
-        <p>{{ servicio.descripcion }}</p>
+{% for evento_item in eventos %}
+    <div class="evento">
+        <h2>{{ evento_item.evento.id }}</h2>
+        <h2>{{ evento_item.evento.nombre }}</h2>
+        <p>{{ evento_item.promedio_calificaciones }}</p>
+        
+        {% if evento_item.imagen_url %}
+            <img src="{{ evento_item.imagen_url }}" alt="Imagen del evento">
+        {% else %}
+            <p>No hay imagen</p>
+        {% endif %}
     </div>
 {% endfor %}
