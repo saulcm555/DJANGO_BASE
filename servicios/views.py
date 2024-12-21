@@ -30,8 +30,9 @@ def servicio_detalle(request, id):
         return HttpResponseBadRequest("Servicio no encontrado")
 
     if request.method == "GET":
+        fotos = servicio.fotos.all()
         return render(
-            request, "servicios/detalle_servicio.html", {"servicio": servicio}
+            request, "servicios/detalle_servicio.html", {"servicio": servicio, "fotos": fotos}
         )
 
     return HttpResponseForbidden("Método no permitido")
@@ -66,18 +67,3 @@ def calificaciones_servicio(request, id):
     )
 
 
-def fotos_servicio(request, id):
-    servicio = Servicio.objects.filter(id=id).first()
-    if not servicio:
-        return HttpResponseBadRequest("Servicio no encontrado")
-
-    fotos = servicio.fotos.all()
-
-    return render(
-        request,
-        "servicios/fotos_servicio.html",
-        {
-            "servicio": servicio,
-            "fotos": fotos,
-        },
-    )
