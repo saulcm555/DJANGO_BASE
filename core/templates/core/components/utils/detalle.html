@@ -1,0 +1,92 @@
+{% load static %}
+<section class=" py-5">
+    <div class="container " style="width: 100%;">
+        <section class="bg-light">
+            <div class="container pb-5">
+                <div class="row">
+                    <div class="col-lg-5 mt-5"
+                        style="display: flex; justify-content: center; align-items: center; gap: 2em;">
+                        <div class="card mb-3">
+                            <div id="carouselExample" class="carousel slide">
+                                <div class="carousel-inner">
+                                    {% if fotos %}
+
+                                    {% for foto in fotos %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img class="d-block w-100"
+                                            src="{% if foto.foto.url %}{{ foto.foto.url }}{% else %}{% static 'img/404.jpg' %}{% endif %}"
+                                            alt="First slide">
+                                    </div>
+                                    {% endfor %}
+                                    {% else %}
+                                    <img class="d-block w-100" src="{% static 'img/404.jpg' %}" alt="First slide">
+                                    {% endif %}
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+                                    data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+                                    data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- col end -->
+                    <div class="col-lg-7 mt-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <h1 class="h2">{{ item.nombre }}</h1>
+                                <p class="h3 py-2">{{ valor_referencial }}</p>
+                                <p class="py-2">
+                                    {% for i in promedio_range %}
+                                    <i class="fa fa-star text-warning"></i>
+                                    {% endfor %}
+                                    <span class="list-inline-item text-dark">{{ promedio_calificaciones }} de 5,0</span>
+                                </p>
+                                <ul class="list-inline">
+                                    <li class="list-inline-item">
+                                        <h6>Brand:</h6>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <p class="text-muted"><strong>Easy Wear</strong></p>
+                                    </li>
+                                </ul>
+
+                                <h6>Description:</h6>
+                                <p>{{ item.descripcion }}</p>
+                                <ul class="list-inline">
+                                    <li class="list-inline-item">
+                                        <h6>Horas permitidas :</h6>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <p class="text-muted"><strong>{{ item.numero_horas_permitidas }}</strong></p>
+                                    </li>
+                                </ul>
+
+                                <h6>Valor extra por hora :</h6>
+                                <ul class="list-unstyled pb-3">
+                                    <li>{{ item.valor_extra_hora }}</li>
+
+                                </ul>
+
+                                <form action="" method="GET">
+                                    <div class="row pb-3">
+                                        <div class="col d-grid">
+                                            <button type="submit" class="btn btn-success btn-lg" name="submit"
+                                                value="buy">Alquilar</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>

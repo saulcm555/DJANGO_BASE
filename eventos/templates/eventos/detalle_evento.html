@@ -1,2 +1,6 @@
-{{evento.nombre}}
-{{evento.descripcion}}
+{% extends "eventos/layout/base.html" %}
+{% load static %}
+{% block content %}
+
+{% include 'core/components/utils/detalle.html' with item=evento fotos=fotos promedio_range=promedio_range promedio_calificaciones=promedio_calificaciones %}
+{% endblock %}
