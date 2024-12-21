@@ -1,10 +1,5 @@
 {% extends "servicios/layout/base.html" %}
 {% load static %}
 {% block content %}
-<section class=" py-5">
-    <div class="container "
-        style="width: 100%;">
-        
-    </div>
-</section>
+{% include 'core/components/utils/detalle.html' with item=servicio fotos=fotos promedio_range=promedio_range promedio_calificaciones=promedio_calificaciones %}
 {% endblock %}
