@@ -47,12 +47,20 @@ def evento_detalle(request, id):
     if not evento:
         return HttpResponseNotFound("Evento no encontrado")
     fotos = evento.fotos.all()
+    calificaciones = evento.calificacion_evento.all()
+    promedio_calificaciones = 0
+    if calificaciones:
+        promedio_calificaciones = sum(
+            [calificacion.calificacion for calificacion in calificaciones]
+        ) / len(calificaciones)
 
     return render(
         request,
         "eventos/detalle_evento.html",
         {
             "evento": evento,
+            "promedio_range": range(0, int(promedio_calificaciones)),
+            "promedio_calificaciones": promedio_calificaciones,
             "fotos": fotos,
         },
     )

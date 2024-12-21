@@ -2,21 +2,19 @@
 <div class="card" style="width: 100%; max-width: 300px; ">
     <a href="{% url link_url id_item %}">
         <img width="100%"
-            src="{% if imagen_url %}{{ imagen_url }}{% else %}{% static 'img/404.jpg' %}{% endif %}"
-            class="card-img-top" alt="...">
+             src="{% if imagen_url %}{{ imagen_url }}{% else %}{% static 'img/404.jpg' %}{% endif %}"
+             class="card-img-top"
+             alt="...">
     </a>
     <div class="card-body">
         <ul class="list-unstyled d-flex justify-content-between">
             <li>
-                {% for i in promedio_calificaciones %}
-                <i class="text-warning fa fa-star"></i>
-                {% endfor %}
+                {% for i in promedio_calificaciones %}<i class="text-warning fa fa-star"></i>{% endfor %}
             </li>
             <li class="text-muted text-right">{{ valor_referencial }}</li>
         </ul>
-        <a href="{% url link_url id_item %}" class="h2 text-decoration-none text-dark">{{ nombre }}</a>
-        <p class="card-text">
-            {{ descripcion }}
-        </p>
+        <a href="{% url link_url id_item %}"
+           class="h2 text-decoration-none text-dark">{{ nombre }}</a>
+        <p class="card-text">{{ descripcion }}</p>
     </div>
 </div>
