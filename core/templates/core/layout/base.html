@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'core/components/layout/head.html' %}
+<body>
+
+    {% include 'core/components/layout/nav.html' %}
+    {% include 'core/components/layout/header.html' %}
+
+    {% block content %}
+
+
+    {% endblock %}
+
+    {% include 'core/components/layout/footer.html' %}
+
+    <!-- Start Script -->
+
+    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/templatemo.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+</body>
+</html>
