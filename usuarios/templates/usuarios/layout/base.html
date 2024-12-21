@@ -1,0 +1,12 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    {% include 'core/components/layout/head.html' %}
+    <body>
+        {% include 'core/components/layout/nav.html' %}
+        {% include 'core/components/layout/header.html' %}
+        {% include 'core/components/layout/modal.html' %}
+        {% block content %}{% endblock %}
+        {% include 'core/components/layout/footer.html' %}
+    </body>
+</html>
