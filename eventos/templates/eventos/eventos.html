@@ -1,13 +1,28 @@
-{% for evento_item in eventos %}
-    <div class="evento">
-        <h2>{{ evento_item.evento.id }}</h2>
-        <h2>{{ evento_item.evento.nombre }}</h2>
-        <p>{{ evento_item.promedio_calificaciones }}</p>
-        
-        {% if evento_item.imagen_url %}
-            <img src="{{ evento_item.imagen_url }}" alt="Imagen del evento">
-        {% else %}
-            <p>No hay imagen</p>
-        {% endif %}
+{% extends 'eventos/layout/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="bg-success py-5">
+    <div class="container" style="display: flex; justify-content: center; align-items: center; gap: 2em;">
+
+        {% for evento_item in eventos %}
+        <div class="card" style="width: 18rem; border-radius: 20px;">
+    
+            {% if evento_item.imagen_url %}
+            <img style="border-radius: 20px;" src="{{ evento_item.imagen_url }}" alt="Imagen del evento">
+            {% else %}
+            <img style="border-radius: 20px;" src="{% static 'img/404.jpg' %}" alt="Imagen del evento">
+            {% endif %}
+            <div class="card-body">
+    
+                <h2>{{ evento_item.evento.id }}</h2>
+                <h2>{{ evento_item.evento.nombre }}</h2>
+                <p>{{ evento_item.promedio_calificaciones }}</p>
+            </div>
+    
+        </div>
+        {% endfor %}
     </div>
-{% endfor %}
+
+</section>
+{% endblock %}
