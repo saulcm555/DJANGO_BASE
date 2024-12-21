@@ -1,13 +1,25 @@
-{% for servicio_item in servicios %}
-    <div class="servicio">
-        <h2>{{ servicio_item.servicio.id }}</h2>
-        <h2>{{ servicio_item.servicio.nombre }}</h2>
-        <p>{{ servicio_item.promedio_calificaciones }}</p>
-        
-        {% if servicio_item.imagen_url %}
-            <img src="{{ servicio_item.imagen_url }}" alt="Imagen del servicio">
-        {% else %}
-            <p>No hay imagen</p>
-        {% endif %}
+{% extends "servicios/layout/base.html" %}
+{% load static %}
+{% block content %}
+    <section class="bg-success py-5">
+        <div class="container"
+             style="display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 2em">
+            {% for servicio_item in servicios %}
+                <div class="card" style="width: 18rem; border-radius: 20px;">
+                    <h2>{{ servicio_item.servicio.id }}</h2>
+                    <h2>{{ servicio_item.servicio.nombre }}</h2>
+                    <p>{{ servicio_item.promedio_calificaciones }}</p>
+                    {% if servicio_item.imagen_url %}
+                        <img src="{{ servicio_item.imagen_url }}" alt="Imagen del servicio">
+                    {% else %}
+                        <p>No hay imagen</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
     </div>
-{% endfor %}
+</section>
+{% endblock %}
