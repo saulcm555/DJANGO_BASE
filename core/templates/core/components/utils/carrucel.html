@@ -1,0 +1,28 @@
+{% load static %}
+
+<div id="carouselExample" class="carousel slide">
+    <div class="carousel-inner">
+        {% if fotos %}
+
+        {% for foto in fotos %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <img class="d-block w-100"
+                src="{% if foto.foto.url %}{{ foto.foto.url }}{% else %}{% static 'img/404.jpg' %}{% endif %}"
+                alt="First slide">
+        </div>
+        {% endfor %}
+        {% else %}
+        <img class="d-block w-100" src="{% static 'img/404.jpg' %}" alt="First slide">
+        {% endif %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>

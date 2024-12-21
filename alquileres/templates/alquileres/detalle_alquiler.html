@@ -1,0 +1,74 @@
+{% extends "alquileres/layout/base.html" %}
+{% block content %}
+
+<section class=" py-5">
+    <div class="container">
+        <div class="row" style="display: flex; justify-content: center; align-items: start; gap: 2em; position: relative;">
+
+            <div class="" style="flex: auto; max-width: 500px; position: sticky; top: 0; z-index: 10;">
+                {% include 'core/components/utils/carrucel.html' with fotos=fotos %}
+            </div>
+            <div class="col-lg-7 mt-5">
+                <table class="table table-borderless" style="width: 100%;">
+                    <thead>
+                        <tr>
+                          <th scope="col">Campo</th>
+                          <th scope="col">Descripción</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Cliente</td>
+                          <td>{{ alquiler.cliente }}</td>
+                        </tr>
+                        <tr>
+                          <td>Evento</td>
+                          <td>{{ alquiler.evento }}</td>
+                        </tr>
+                        <tr>
+                          <td>Fecha de Alquiler</td>
+                          <td>{{ alquiler.fecha_alquiler }}</td>
+                        </tr>
+                        <tr>
+                          <td>Fecha de Creación</td>
+                          <td>{{ alquiler.fecha_creacion }}</td>
+                        </tr>
+                        <tr>
+                          <td>Hora de Inicio de Alquiler</td>
+                          <td>{{ alquiler.hora_inicio_alquiler }}</td>
+                        </tr>
+                        <tr>
+                          <td>Hora Fin Planificada de Alquiler</td>
+                          <td>{{ alquiler.hora_fin_planificada_alquiler }}</td>
+                        </tr>
+                        <tr>
+                          <td>Hora Fin Real de Alquiler</td>
+                          <td>{{ alquiler.hora_fin_real_alquiler }}</td>
+                        </tr>
+                        <tr>
+                          <td>Costo de Alquiler</td>
+                          <td>{{ alquiler.costo_alquiler }}</td>
+                        </tr>
+                        <tr>
+                          <td>Calificación del Dueño</td>
+                          <td>{{ alquiler.calificacion_dueno }}</td>
+                        </tr>
+                        <tr>
+                          <td>Calificación del Cliente</td>
+                          <td>{{ alquiler.calificacion_cliente }}</td>
+                        </tr>
+                        <tr>
+                          <td>Observación</td>
+                          <td>{{ alquiler.observacion }}</td>
+                        </tr>
+                        <tr>
+                          <td>Cantidad de Anticipo</td>
+                          <td>{{ alquiler.cantidad_anticipo }}</td>
+                        </tr>
+                      </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
