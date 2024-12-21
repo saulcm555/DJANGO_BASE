@@ -17,7 +17,6 @@ def eventos(request):
         eventos = eventos.filter(
             Q(nombre__icontains=query) | Q(descripcion__icontains=query)
         )
-
     queryset = []
     for evento in eventos:
         primera_foto = evento.fotos.first()
@@ -32,7 +31,6 @@ def eventos(request):
             imagen_url = primera_foto.foto.url
         else:
             imagen_url = None
-
         queryset.append(
             {
                 "evento": evento,
@@ -42,7 +40,6 @@ def eventos(request):
         )
 
     return render(request, "eventos/eventos.html", {"eventos": queryset})
-
 
 
 def evento_detalle(request, id):

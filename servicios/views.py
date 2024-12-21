@@ -21,8 +21,29 @@ def servicios(request):
             | Q(descripcion_unidad__icontains=query)
         )
 
-    return render(request, "servicios/servicios.html", {"servicios": servicios})
+    queryset = []
+    for evento in servicios:
+        primera_foto = evento.fotos.first()
+        calificaciones = evento.calificacion_servicio.all()
+        promedio_calificaciones = 0
+        if calificaciones:
+            promedio_calificaciones = sum(
+                [calificacion.calificacion for calificacion in calificaciones]
+            ) / len(calificaciones)
 
+        if primera_foto:
+            imagen_url = primera_foto.foto.url
+        else:
+            imagen_url = None
+        queryset.append(
+            {
+                "servicio": evento,
+                "imagen_url": imagen_url,
+                "promedio_calificaciones": promedio_calificaciones,
+            }
+        )
+
+    return render(request, "servicios/servicios.html", {"servicios": queryset})
 
 def servicio_detalle(request, id):
     servicio = Servicio.objects.filter(id=id).first()
