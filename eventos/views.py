@@ -35,7 +35,7 @@ def eventos(request):
             {
                 "evento": evento,
                 "imagen_url": imagen_url,
-                "promedio_calificaciones": promedio_calificaciones,
+                "promedio_calificaciones": range(0, int(promedio_calificaciones)),
             }
         )
 

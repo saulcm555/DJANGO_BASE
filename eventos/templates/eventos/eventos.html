@@ -3,26 +3,30 @@
 
 {% block content %}
 <section class="bg-success py-5">
-    <div class="container" style="display: flex; justify-content: center; align-items: center; gap: 2em;">
+    <div class="container col-3" style="display: flex; justify-content: center; align-items: center; gap: 2em;">
 
         {% for evento_item in eventos %}
-        <div class="card" style="width: 18rem; border-radius: 20px;">
-    
-            {% if evento_item.imagen_url %}
-            <img style="border-radius: 20px;" src="{{ evento_item.imagen_url }}" alt="Imagen del evento">
-            {% else %}
-            <img style="border-radius: 20px;" src="{% static 'img/404.jpg' %}" alt="Imagen del evento">
-            {% endif %}
+
+        <div class="card h-100">
+            <a href="">
+                <img width="100%"
+                    src="{% if evento_item.imagen_url %}{{ evento_item.imagen_url }}{% else %}{% static 'img/404.jpg' %}{% endif %}"
+                    class="card-img-top" alt="...">
+            </a>
             <div class="card-body">
-    
-                <h2>{{ evento_item.evento.id }}</h2>
-                <h2>{{ evento_item.evento.nombre }}</h2>
-                <p>{{ evento_item.promedio_calificaciones }}</p>
+                <ul class="list-unstyled d-flex justify-content-between">
+                    <li>
+                        {% for i in evento_item.promedio_calificaciones %}
+                        <i class="text-warning fa fa-star"></i>
+                        {% endfor %}
+                    </li>
+                    <li class="text-muted text-right">{{ evento_item.valor_referencial }}</li>
+                </ul>
+                <a href="" class="h2 text-decoration-none text-dark">{{evento_item.evento.nombre }}</a>
             </div>
-    
         </div>
+
         {% endfor %}
     </div>
-
 </section>
 {% endblock %}
