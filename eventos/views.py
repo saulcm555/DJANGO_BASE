@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.db.models import Q
 
-from .models import Evento
+from .models import Evento, TipoEvento
 from .forms import (
     EventoFormulario,
     CalificacionEventoFormulario,
@@ -40,6 +40,26 @@ def eventos(request):
         )
 
     return render(request, "eventos/eventos.html", {"eventos": queryset})
+
+
+def tipos_eventos(request):
+    tipos_eventos = TipoEvento.objects.all()
+    return render(
+        request, "eventos/tipos_eventos.html", {"tipos_eventos": tipos_eventos}
+    )
+
+
+def tipos_evento(request, id):
+    tipo_evento = TipoEvento.objects.filter(id=id).first()
+    if not tipo_evento:
+        return HttpResponseNotFound("Tipo de evento no encontrado")
+    eventos = tipo_evento.eventos.all()[:5]
+
+    return render(
+        request,
+        "eventos/tipo_evento.html",
+        {"tipo_evento": tipo_evento, "eventos": eventos},
+    )
 
 
 def evento_detalle(request, id):

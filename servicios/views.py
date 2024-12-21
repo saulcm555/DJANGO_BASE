@@ -45,18 +45,30 @@ def servicios(request):
 
     return render(request, "servicios/servicios.html", {"servicios": queryset})
 
+
 def servicio_detalle(request, id):
     servicio = Servicio.objects.filter(id=id).first()
     if not servicio:
         return HttpResponseBadRequest("Servicio no encontrado")
 
-    if request.method == "GET":
-        fotos = servicio.fotos.all()
-        return render(
-            request, "servicios/detalle_servicio.html", {"servicio": servicio, "fotos": fotos}
-        )
+    fotos = servicio.fotos.all()
+    promedio_calificaciones = 0
+    calificaciones = servicio.calificacion_servicio.all()
+    if calificaciones:
+        promedio_calificaciones = sum(
+            [calificacion.calificacion for calificacion in calificaciones]
+        ) / len(calificaciones)
 
-    return HttpResponseForbidden("Método no permitido")
+    return render(
+        request,
+        "servicios/detalle_servicio.html",
+        {
+            "servicio": servicio,
+            "fotos": fotos,
+            "promedio_range": range(0, promedio_calificaciones),
+            "promedio_calificaciones": promedio_calificaciones,
+        },
+    )
 
 
 def calificaciones_servicio(request, id):
@@ -86,5 +98,3 @@ def calificaciones_servicio(request, id):
             "form": formulario,
         },
     )
-
-

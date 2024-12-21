@@ -1,0 +1,18 @@
+{% extends 'eventos/layout/base.html' %}
+{% load static %}
+{% block content %}
+    <section class=" py-5">
+        <div class="container " style="width: 100%;">
+            <div class=""
+                 style="display: flex;
+                        flex-wrap: wrap;
+                        gap: 2em;
+                        justify-content: center;
+                        align-items: center">
+                {% for tipo_evento_item in tipos_tipo_eventos %}
+                    {% include 'core/components/utils/card.html' with nombre=tipo_evento_item.tipo_evento.nombre descripcion=tipo_evento_item.tipo_evento.descripcion  imagen_url=tipo_evento_item.imagen.url id_item=tipo_evento_item.tipo_evento.id link_url='eventos:categoria-evento' %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
