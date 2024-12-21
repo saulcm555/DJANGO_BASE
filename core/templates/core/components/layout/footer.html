@@ -1,3 +1,4 @@
+{% load static %}
 <footer class="bg-dark" id="tempaltemo_footer">
     <div class="container">
         <div class="row">
@@ -78,19 +79,19 @@
             <div class="col-auto me-auto">
                 <ul class="list-inline text-left footer-icons">
                     <li class="list-inline-item border border-light rounded-circle text-center">
-                        <a class="text-light text-decoration-none"
-                           target="_blank"
-                           href="{% if configuracion_negocio.red_social_facebook %}{{ configuracion_negocio.red_social_facebook }}{% else %}# {% endif %}"><i class="fab fa-facebook-f fa-lg fa-fw"></i></a>
+                        <a class="text-light text-decoration-none" target="_blank"
+                            href="{% if configuracion_negocio.red_social_facebook %}{{ configuracion_negocio.red_social_facebook }}{% else %}# {% endif %}"><i
+                                class="fab fa-facebook-f fa-lg fa-fw"></i></a>
                     </li>
                     <li class="list-inline-item border border-light rounded-circle text-center">
-                        <a class="text-light text-decoration-none"
-                           target="_blank"
-                           href="{% if configuracion_negocio.red_social_instagram %}{{ configuracion_negocio.red_social_instagram }}{% else %}# {% endif %}"><i class="fab fa-instagram fa-lg fa-fw"></i></a>
+                        <a class="text-light text-decoration-none" target="_blank"
+                            href="{% if configuracion_negocio.red_social_instagram %}{{ configuracion_negocio.red_social_instagram }}{% else %}# {% endif %}"><i
+                                class="fab fa-instagram fa-lg fa-fw"></i></a>
                     </li>
                     <li class="list-inline-item border border-light rounded-circle text-center">
-                        <a class="text-light text-decoration-none"
-                           target="_blank"
-                           href="{% if configuracion_negocio.red_social_x %}{{ configuracion_negocio.red_social_x }}{% else %}# {% endif %}"><i class="fab fa-x fa-lg fa-fw"></i></a>
+                        <a class="text-light text-decoration-none" target="_blank"
+                            href="{% if configuracion_negocio.red_social_x %}{{ configuracion_negocio.red_social_x }}{% else %}# {% endif %}"><i
+                                class="fab fa-twitter fa-lg fa-fw"></i></a>
                     </li>
                 </ul>
             </div>
@@ -102,10 +103,17 @@
                 <div class="col-12">
                     <p class="text-left text-light">
                         Copyright &copy; 2021 Company Name
-                        | Designed by <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a>
+                        | Designed by <a rel="sponsored" href="https://templatemo.com"
+                            target="_blank">{{configuracion_negocio.nombre}}</a>
                     </p>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/templatemo.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
 </footer>
