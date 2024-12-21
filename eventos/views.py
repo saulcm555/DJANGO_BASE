@@ -25,9 +25,16 @@ def evento_detalle(request, id):
     evento = Evento.objects.filter(id=id).first()
     if not evento:
         return HttpResponseNotFound("Evento no encontrado")
+    fotos = evento.fotos.all()
 
-    return render(request, "eventos/detalle_evento.html", {"evento": evento})
-
+    return render(
+        request,
+        "eventos/detalle_evento.html",
+        {
+            "evento": evento,
+            "fotos": fotos,
+        },
+    )
 
 
 def calificaciones_evento(request, id):
@@ -58,22 +65,5 @@ def calificaciones_evento(request, id):
             "evento": evento,
             "calificaciones": calificaciones,
             "form": formulario,
-        },
-    )
-
-
-def fotos_evento(request, id):
-    evento = Evento.objects.filter(id=id).first()
-    print(evento)
-    if not evento:
-        return HttpResponseNotFound("Evento no encontrado")
-    fotos = evento.fotos.all()
-
-    return render(
-        request,
-        "eventos/fotos_evento.html",
-        {
-            "evento": evento,
-            "fotos": fotos,
         },
     )

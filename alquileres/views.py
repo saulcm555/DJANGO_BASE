@@ -45,18 +45,13 @@ def alquiler_detalle(request, id):
         return HttpResponseBadRequest("Alquiler no encontrado")
 
     if request.method == "GET":
+        fotos = alquiler.fotos_alquiler.all()
+
         return render(
-            request, "alquileres/detalle_alquiler.html", {"alquiler": alquiler}
+            request,
+            "alquileres/detalle_alquiler.html",
+            {"alquiler": alquiler, "fotos": fotos},
         )
-
-    if request.method == "POST":
-        formulario = AlquilerFormulario(request.POST, instance=alquiler)
-        if formulario.is_valid():
-
-            alquiler = formulario.save(commit=False)
-            alquiler.cliente = request.user
-            alquiler.save()
-            return redirect("alquileres:alquileres")
 
     return HttpResponseForbidden("Método no permitido")
 
@@ -86,22 +81,6 @@ def calificaciones_alquiler(request, id):
             "alquiler": alquiler,
             "calificaciones": calificaciones,
             "form": formulario,
-        },
-    )
-
-
-def fotos_alquiler(request, id):
-    alquiler = Alquiler.objects.filter(id=id).first()
-    if not alquiler:
-        return HttpResponseBadRequest("Alquiler no encontrado")
-    fotos = alquiler.fotos_alquiler.all()
-
-    return render(
-        request,
-        "alquileres/fotos_alquiler.html",
-        {
-            "alquiler": alquiler,
-            "fotos": fotos,
         },
     )
 
