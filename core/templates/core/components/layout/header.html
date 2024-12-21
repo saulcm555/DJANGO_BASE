@@ -30,13 +30,19 @@
                     <a class="nav-link text-dark" href="{% url 'core:home' %}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="about.html">About</a>
+                    <a class="nav-link text-dark" href="{% url 'eventos:eventos' %}">Eventos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="shop.html">Shop</a>
+                    <a class="nav-link text-dark" href="{% url 'servicios:servicios' %}">Servicios</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="contact.html">Contact</a>
+                    <a class="nav-link text-dark" href="{% url 'alquileres:alquileres' %}">
+                        {% if request.user.is_superuser %}
+                            Reservas de eventos
+                        {% else %}
+                            Mis Reservas
+                        {% endif %}
+                    </a>
                 </li>
             </ul>
             <!-- Icons Section -->
@@ -48,14 +54,9 @@
                     <i class="fa fa-fw fa-search text-dark"></i>
                 </a>
                 <a class="nav-icon text-decoration-none position-relative me-3" href="#">
-                    <i class="fa fa-fw fa-cart-arrow-down text-dark"></i>
-                    <span class="badge position-absolute top-0 start-100 translate-middle bg-light text-dark rounded-pill">7</span>
-                </a>
-                <a class="nav-icon text-decoration-none position-relative me-3" href="#">
                     <i class="fa fa-fw fa-user text-dark"></i>
-                    <span class="badge position-absolute top-0 start-100 translate-middle bg-light text-dark rounded-pill">+99</span>
+                    <span class="badge position-absolute top-0 start-100 translate-middle bg-light text-dark rounded-pill"></span>
                 </a>
-                <!-- Panel de Control -->
                 {% if request.user.is_superuser %}
                     <a class="nav-icon text-decoration-none d-flex align-items-center text-dark fw-bold"
                        href="{% url 'admin:index' %}">

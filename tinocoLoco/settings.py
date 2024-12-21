@@ -91,6 +91,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "core.contex_processors.configuracion_negocio_context",
+                "core.contex_processors.eventos_mas_gustados_context",
             ],
         },
     },
