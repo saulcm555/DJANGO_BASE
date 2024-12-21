@@ -1,0 +1,13 @@
+{% for alquiler_item in alquileres %}
+    <div class="alquiler">
+        <h2>{{ alquiler_item.alquiler.id }}</h2>
+        <h2>{{ alquiler_item.alquiler.cliente.username }}</h2>
+        <h2>{{ alquiler_item.alquiler.evento.nombre }}</h2>
+        <p>{{ alquiler_item.alquiler.estado_de_alquiler }}</p>
+        {% if alquiler_item.imagen_url %}
+            <img src="{{ alquiler_item.imagen_url }}" alt="Imagen del alquiler">
+        {% else %}
+            <p>No hay imagen</p>
+        {% endif %}
+    </div>
+{% endfor %}

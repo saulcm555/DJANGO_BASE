@@ -35,7 +35,7 @@ class AlquilerAdmin(admin.ModelAdmin):
         "hora_inicio_alquiler",
         "hora_fin_planificada_alquiler",
         "costo_alquiler",
-        "Estado_de_alquiler",
+        "estado_de_alquiler",
     )
 
     search_fields = (
@@ -45,11 +45,11 @@ class AlquilerAdmin(admin.ModelAdmin):
         "hora_inicio_alquiler",
         "hora_fin_planificada_alquiler",
         "costo_alquiler",
-        "Estado_de_alquiler",
+        "estado_de_alquiler",
     )
 
     list_filter = (
-        "Estado_de_alquiler",
+        "estado_de_alquiler",
         "fecha_alquiler",
         "fecha_creacion",
     )

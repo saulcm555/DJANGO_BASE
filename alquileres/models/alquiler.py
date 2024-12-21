@@ -49,7 +49,7 @@ class Alquiler(models.Model):
         Promocion, blank=True, related_name="alquileres", verbose_name="Promociones"
     )
 
-    Estado_de_alquiler = models.CharField(
+    estado_de_alquiler = models.CharField(
         max_length=20, choices=ESTADO_ALQUILER_CHOICES, default="pendiente", verbose_name="Estado de Alquiler"
     )
 
