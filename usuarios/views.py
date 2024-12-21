@@ -49,7 +49,7 @@ def iniciar_sesion(request):
             if not ValidadorUsuario.validar_correo_verificado(usuario):
                 return redirect("usuarios:validar_correo")
 
-            return redirect("usuarios:perfil")
+            return redirect("core:home")
     else:
         form = IniciarSesionFormulario()
     return render(request, "usuarios/iniciar_sesion.html", {"form": form})
