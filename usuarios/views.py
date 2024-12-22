@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
-
+from utilidades import EmailEnviador
+from django.http import JsonResponse
 
 from .forms import (
     CrearCuentaFormulario,
@@ -81,15 +81,29 @@ def validar_correo(request):
 def perfil(request):
     usuario = request.user
     perfil = PerfilUsuario.objects.get(usuario=usuario)
+    
+    # Inicializa el formulario de validación de correo para ambos métodos
+    formulario_validar_correo = ValidarCorreoFormulario()
+    
     if request.method == "POST":
         formulario = CompletarPerfilFormulario(request.POST, instance=perfil)
         if formulario.is_valid():
             formulario.save()
             messages.success(request, "Perfil actualizado correctamente")
-            
     else:
         formulario = CompletarPerfilFormulario(instance=perfil)
     
-    return render(request, "usuarios/perfil.html", {"usuario": perfil, "form": formulario})
-
-
+    return render(
+        request, 
+        "usuarios/perfil.html", 
+        {"usuario": perfil, "form": formulario, "formulario_validar_correo": formulario_validar_correo}
+    )
+@login_required
+def validar_correo_helper(request):
+    perfil = PerfilUsuario.objects.get(usuario=request.user)
+    if request.method == "GET":
+        perfil.generar_codigo_verificacion()
+        EmailEnviador.enviar_codigo_validar_email(perfil)
+        return JsonResponse({"status": "ok"})
+    elif request.method == "POST":
+        
