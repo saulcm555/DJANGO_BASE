@@ -45,9 +45,6 @@ def iniciar_sesion(request):
             usuario = form.get_user()
             login(request, usuario)
 
-            if not ValidadorUsuario.validar_correo_verificado(usuario):
-                return redirect("usuarios:validar_correo")
-
             return redirect("core:home")
     else:
         form = IniciarSesionFormulario()

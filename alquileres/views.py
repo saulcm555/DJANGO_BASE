@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.db.models import Q
 
 from usuarios.decoradores import admin_required
+from utilidades import ValidadorUsuario
 from .models import Alquiler
 from .forms import (
     AlquilerFormulario,
@@ -29,7 +31,6 @@ def alquileres(request):
     for alquiler in alquileres:
         primera_foto = alquiler.fotos.first()
 
-
         if primera_foto:
             imagen_url = primera_foto.foto.url
         else:
@@ -44,15 +45,22 @@ def alquileres(request):
     return render(request, "alquileres/alquileres.html", {"alquileres": queryset})
 
 
-@admin_required
 def nuevo_alquiler(request):
+    if not ValidadorUsuario.validar_correo_verificado_y_datos_completos(request.user):
+        messages.error(
+            request,
+            "Debes verificar tu correo y completar tus datos antes de poder alquilar un espacio",
+        )
+        return redirect("usuarios:perfil")
+
     if request.method == "POST":
         formulario = AlquilerFormulario(request.POST)
         if formulario.is_valid():
             alquiler = formulario.save(commit=False)
-            alquiler.agregado_por = request.user
+            alquiler.cliente = request.user
             alquiler.save()
-            return redirect("alquileres")
+            messages.success(request, "Alquiler creado correctamente")
+            return redirect("alquileres:alquileres")
     else:
         formulario = AlquilerFormulario()
     return render(request, "alquileres/nuevo_alquiler.html", {"form": formulario})
@@ -61,7 +69,8 @@ def nuevo_alquiler(request):
 def alquiler_detalle(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
-        return HttpResponseBadRequest("Alquiler no encontrado")
+        messages.error(request, "Alquiler no encontrado")
+        return redirect("alquileres:alquileres")
 
     if request.method == "GET":
         fotos = alquiler.fotos.all()
@@ -72,13 +81,13 @@ def alquiler_detalle(request, id):
             {"alquiler": alquiler, "fotos": fotos},
         )
 
-    return HttpResponseForbidden("Método no permitido")
-
 
 def calificaciones_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
-        return HttpResponseBadRequest("Alquiler no encontrado")
+        messages.error(request, "Alquiler no encontrado")
+        return redirect("alquileres:alquileres")
+
     calificaciones = alquiler.calificacion_alquiler.all()
     if request.method == "POST":
         if not alquiler.cliente == request.user or not request.user.is_superuser:
@@ -107,7 +116,8 @@ def calificaciones_alquiler(request, id):
 def eventualidades_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
-        return HttpResponseBadRequest("Alquiler no encontrado")
+        messages.error(request, "Alquiler no encontrado")
+        return redirect("alquileres:alquileres")
     eventualidades = alquiler.eventualidades.all()
 
     return render(
@@ -123,7 +133,8 @@ def eventualidades_alquiler(request, id):
 def servicios_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
-        return HttpResponseBadRequest("Alquiler no encontrado")
+        messages.error(request, "Alquiler no encontrado")
+        return redirect("alquileres:alquileres")
     servicios = alquiler.servicios.all()
     if request.method == "POST":
         if not request.user.is_superuser or not alquiler.cliente == request.user:
@@ -150,7 +161,8 @@ def servicios_alquiler(request, id):
 def confirmar_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
-        return HttpResponseBadRequest("Alquiler no encontrado")
+        messages.error(request, "Alquiler no encontrado")
+        return redirect("alquileres:alquileres")
     if request.method == "POST":
         formulario = ConfirmarAlquilerFormulario(request.POST, alquiler=alquiler)
         if formulario.is_valid():
