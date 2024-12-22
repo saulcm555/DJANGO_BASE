@@ -62,7 +62,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal" onclick="reenviarCorreoValidacion()">Enviar otra vez</button>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="reenviarCorreoValidacion()">Enviar otra vez</button>
                                                         <button type="button" class="btn btn-success">Validar</button>
                                                     </div>
                                                 </div>
@@ -123,7 +123,7 @@
 
 
     function reenviarCorreoValidacion() {
-        const url = "{% url 'reenvio_correo_validacion' %}";  
+        const url = "{% url 'usuarios:reenvio_correo_validacion' %}";  
         fetch(url, {
             method: 'POST',
             headers: {
