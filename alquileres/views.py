@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import HttpResponseForbidden, HttpResponseBadRequest
+from django.http import HttpResponseForbidden
 from django.db.models import Q
 
-from usuarios.decoradores import admin_required
 from utilidades import ValidadorUsuario
+from eventos.models import Evento
 from .models import Alquiler
 from .forms import (
     AlquilerFormulario,
@@ -45,31 +45,42 @@ def alquileres(request):
     return render(request, "alquileres/alquileres.html", {"alquileres": queryset})
 
 
-def nuevo_alquiler(request):
+def nuevo_alquiler(request, item_id):
     if not ValidadorUsuario.validar_correo_verificado_y_datos_completos(request.user):
-        messages.error(
+        messages.warning(
             request,
             "Debes verificar tu correo y completar tus datos antes de poder alquilar un espacio",
         )
         return redirect("usuarios:perfil")
+    evento = Evento.objects.filter(id=item_id).first()
+    if not evento:
+        messages.warning(request, "Evento no encontrado")
+        return redirect("eventos:eventos")
 
     if request.method == "POST":
         formulario = AlquilerFormulario(request.POST)
         if formulario.is_valid():
             alquiler = formulario.save(commit=False)
             alquiler.cliente = request.user
+            alquiler.evento = evento
+
             alquiler.save()
             messages.success(request, "Alquiler creado correctamente")
-            return redirect("alquileres:alquileres")
-    else:
-        formulario = AlquilerFormulario()
+            messages.info(request, "Por favor, confirma tu reserva con el codigo que te hemos enviado a tu correo")
+            return redirect("alquileres:alquiler_detalle", id=alquiler.id)
+        print(formulario.errors)
+        messages.warning(
+            request,
+            f"Error al crear el alquiler"
+        )
+    formulario = AlquilerFormulario()
     return render(request, "alquileres/nuevo_alquiler.html", {"form": formulario})
 
 
 def alquiler_detalle(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
-        messages.error(request, "Alquiler no encontrado")
+        messages.warning(request, "Alquiler no encontrado")
         return redirect("alquileres:alquileres")
 
     if request.method == "GET":
@@ -85,7 +96,7 @@ def alquiler_detalle(request, id):
 def calificaciones_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
-        messages.error(request, "Alquiler no encontrado")
+        messages.warning(request, "Alquiler no encontrado")
         return redirect("alquileres:alquileres")
 
     calificaciones = alquiler.calificacion_alquiler.all()
@@ -116,7 +127,7 @@ def calificaciones_alquiler(request, id):
 def eventualidades_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
-        messages.error(request, "Alquiler no encontrado")
+        messages.warning(request, "Alquiler no encontrado")
         return redirect("alquileres:alquileres")
     eventualidades = alquiler.eventualidades.all()
 
@@ -133,7 +144,7 @@ def eventualidades_alquiler(request, id):
 def servicios_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
-        messages.error(request, "Alquiler no encontrado")
+        messages.warning(request, "Alquiler no encontrado")
         return redirect("alquileres:alquileres")
     servicios = alquiler.servicios.all()
     if request.method == "POST":
@@ -161,7 +172,7 @@ def servicios_alquiler(request, id):
 def confirmar_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
-        messages.error(request, "Alquiler no encontrado")
+        messages.warning(request, "Alquiler no encontrado")
         return redirect("alquileres:alquileres")
     if request.method == "POST":
         formulario = ConfirmarAlquilerFormulario(request.POST, alquiler=alquiler)

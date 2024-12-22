@@ -25,6 +25,7 @@ class AlquilerServicio(models.Model):
         related_name="reservas_servicio",
         verbose_name="Servicio",
     )
+    cantidad = models.IntegerField(verbose_name="Cantidad")
     estado_servicio_reserva = models.CharField(
         max_length=50,
         choices=ESTADO_SERVICIO_RESERVA_CHOICES,
