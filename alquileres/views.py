@@ -72,7 +72,7 @@ def nuevo_alquiler(request, item_id):
             alquiler.evento = evento
 
             alquiler.costo_alquiler = evento.valor_referencial
-            
+
             alquiler.save()
             enviar_codigo_confirmacion(alquiler)
             return redirect("alquileres:alquiler_detalle", id=alquiler.id)
@@ -91,7 +91,7 @@ def alquiler_detalle(request, id):
 
     if request.method == "GET":
         fotos = alquiler.fotos.all()
-        formulario = ConfirmarAlquilerFormulario(alquiler=alquiler)  # Usa 'instance' aquí
+        formulario = ConfirmarAlquilerFormulario(alquiler=alquiler)
         return render(
             request,
             "alquileres/detalle_alquiler.html",
@@ -184,7 +184,6 @@ def enviar_correo_alquiler(request, id):
     return JsonResponse({"success": True, "message": "Correo enviado correctamente."})
 
 
-
 def confirmar_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
 
@@ -196,11 +195,17 @@ def confirmar_alquiler(request, id):
 
         if formulario.is_valid():
             formulario.save()
-            return JsonResponse({"success": True, "message": "Alquiler confirmado correctamente."})
+            return JsonResponse(
+                {"success": True, "message": "Alquiler confirmado correctamente."}
+            )
         else:
             return JsonResponse({"success": False, "errors": formulario.errors})
 
     else:
         formulario = ConfirmarAlquilerFormulario(alquiler=alquiler)
 
-    return render(request, 'confirmar_alquiler.html', {'formulario': formulario, 'alquiler': alquiler})
+    return render(
+        request,
+        "confirmar_alquiler.html",
+        {"formulario": formulario, "alquiler": alquiler},
+    )

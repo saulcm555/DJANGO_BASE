@@ -1,6 +1,42 @@
 {% extends "eventos/layout/base.html" %}
-{% load static %}
+{% load crispy_forms_tags %}
 {% block content %}
+    <div class="container"style="width: 100%;">
+        {% include "core/components/utils/title.html" with titulo="Detalle del evento #" texto=evento.id %}
+    </div>
+    {% include 'eventos/components/detalle.html' with item=evento fotos=fotos promedio_range=promedio_range promedio_calificaciones=promedio_calificaciones tipo="evento" %}
+    <div class="container mt-5">
+        {% if request.user.is_authenticated %}
+            <div class="mt-5">
+                <h4>Añadir una calificación:</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
 
-{% include 'eventos/components/detalle.html' with item=evento fotos=fotos promedio_range=promedio_range promedio_calificaciones=promedio_calificaciones tipo="evento" %}
-{% endblock %}
+                    
+                    <button type="submit" class="btn btn-success">Enviar Calificación</button>
+                </form>
+            </div>
+        {% else %}
+            <p>
+                Por favor, <a href="{% url 'usuarios:iniciar_sesion' %}">inicia sesión</a> para dejar una calificación.
+            </p>
+        {% endif %}
+        <h2>Calificaciones para {{ evento.nombre }}</h2>
+        {% if calificaciones %}
+            <div class="mt-4">
+                <h4>Calificaciones anteriores:</h4>
+                <ul>
+                    {% for calificacion in calificaciones %}
+                        <li>
+                            <strong>{{ calificacion.usuario.username }}</strong>:
+                            {{ calificacion.calificacion }} estrellas
+                            <p>{{ calificacion.comentario }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <p>No hay calificaciones para este evento.</p>
+        {% endif %}
+    {% endblock %}

@@ -3,8 +3,12 @@
 {% block content %}
     <section class="py-5">
         <div class="container" style="width: 100%;">
+            {% if request.user.is_superuser %}
+                {% include 'core/components/utils/title.html' with titulo="Todos los" texto="alquileres" %}
+            {% else %}
+                {% include 'core/components/utils/title.html' with titulo="Mis" texto="alquileres" %}
+            {% endif %}
             <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center">
-
                 <!-- Mostrar mensajes informativos (si existen) -->
                 {% if messages %}
                     <div class="w-100">
@@ -15,7 +19,6 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-
                 <!-- Mostrar alquileres si existen -->
                 {% if alquileres %}
                     {% for alquiler_item in alquileres %}
@@ -29,7 +32,6 @@
                         <p class="text-center text-muted">No tienes alquileres disponibles en este momento.</p>
                     {% endif %}
                 {% endif %}
-                
             </div>
         </div>
     </section>

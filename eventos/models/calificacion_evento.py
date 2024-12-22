@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from .evento import Evento
 
@@ -30,6 +30,8 @@ class CalificacionEvento(models.Model):
     fecha_publicacion = models.DateTimeField(
         auto_now_add=True, verbose_name="Fecha de Publicación"
     )
+
+
 
     def __str__(self):
         return f"{self.usuario} - {self.evento} - {self.fecha_publicacion}"

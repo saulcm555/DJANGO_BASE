@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.db.models import Q
 
@@ -49,7 +50,7 @@ def tipos_eventos(request):
     )
 
 
-def tipos_evento(request, id):
+def tipo_evento(request, id):
     tipo_evento = TipoEvento.objects.filter(id=id).first()
     if not tipo_evento:
         return HttpResponseNotFound("Tipo de evento no encontrado")
@@ -65,8 +66,9 @@ def tipos_evento(request, id):
 def evento_detalle(request, id):
     evento = Evento.objects.filter(id=id).first()
     if not evento:
-        return HttpResponseNotFound("Evento no encontrado")
-    fotos = evento.fotos.all()
+        messages.warning(request, "Evento no encontrado")
+        return redirect("eventos:eventos")
+    
     calificaciones = evento.calificacion_evento.all()
     promedio_calificaciones = 0
     if calificaciones:
@@ -74,23 +76,7 @@ def evento_detalle(request, id):
             [calificacion.calificacion for calificacion in calificaciones]
         ) / len(calificaciones)
 
-    return render(
-        request,
-        "eventos/detalle_evento.html",
-        {
-            "evento": evento,
-            "promedio_range": range(0, int(promedio_calificaciones)),
-            "promedio_calificaciones": promedio_calificaciones,
-            "fotos": fotos,
-        },
-    )
-
-
-def calificaciones_evento(request, id):
-    evento = Evento.objects.filter(id=id).first()
-    if not evento:
-        return HttpResponseNotFound("Evento no encontrado")
-
+    # Manejar el formulario de calificaciones
     if request.method == "POST":
         if not request.user.is_authenticated:
             return redirect("usuarios:iniciar_sesion")
@@ -100,18 +86,25 @@ def calificaciones_evento(request, id):
             calificacion.evento = evento
             calificacion.usuario = request.user
             calificacion.save()
-            return redirect("eventos:eventos")
+            return redirect("eventos:evento_detalle", id=id)
     else:
-        formulario = CalificacionEventoFormulario()
+        formulario = CalificacionEventoFormulario(
+            initial={
+                'evento': evento.id,
+                'usuario': request.user.id if request.user.is_authenticated else None,
+            }
+        )
 
-        calificaciones = evento.calificacion_evento.all()
-        if not calificaciones:
-            return HttpResponseNotFound("Este evento no tiene calificaciones")
+    fotos = evento.fotos.all()
+
     return render(
         request,
-        "eventos/calificacion_evento.html",
+        "eventos/detalle_evento.html",
         {
             "evento": evento,
+            "promedio_range": range(0, int(promedio_calificaciones)),
+            "promedio_calificaciones": round(promedio_calificaciones,1  ),
+            "fotos": fotos,
             "calificaciones": calificaciones,
             "form": formulario,
         },

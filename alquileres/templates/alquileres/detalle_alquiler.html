@@ -3,6 +3,7 @@
   {% load crispy_forms_tags %}
   <section class=" py-5">
     <div class="container">
+      {% include "core/components/utils/title.html" with titulo="Detalle del alquiler #" texto=alquiler.id %}
       <div class="row"
            style="display: flex;
                   justify-content: center;
