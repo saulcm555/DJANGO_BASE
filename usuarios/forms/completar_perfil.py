@@ -52,8 +52,14 @@ class CompletarPerfilFormulario(forms.ModelForm):
 
     def clean_identificacion_cliente(self):
         identificacion_cliente = self.cleaned_data.get("identificacion_cliente")
-        if PerfilUsuario.objects.filter(
-            identificacion_cliente=identificacion_cliente
-        ).exists():
+        if (
+            PerfilUsuario.objects.filter(
+                identificacion_cliente=identificacion_cliente
+            ).exists()
+            and not PerfilUsuario.objects.filter(
+                identificacion_cliente=identificacion_cliente,
+                usuario=self.instance.usuario,
+            ).exists()
+        ):
             raise forms.ValidationError("Este número de identificación ya está en uso.")
         return identificacion_cliente

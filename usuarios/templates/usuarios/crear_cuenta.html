@@ -1,9 +1,22 @@
 {% extends "usuarios/layout/base.html" %}
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Crear cuenta</button>
-</form>
-<p> ¿Ya tienes una cuenta? <a href="{% url 'usuarios:iniciar_sesion' %}">Iniciar sesion</a></p>
-{% endblock %}
+    {% load crispy_forms_tags %}
+    <div class="d-flex justify-content-center align-items-center"
+         style="min-height: 100vh">
+        <div class="card p-4 shadow-sm"
+             style="max-width: 500px;
+                    width: 100%;
+                    margin-top: -10vh">
+            <h2 class="text-center mb-4">Registrarse</h2>
+            <form method="post" class="form-group">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-dark w-100">Crar cuenta</button>
+            </form>
+            <p class="text-center mt-3">
+                ¿Ya tienes una cuenta?
+                <a href="{% url 'usuarios:iniciar_sesion' %}">Iniciar sesion</a>
+            </p>
+        </div>
+    </div>
+{% endblock content %}

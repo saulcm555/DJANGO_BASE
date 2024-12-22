@@ -38,7 +38,7 @@ class PerfilUsuario(models.Model):
     )
     genero = models.CharField(
         max_length=50,
-        choices=[("Masculino", "Masculino"), ("Femenino", "Femenino")],
+        choices=[("M", "Masculino"), ("F", "Femenino"), ("O", "Otro")],
         blank=True,
         null=True,
         verbose_name="Género",

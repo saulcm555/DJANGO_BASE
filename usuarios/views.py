@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 
 
 from .forms import (
@@ -84,7 +86,17 @@ def validar_correo(request):
 @login_required
 def perfil(request):
     usuario = request.user
-    return render(request, "usuarios/perfil.html", {"usuario": usuario})
+    perfil = PerfilUsuario.objects.get(usuario=usuario)
+    if request.method == "POST":
+        formulario = CompletarPerfilFormulario(request.POST, instance=perfil)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, "Perfil actualizado correctamente")
+            
+    else:
+        formulario = CompletarPerfilFormulario(instance=perfil)
+    
+    return render(request, "usuarios/perfil.html", {"usuario": perfil, "form": formulario})
 
 
 @login_required
@@ -105,17 +117,3 @@ def completar_perfil(request):
     return render(request, "usuarios/completar_perfil.html", {"form": form})
 
 
-@login_required
-def actualizar_perfil(request):
-    usuario = request.user
-    if not ValidadorUsuario.validar_perfil_completo(usuario):
-        return redirect("usuarios:completar_perfil")
-    perfil = PerfilUsuario.objects.get(usuario=usuario)
-    if request.method == "POST":
-        form = CompletarPerfilFormulario(request.POST, instance=perfil)
-        if form.is_valid():
-            form.save()
-            return redirect("usuarios:perfil")
-    else:
-        form = CompletarPerfilFormulario(instance=perfil)
-    return render(request, "usuarios/actualizar_perfil.html", {"form": form})
