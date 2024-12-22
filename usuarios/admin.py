@@ -66,6 +66,7 @@ class PerfilUsuarioAdmin(admin.ModelAdmin):
         "nombres",
         "apellidos",
         "correo_electronico",
+        "telefono"
     )
 
     list_filter = (

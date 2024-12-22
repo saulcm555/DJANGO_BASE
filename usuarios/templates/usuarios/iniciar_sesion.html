@@ -10,6 +10,14 @@
                     width: 100%;
                     margin-top: -10vh">
             <h2 class="text-center mb-4">Iniciar Sesión</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}    
+            {% endif %}
+
             <form method="post" class="form-group">
                 {% csrf_token %}
                 {{ form|crispy }}

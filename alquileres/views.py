@@ -49,6 +49,9 @@ def alquileres(request):
 
 
 def nuevo_alquiler(request, item_id):
+    if not request.user.is_authenticated:
+        messages.warning(request, "Debes iniciar sesión para alquilar un espacio")
+        return redirect("usuarios:iniciar_sesion")
     if not ValidadorUsuario.validar_correo_verificado_y_datos_completos(request.user):
         messages.warning(
             request,
