@@ -1,7 +1,7 @@
 {% extends 'core/layout/base.html' %}
 {% load static %}
 {% block content %}
-<section class="position-relative overflow-hidden text-white pt-10" style="min-height: 80vh;">
+<section class="position-relative overflow-hidden text-white pt-10" style="min-height: 50vh;">
     <!-- Imagen de fondo -->
     <div 
       class="position-absolute top-0 start-0 w-100 h-100" 
@@ -35,12 +35,10 @@
 
 <section class=" py-5 container">
 
-
+    {% include 'core/components/utils/title.html' with titulo="Categotias" texto="Eventos" %}
 
     <div class="row">
         <div class="col-12 col-md-4 p-5 mt-3">
-
-
             {% for tipo_evento in tipo_eventos %}
             {% include 'core/components/utils/cardCategory.html' with nombre=tipo_evento.nombre_evento descripcion=tipo_evento.descripcion imagen_url=tipo_evento.imagen.url %}
             {% endfor %}

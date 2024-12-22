@@ -3,7 +3,7 @@
 {% block content %}
 <section class=" py-5">
     <div class="container " style="width: 100%;">
-
+        {% include 'core/components/utils/title.html' with titulo="Todos los" texto="Servicios" %}
         <div class="" style="display: flex; flex-wrap: wrap; gap: 2em; justify-content: center; align-items: center;">
             {% for servicio_item in servicios %}
             {% include 'core/components/utils/card.html' with nombre=servicio_item.servicio.nombre descripcion=servicio_item.servicio.descripcion valor_referencial=servicio_item.valor_referencial promedio_calificaciones=servicio_item.promedio_calificaciones imagen_url=servicio_item.imagen_url id_item=servicio_item.servicio.id link_url='servicios:servicio_detalle' %}
