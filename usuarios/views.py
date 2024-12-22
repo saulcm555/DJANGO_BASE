@@ -58,20 +58,24 @@ def cerrar_sesion(request):
 
 @login_required
 def validar_correo(request):
-    usuario = request.user
-    if ValidadorUsuario.validar_correo_verificado(usuario):
-        return redirect("usuarios:perfil")
-    if request.method == "POST":
-
-        form = ValidarCorreoFormulario(data=request.POST)
-        form.user = usuario
-        if form.is_valid():
-            form.save()
+    try:
+        usuario = request.user
+        if ValidadorUsuario.validar_correo_verificado(usuario):
             return redirect("usuarios:perfil")
-    else:
-        form = ValidarCorreoFormulario()
-
-    return render(request, "usuarios/validar_correo.html", {"form": form})
+        
+        if request.method == "POST":
+            form = ValidarCorreoFormulario(data=request.POST)
+            form.user = usuario
+            if form.is_valid():
+                form.save()
+                return JsonResponse({"success": True, "message": "Correo verificado correctamente."})
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
+        else:
+            return JsonResponse({"success": False, "message": "Método no permitido."}, status=405)
+    except Exception as e:
+        # Imprime el error en los logs para depurar
+        print(f"Error en validar_correo: {str(e)}")
+        return JsonResponse({"success": False, "message": "Error interno del servidor."}, status=500)
 
 
 @login_required

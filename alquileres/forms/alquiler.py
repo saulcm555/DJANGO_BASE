@@ -8,7 +8,10 @@ class AlquilerFormulario(forms.ModelForm):
     evento = forms.CharField(widget=forms.HiddenInput(), required=False)
     fecha_alquiler = forms.DateField(
         label="Fecha de alquiler",
-        widget=forms.DateInput(attrs={"class": "form-control"}),
+        widget=forms.DateInput(attrs={
+            "class": "form-control", 
+            "type": "date"
+        }),
         required=True,
     )
 
