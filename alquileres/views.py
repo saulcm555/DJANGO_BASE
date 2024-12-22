@@ -4,6 +4,7 @@ from django.http import HttpResponseForbidden
 from django.db.models import Q
 
 from utilidades import ValidadorUsuario
+from eventos.models import Evento
 from .models import Alquiler
 from .forms import (
     AlquilerFormulario,
@@ -44,19 +45,25 @@ def alquileres(request):
     return render(request, "alquileres/alquileres.html", {"alquileres": queryset})
 
 
-def nuevo_alquiler(request):
+def nuevo_alquiler(request, item_id):
     if not ValidadorUsuario.validar_correo_verificado_y_datos_completos(request.user):
         messages.warning(
             request,
             "Debes verificar tu correo y completar tus datos antes de poder alquilar un espacio",
         )
         return redirect("usuarios:perfil")
+    evento = Evento.objects.filter(id=item_id).first()
+    if not evento:
+        messages.warning(request, "Evento no encontrado")
+        return redirect("eventos:eventos")
 
     if request.method == "POST":
         formulario = AlquilerFormulario(request.POST)
         if formulario.is_valid():
             alquiler = formulario.save(commit=False)
             alquiler.cliente = request.user
+            alquiler.evento = evento
+            
             alquiler.save()
             messages.success(request, "Alquiler creado correctamente")
             return redirect("alquileres:alquileres")

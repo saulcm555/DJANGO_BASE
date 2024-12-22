@@ -4,8 +4,6 @@ from utilidades.enviar_email import EmailEnviador
 
 
 class AlquilerFormulario(forms.ModelForm):
-    cliente = forms.CharField(widget=forms.HiddenInput(), required=False)
-    evento = forms.CharField(widget=forms.HiddenInput(), required=False)
     fecha_alquiler = forms.DateField(
         label="Fecha de alquiler",
         widget=forms.DateInput(attrs={"class": "form-control"}),
