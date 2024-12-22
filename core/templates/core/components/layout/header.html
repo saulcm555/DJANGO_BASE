@@ -62,7 +62,7 @@
                 {% if request.user.is_anonymous %}
                     <a class="btn btn-outline me-3"
                        href="{% url 'usuarios:iniciar_sesion' %}">Iniciar Sesión</a>
-                    <a class="btn btn-dark text-white me-3"
+                    <a class="btn btn-success text-white me-3"
                        href="{% url 'usuarios:crear_cuenta' %}">Crear Cuenta</a>
                 {% else %}
                     <a class="nav-icon text-decoration-none position-relative me-3"

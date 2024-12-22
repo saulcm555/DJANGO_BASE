@@ -13,14 +13,9 @@ from .forms import (
 )
 
 from .models import PerfilUsuario
-from .decoradores import admin_required
 from utilidades import ValidadorUsuario
 
 
-@admin_required
-def usuarios(request):
-    perfiles = PerfilUsuario.objects.all()
-    return render(request, "usuarios/usuarios.html", {"perfiles": perfiles})
 
 
 def crear_cuenta(request):
@@ -59,8 +54,7 @@ def iniciar_sesion(request):
 
 @login_required
 def cerrar_sesion(request):
-    # if request.method == "POST":
-    if request.method == "GET":  # Cambiar cuando este listo
+    if request.method == "GET":
         logout(request)
         return redirect("usuarios:iniciar_sesion")
 
@@ -97,23 +91,5 @@ def perfil(request):
         formulario = CompletarPerfilFormulario(instance=perfil)
     
     return render(request, "usuarios/perfil.html", {"usuario": perfil, "form": formulario})
-
-
-@login_required
-def completar_perfil(request):
-    usuario = request.user
-    if ValidadorUsuario.validar_perfil_completo(usuario):
-        return redirect("usuarios:perfil")
-    if not ValidadorUsuario.validar_correo_verificado(usuario):
-        return redirect("usuarios:validar_correo")
-    perfil = PerfilUsuario.objects.get(usuario=usuario)
-    if request.method == "POST":
-        form = CompletarPerfilFormulario(request.POST, instance=perfil)
-        if form.is_valid():
-            form.save()
-            return redirect("usuarios:perfil")
-    else:
-        form = CompletarPerfilFormulario(instance=perfil)
-    return render(request, "usuarios/completar_perfil.html", {"form": form})
 
 
