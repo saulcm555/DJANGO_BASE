@@ -5,36 +5,5 @@
         {% include "core/components/utils/title.html" with titulo="Detalle del servicio #" texto=servicio.id %}
     </div>
     {% include "servicios/components/detalle.html" with item=servicio fotos=fotos promedio_range=promedio_range promedio_calificaciones=promedio_calificaciones tipo="servicio" %}
-    <div class="container mt-5">
-        {% if request.user.is_authenticated %}
-            <div class="mt-5">
-                <h4>Añadir una calificación:</h4>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <button type="submit" class="btn btn-success">Enviar Calificación</button>
-                </form>
-            </div>
-        {% else %}
-            <p>
-                Por favor, <a href="{% url 'usuarios:iniciar_sesion' %}">inicia sesión</a> para dejar una calificación.
-            </p>
-        {% endif %}
-        <h2>Calificaciones para {{ servicio.nombre }}</h2>
-        {% if calificaciones %}
-            <div class="mt-4">
-                <h4>Calificaciones anteriores:</h4>
-                <ul>
-                    {% for calificacion in calificaciones %}
-                        <li>
-                            <strong>{{ calificacion.usuario.username }}</strong>:
-                            {{ calificacion.calificacion }} estrellas
-                            <p>{{ calificacion.comentario }}</p>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% else %}
-            <p>No hay calificaciones para este servicio .</p>
-        {% endif %}
+    {% include 'core/components/utils/comentarios.html' with evento=servicio calificaciones=calificaciones %}
     {% endblock content %}

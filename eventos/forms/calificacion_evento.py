@@ -9,7 +9,7 @@ class CalificacionEventoFormulario(forms.ModelForm):
         model = CalificacionEvento
         fields = ['calificacion', 'comentario']
         widgets = {
-            'comentario': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
+            'comentario': forms.Textarea(attrs={'rows': 4, 'cols': 40, 'class': 'col-md-12'}),
         }
         
 

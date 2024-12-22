@@ -2,7 +2,6 @@ from usuarios.models import PerfilUsuario
 
 
 class ValidadorUsuario:
-
     @classmethod
     def validar_correo_verificado(cls,user):
         if user:
