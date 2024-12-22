@@ -4,8 +4,8 @@ from utilidades.enviar_email import EmailEnviador
 
 
 class AlquilerFormulario(forms.ModelForm):
-    # cliente = forms.CharField(widget=forms.HiddenInput(), required=False)
-    evento = forms.CharField(max_length=100, required=True)
+    cliente = forms.CharField(widget=forms.HiddenInput(), required=False)
+    evento = forms.CharField(widget=forms.HiddenInput(), required=False)
     fecha_alquiler = forms.DateField(
         label="Fecha de alquiler",
         widget=forms.DateInput(attrs={"class": "form-control"}),
@@ -32,17 +32,6 @@ class AlquilerFormulario(forms.ModelForm):
         widget=forms.NumberInput(attrs={"class": "form-control"}),
         required=True,
     )
-    calificacion_dueno = forms.IntegerField(
-        label="Calificación del dueño",
-        widget=forms.NumberInput(attrs={"class": "form-control"}),
-        required=True,
-    )
-
-    calificacion_cliente = forms.IntegerField(
-        label="Calificación del cliente",
-        widget=forms.NumberInput(attrs={"class": "form-control"}),
-        required=True,
-    )
     observacion = forms.CharField(
         label="Observación",
         widget=forms.Textarea(attrs={"class": "form-control", "rows": 3}),
@@ -58,12 +47,7 @@ class AlquilerFormulario(forms.ModelForm):
         widget=forms.Textarea(attrs={"class": "form-control", "rows": 3}),
         required=False,
     )
-    estado_de_alquiler = forms.ChoiceField(
-        label="Estado de alquiler",
-        widget=forms.Select(attrs={"class": "form-control"}),
-        choices=Alquiler.ESTADO_ALQUILER_CHOICES,
-        required=True,
-    )
+
 
     class Meta:
         model = Alquiler
@@ -75,11 +59,8 @@ class AlquilerFormulario(forms.ModelForm):
             "horafin_planificada_reserva",
             "horafin_real_reserva",
             "costo_alquiler",
-            "calificacion_dueno",
-            "calificacion_cliente",
             "observacion",
             "cantidad_anticipo",
             "promociones",
-            "estado_de_alquiler",
         ]
         

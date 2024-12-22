@@ -52,8 +52,17 @@ class PerfilUsuario(models.Model):
     correo_electronico_verificado = models.BooleanField(
         default=False, verbose_name="Correo Electrónico Verificado"
     )
-    datos_completos = models.BooleanField(default=False, verbose_name="Datos Completos")
-
+    @property
+    def datos_completos(self):
+        campos_requeridos = [
+            self.nombres,
+            self.apellidos,
+            self.nacionalidad,
+            self.telefono,
+            self.fecha_nacimiento,
+            self.correo_electronico,
+        ]
+        return all(campos_requeridos) and self.correo_electronico_verificado
     def __str__(self):
         return self.usuario.username
 
