@@ -34,9 +34,14 @@
   <section class=" py-5 container">
     {% include 'core/components/utils/title.html' with titulo="Categorias" texto=" de Eventos" %}
     <div class="row">
-      <div class="" style="display: flex; flex-wrap: wrap; gap: 2em; justify-content: center; align-items: center">
+      <div class=""
+           style="display: flex;
+                  flex-wrap: wrap;
+                  gap: 2em;
+                  justify-content: center;
+                  align-items: center">
         {% for tipo_evento in tipo_eventos %}
-          {% include 'core/components/utils/cardCategory.html' with nombre=tipo_evento.nombre_evento descripcion=tipo_evento.descripcion imagen_url=tipo_evento.imagen.url %}
+          {% include 'core/components/utils/cardCategory.html' with nombre=tipo_evento.nombre_evento descripcion=tipo_evento.descripcion imagen_url=tipo_evento.imagen.url link_url="eventos:categorias" %}
         {% endfor %}
       </div>
     </div>
