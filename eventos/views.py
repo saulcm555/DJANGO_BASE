@@ -53,8 +53,10 @@ def tipos_eventos(request):
 def tipo_evento(request, id):
     tipo_evento = TipoEvento.objects.filter(id=id).first()
     if not tipo_evento:
-        return HttpResponseNotFound("Tipo de evento no encontrado")
-    eventos = tipo_evento.eventos.all()[:5]
+        messages.warning(request, "Tipo de evento no encontrado")
+        return redirect("eventos:tipos_eventos")
+
+    eventos = Evento.objects.filter(tipo_evento=tipo_evento)
 
     return render(
         request,
@@ -68,7 +70,7 @@ def evento_detalle(request, id):
     if not evento:
         messages.warning(request, "Evento no encontrado")
         return redirect("eventos:eventos")
-    
+
     calificaciones = evento.calificacion_evento.all()
     promedio_calificaciones = 0
     if calificaciones:
@@ -90,8 +92,8 @@ def evento_detalle(request, id):
     else:
         formulario = CalificacionEventoFormulario(
             initial={
-                'evento': evento.id,
-                'usuario': request.user.id if request.user.is_authenticated else None,
+                "evento": evento.id,
+                "usuario": request.user.id if request.user.is_authenticated else None,
             }
         )
 
@@ -103,7 +105,7 @@ def evento_detalle(request, id):
         {
             "evento": evento,
             "promedio_range": range(0, int(promedio_calificaciones)),
-            "promedio_calificaciones": round(promedio_calificaciones,1  ),
+            "promedio_calificaciones": round(promedio_calificaciones, 1),
             "fotos": fotos,
             "calificaciones": calificaciones,
             "form": formulario,

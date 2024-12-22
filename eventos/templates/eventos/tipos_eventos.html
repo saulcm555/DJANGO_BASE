@@ -9,7 +9,7 @@
                         gap: 2em;
                         justify-content: center;
                         align-items: center">
-                {% for tipo_evento_item in tipos_tipo_eventos %}
+                {% for tipo_evento_item in tipos_eventos %}
                     {% include 'core/components/utils/card.html' with nombre=tipo_evento_item.tipo_evento.nombre descripcion=tipo_evento_item.tipo_evento.descripcion  imagen_url=tipo_evento_item.imagen.url id_item=tipo_evento_item.tipo_evento.id link_url='eventos:categoria-evento' %}
                 {% endfor %}
             </div>

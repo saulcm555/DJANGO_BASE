@@ -29,8 +29,22 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="{% url 'core:home' %}">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="{% url 'eventos:eventos' %}">Eventos</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link text-dark dropdown-toggle"
+                       href="#"
+                       id="userDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">Eventos</a>
+                    <ul class="dropdown-menu dropdown-menu-end"
+                        aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'eventos:eventos' %}">Ver Eventos</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'eventos:categorias' %}">Ver categorias de evento</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="{% url 'servicios:servicios' %}">Servicios</a>
@@ -38,60 +52,60 @@
                 {% if not request.user.is_anonymous %}
                     <li class="nav-item">
                         <a class="nav-link text-dark" href="{% url 'alquileres:alquileres' %}">
-                        {% if request.user.is_superuser %}
-                            Reservas de eventos
-                        {% else %}
-                            Mis Reservas
-                        {% endif %}
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-        <!-- Icons Section -->
-        <div class="d-flex align-items-center">
-            {% comment %} <a class="nav-icon text-decoration-none d-lg-inline me-3" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
+                            {% if request.user.is_superuser %}
+                                Reservas de eventos
+                            {% else %}
+                                Mis Reservas
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+            <!-- Icons Section -->
+            <div class="d-flex align-items-center">
+                {% comment %} <a class="nav-icon text-decoration-none d-lg-inline me-3" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
                     <i class="fa fa-fw fa-search text-dark"></i>
-            </a> {% endcomment %}
-            {% if request.user.is_anonymous %}
-                <a class="btn btn-outline me-3"
-                   href="{% url 'usuarios:iniciar_sesion' %}">Iniciar Sesión</a>
-                <a class="btn btn-success text-white me-3"
-                   href="{% url 'usuarios:crear_cuenta' %}">Crear Cuenta</a>
-            {% else %}
-                <div class="dropdown">
-                    <a class="nav-icon text-decoration-none position-relative me-3 dropdown-toggle"
-                       href="#"
-                       id="userDropdown"
-                       role="button"
-                       data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        Perfil
-                        <i class="fa fa-fw fa-user text-dark"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end"
-                        aria-labelledby="userDropdown">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'usuarios:perfil' %}">
-                                Ver Perfil <i class="fa fa-fw fa-user text-dark"></i>
-                            </a>
-                        </li>
-                        {% if request.user.is_superuser %}
+                </a> {% endcomment %}
+                {% if request.user.is_anonymous %}
+                    <a class="btn btn-outline me-3"
+                       href="{% url 'usuarios:iniciar_sesion' %}">Iniciar Sesión</a>
+                    <a class="btn btn-success text-white me-3"
+                       href="{% url 'usuarios:crear_cuenta' %}">Crear Cuenta</a>
+                {% else %}
+                    <div class="dropdown">
+                        <a class="nav-icon text-decoration-none position-relative me-3 dropdown-toggle"
+                           href="#"
+                           id="userDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Perfil
+                            <i class="fa fa-fw fa-user text-dark"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="userDropdown">
                             <li>
-                                <a class="dropdown-item" href="{% url 'admin:index' %}">
-                                    Panel de Control <i class="fa fa-fw fa-cogs text-dark"></i>
+                                <a class="dropdown-item" href="{% url 'usuarios:perfil' %}">
+                                    Ver Perfil <i class="fa fa-fw fa-user text-dark"></i>
                                 </a>
                             </li>
-                        {% endif %}
-                        <li>
-                            <a class="dropdown-item" href="{% url 'usuarios:cerrar_sesion' %}">
-                                Cerrar Sesión
-                                <i class="fa fa-fw fa-sign-out-alt text-dark"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            {% endif %}
+                            {% if request.user.is_superuser %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'admin:index' %}">
+                                        Panel de Control <i class="fa fa-fw fa-cogs text-dark"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'usuarios:cerrar_sesion' %}">
+                                    Cerrar Sesión
+                                    <i class="fa fa-fw fa-sign-out-alt text-dark"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
 </nav>
