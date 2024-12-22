@@ -73,29 +73,35 @@ class Alquiler(models.Model):
         max_length=10, blank=True, default="", verbose_name="Código de Confirmación"
     )
 
+    costo_alquiler = models.FloatField(default=0.0, verbose_name="Costo de Alquiler")
+
+    correo_electronico_verificado = models.BooleanField(
+        default=False, verbose_name="Correo Electrónico Verificado"
+    )
+
     def generar_codigo_confirmacion(self):
         if self.codigo_confirmacion:
             return self.codigo_confirmacion
         self.codigo_confirmacion = get_random_string(length=6)
         self.save()
 
-    @property
-    def costo_alquiler(self):
-        costo = self.evento.valor_referencial
-        for servicio_reserva in self.servicios_reserva.all():
-            costo += servicio_reserva.valor_unidad * servicio_reserva.cantidad
-        return costo
+    
+    # @property
+    # def costo_alquiler(self):
+    #     costo = self.evento.valor_referencial
+    #     for servicio_reserva in self.servicios_reserva.all():
+    #         costo += servicio_reserva.valor_unidad * servicio_reserva.cantidad
+    #     return costo
 
     def clean(self):
-        
-        if self.hora_inicio_alquiler >= self.hora_fin_planificada_alquiler:
-            raise ValidationError(
-                "La hora de inicio de la reserva debe ser menor a la hora de fin planificada de la reserva"
-            )
+        # Verifica que ambos campos no sean None
         if not self.hora_inicio_alquiler or not self.hora_fin_planificada_alquiler:
             raise ValidationError(
                 "La hora de inicio y la hora de fin planificada son obligatorias"
             )
-    
-    def __str__(self):
-        return f"Alquiler para {self.evento.nombre} el {self.fecha_alquiler}"
+
+    # Si ambas horas son válidas, compara la hora de inicio con la hora de fin planificada
+        if self.hora_inicio_alquiler >= self.hora_fin_planificada_alquiler:
+            raise ValidationError(
+                "La hora de inicio de la reserva debe ser menor a la hora de fin planificada de la reserva"
+            )

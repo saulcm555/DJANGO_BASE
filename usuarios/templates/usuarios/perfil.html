@@ -109,7 +109,8 @@
     </div>
     <script>
     function enviarCorreoValidacion() {
-        fetch("http://127.0.0.1:8000/usuarios/validar-correo-helper/")
+        const url = "{% url 'usuarios:reenvio_correo_validacion' %}";  // URL de la vista para validar el correo
+        fetch(url)
             .then(response => response.json())
             .then(data => {
             })

@@ -47,14 +47,9 @@ class AlquilerFormulario(forms.ModelForm):
         # Validación de hora de inicio y hora de fin
         if hora_inicio_alquiler and hora_fin_planificada_alquiler:
             if hora_inicio_alquiler >= hora_fin_planificada_alquiler:
-                raise forms.ValidationError(
+                self.add_error(
+                    None,  # Mensaje no asociado a un campo específico
                     "La hora de inicio de la reserva debe ser menor a la hora de fin planificada de la reserva"
                 )
-
-        # Validación adicional para verificar si ambas horas existen
-        if not hora_inicio_alquiler or not hora_fin_planificada_alquiler:
-            raise forms.ValidationError(
-                "La hora de inicio y la hora de fin planificada son obligatorias"
-            )
         
         return cleaned_data

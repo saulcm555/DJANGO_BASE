@@ -2,8 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponseForbidden
 from django.db.models import Q
+from django.http import JsonResponse
 
 from utilidades import ValidadorUsuario
+from utilidades.ValidadorAlquiler import ValidadorAlquiler
+from utilidades.enviar_email import EmailEnviador, enviar_codigo_confirmacion
 from eventos.models import Evento
 from .models import Alquiler
 from .forms import (
@@ -52,6 +55,7 @@ def nuevo_alquiler(request, item_id):
             "Debes verificar tu correo y completar tus datos antes de poder alquilar un espacio",
         )
         return redirect("usuarios:perfil")
+
     evento = Evento.objects.filter(id=item_id).first()
     if not evento:
         messages.warning(request, "Evento no encontrado")
@@ -64,16 +68,15 @@ def nuevo_alquiler(request, item_id):
             alquiler.cliente = request.user
             alquiler.evento = evento
 
+            alquiler.costo_alquiler = evento.valor_referencial
+            
             alquiler.save()
-            messages.success(request, "Alquiler creado correctamente")
-            messages.info(request, "Por favor, confirma tu reserva con el codigo que te hemos enviado a tu correo")
+            enviar_codigo_confirmacion(alquiler)
             return redirect("alquileres:alquiler_detalle", id=alquiler.id)
-        print(formulario.errors)
-        messages.warning(
-            request,
-            f"Error al crear el alquiler"
-        )
-    formulario = AlquilerFormulario()
+        messages.warning(request, "Error al crear el alquiler")
+    else:
+        formulario = AlquilerFormulario()
+
     return render(request, "alquileres/nuevo_alquiler.html", {"form": formulario})
 
 
@@ -85,11 +88,11 @@ def alquiler_detalle(request, id):
 
     if request.method == "GET":
         fotos = alquiler.fotos.all()
-
+        formulario = ConfirmarAlquilerFormulario(alquiler=alquiler)  # Usa 'instance' aquí
         return render(
             request,
             "alquileres/detalle_alquiler.html",
-            {"alquiler": alquiler, "fotos": fotos},
+            {"alquiler": alquiler, "fotos": fotos, "formulario": formulario},
         )
 
 
@@ -169,24 +172,32 @@ def servicios_alquiler(request, id):
     )
 
 
-def confirmar_alquiler(request, id):
+def enviar_correo_alquiler(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
         messages.warning(request, "Alquiler no encontrado")
         return redirect("alquileres:alquileres")
+    enviar_correo_alquiler = enviar_codigo_confirmacion(alquiler)
+    return JsonResponse({"success": True, "message": "Correo enviado correctamente."})
+
+
+
+def confirmar_alquiler(request, id):
+    alquiler = Alquiler.objects.filter(id=id).first()
+
+    if not alquiler:
+        return JsonResponse({"success": False, "message": "Alquiler no encontrado."})
+
     if request.method == "POST":
         formulario = ConfirmarAlquilerFormulario(request.POST, alquiler=alquiler)
+
         if formulario.is_valid():
             formulario.save()
-            return redirect("alquileres:alquileres")
+            return JsonResponse({"success": True, "message": "Alquiler confirmado correctamente."})
+        else:
+            return JsonResponse({"success": False, "errors": formulario.errors})
+
     else:
         formulario = ConfirmarAlquilerFormulario(alquiler=alquiler)
 
-    return render(
-        request,
-        "alquileres/confirmar_alquiler.html",
-        {
-            "alquiler": alquiler,
-            "form": formulario,
-        },
-    )
+    return render(request, 'confirmar_alquiler.html', {'formulario': formulario, 'alquiler': alquiler})

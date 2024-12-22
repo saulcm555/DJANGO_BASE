@@ -2,44 +2,50 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-    <section class="py-5">
-        <div class="d-flex justify-content-center align-items-center custom-min-height">
-            <div class="card p-4 shadow-sm custom-card">
-                <h2 class="text-center mb-4">Crear Reserva</h2>
-                <form method="post" class="form-group">
-                    {% csrf_token %}
-                    <div class="row">
-                        <!-- Mostrar mensajes globales (si existen) -->
-                        {% if messages %}
-                            <div>
-                                {% for message in messages %}
-                                    <div class="alert alert-{{ message.tags }} mt-3" role="alert">{{ message }}</div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
+<section class="py-5">
+    <div class="d-flex justify-content-center align-items-center custom-min-height">
+        <div class="card p-4 shadow-sm custom-card">
+            <h2 class="text-center mb-4">Crear Reserva</h2>
+            <form method="post" class="form-group">
+                {% csrf_token %}
+
+                <!-- Mostrar mensajes globales -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} mt-3" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Mostrar errores no relacionados a campos -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger mt-3" role="alert">
                         {% for error in form.non_field_errors %}
-                            <div class="col-12">
-                                <div class="alert alert-danger mt-3" role="alert">{{ error }}</div>
-                            </div>
-                        {% endfor %}
-                        {% for field in form %}
-                            <div class="col-md-6 mb-3">
-                                {{ field|as_crispy_field }}
-                                {% if field.errors %}
-                                    <div class="alert alert-danger mt-2" role="alert">
-                                        {% for error in field.errors %}<p>{{ error }}</p>{% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            {% if forloop.counter|divisibleby:2 %}
-                            </div>
-                            <div class="row">
-                            {% endif %}
+                            <p>{{ error }}</p>
                         {% endfor %}
                     </div>
-                    <button type="submit" class="btn btn-success w-100 mt-3">Crear reserva</button>
-                </form>
-            </div>
+                {% endif %}
+
+                <!-- Mostrar campos del formulario -->
+                <div class="row">
+                    {% for field in form %}
+                        <div class="col-md-6 mb-3">
+                            {{ field|as_crispy_field }}
+                            {% if field.errors %}
+                                <div class="alert alert-danger mt-2" role="alert">
+                                    {% for error in field.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 mt-3">Crear reserva</button>
+            </form>
         </div>
-    </section>
+    </div>
+</section>
 {% endblock %}

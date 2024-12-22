@@ -18,4 +18,6 @@ urlpatterns = [
         name="eventualidades_alquiler",
     ),
     path("<int:id>/servicios/", views.servicios_alquiler, name="servicios_alquiler"),
+    path("confirmar/<int:id>", views.confirmar_alquiler, name="confirmar_alquiler"),
+    path("enviar-correo/<int:id>", views.enviar_correo_alquiler, name="enviar_correo_alquiler"),
 ]

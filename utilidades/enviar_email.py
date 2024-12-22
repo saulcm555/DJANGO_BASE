@@ -46,4 +46,4 @@ def enviar_codigo_confirmacion(alquiler:Alquiler):
     """
     destinatarios = [alquiler.cliente.email] 
 
-    EmailEnviador.send_email(asunto, mensaje, destinatarios)
+    EmailEnviador.enviar_email(asunto, mensaje, destinatarios)
