@@ -1,8 +1,9 @@
 {% extends 'eventos/layout/base.html' %}
 {% load static %}
 {% block content %}
-    <section class=" py-5">
-        <div class="container " style="width: 100%;">
+<section class=" py-5">
+    <div class="container " style="width: 100%;">
+            {% include 'core/components/utils/title.html' with titulo="Todos los" texto="Eventos" %}
             <div class=""
                  style="display: flex;
                         flex-wrap: wrap;
