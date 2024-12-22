@@ -1,64 +1,57 @@
 from django import forms
 from ..models import Alquiler
-from utilidades.enviar_email import EmailEnviador
-
 
 class AlquilerFormulario(forms.ModelForm):
     fecha_alquiler = forms.DateField(
         label="Fecha de alquiler",
-        widget=forms.DateInput(attrs={"class": "form-control"}),
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
         required=True,
     )
 
-    horainicio_reserva = forms.TimeField(
+    hora_inicio_alquiler = forms.TimeField(
         label="Hora de inicio de la reserva",
-        widget=forms.TimeInput(attrs={"class": "form-control"}),
+        widget=forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
         required=True,
     )
-    horafin_planificada_reserva = forms.TimeField(
+    hora_fin_planificada_alquiler = forms.TimeField(
         label="Hora de fin planificada de la reserva",
-        widget=forms.TimeInput(attrs={"class": "form-control"}),
+        widget=forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
         required=True,
     )
-    horafin_real_reserva = forms.TimeField(
-        label="Hora de fin real de la reserva",
-        widget=forms.TimeInput(attrs={"class": "form-control"}),
-        required=True,
-    )
-    costo_alquiler = forms.DecimalField(
-        label="Costo de alquiler",
-        widget=forms.NumberInput(attrs={"class": "form-control"}),
-        required=True,
-    )
-    observacion = forms.CharField(
-        label="Observación",
-        widget=forms.Textarea(attrs={"class": "form-control", "rows": 3}),
-        required=False,
-    )
+
     cantidad_anticipo = forms.DecimalField(
         label="Cantidad de anticipo",
         widget=forms.NumberInput(attrs={"class": "form-control"}),
-        required=True,
-    )
-    promociones = forms.CharField(
-        label="Promociones",
-        widget=forms.Textarea(attrs={"class": "form-control", "rows": 3}),
         required=False,
     )
-
 
     class Meta:
         model = Alquiler
         fields = [
-            "cliente",
-            "evento",
             "fecha_alquiler",
-            "horainicio_reserva",
-            "horafin_planificada_reserva",
-            "horafin_real_reserva",
-            "costo_alquiler",
-            "observacion",
+            "hora_inicio_alquiler",
+            "hora_fin_planificada_alquiler",
             "cantidad_anticipo",
             "promociones",
         ]
+
+    def clean(self):
+        cleaned_data = super().clean()
         
+        hora_inicio_alquiler = cleaned_data.get("hora_inicio_alquiler")
+        hora_fin_planificada_alquiler = cleaned_data.get("hora_fin_planificada_alquiler")
+        
+        # Validación de hora de inicio y hora de fin
+        if hora_inicio_alquiler and hora_fin_planificada_alquiler:
+            if hora_inicio_alquiler >= hora_fin_planificada_alquiler:
+                raise forms.ValidationError(
+                    "La hora de inicio de la reserva debe ser menor a la hora de fin planificada de la reserva"
+                )
+
+        # Validación adicional para verificar si ambas horas existen
+        if not hora_inicio_alquiler or not hora_fin_planificada_alquiler:
+            raise forms.ValidationError(
+                "La hora de inicio y la hora de fin planificada son obligatorias"
+            )
+        
+        return cleaned_data

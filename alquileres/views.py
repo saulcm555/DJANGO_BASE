@@ -63,12 +63,15 @@ def nuevo_alquiler(request, item_id):
             alquiler = formulario.save(commit=False)
             alquiler.cliente = request.user
             alquiler.evento = evento
-            
+
             alquiler.save()
             messages.success(request, "Alquiler creado correctamente")
             return redirect("alquileres:alquileres")
-    else:
-        formulario = AlquilerFormulario()
+        messages.warning(
+            request,
+            f"Error al crear el alquiler"
+        )
+    formulario = AlquilerFormulario()
     return render(request, "alquileres/nuevo_alquiler.html", {"form": formulario})
 
 
