@@ -1,11 +1,14 @@
 {% extends "servicios/layout/base.html" %}
 {% load static %}
 {% block content %}
+{% load crispy_forms_tags %}
 
-<form method="post">
+
+<h2>Iniciar sesion</h2>
+<form method="post" class="form-sign-in">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Iniciar sesion</button>
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Iniciar sesion</button>
 </form>
 
 

@@ -28,6 +28,8 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 INSTALLED_APPS = [
     "jazzmin",
+    "crispy_forms",
+    "crispy_bootstrap5",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     "core.apps.CoreConfig",
 ]
 
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 JAZZMIN_SETTINGS = {
     "site_title": "Tinocoloco Admin",
@@ -156,7 +159,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
-    BASE_DIR / "static",  # Asumiendo que tienes una carpeta "static" en tu directorio base
+    BASE_DIR
+    / "static",  # Asumiendo que tienes una carpeta "static" en tu directorio base
 ]
 
 # Directorio donde se almacenarán los archivos estáticos recopilados por 'collectstatic'
