@@ -1,5 +1,4 @@
-{% extends "servicios/layout/base.html" %}
-{% load static %}
+{% extends "usuarios/layout/base.html" %}
 {% block content %}
 {% load crispy_forms_tags %}
 
@@ -10,6 +9,5 @@
     {{ form|crispy }}
     <button type="submit" class="btn btn-primary">Iniciar sesion</button>
 </form>
-
-
+<p> ¿No tienes una cuenta? <a href="{% url 'usuarios:crear_cuenta' %}">Crear cuenta</a></p>
 {% endblock %}

@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 {% include 'core/components/layout/head.html' %}
+
 <body>
 
     {% include 'core/components/layout/nav.html' %}
@@ -9,15 +10,18 @@
 
     {% include 'core/components/layout/modal.html' %}
 
-    {% block content %}
+    <div class="" style="height: 50vh;">
+        {% block content %}
 
 
-    {% endblock %}
+        {% endblock %}
+    </div>
 
     {% include 'core/components/layout/footer.html' %}
 
     <!-- Start Script -->
 
-    
+
 </body>
+
 </html>
