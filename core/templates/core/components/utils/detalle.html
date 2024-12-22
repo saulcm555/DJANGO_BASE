@@ -47,14 +47,12 @@
 
                                 </ul>
 
-                                <form action="" method="GET">
-                                    <div class="row pb-3">
-                                        <div class="col d-grid">
-                                            <button type="submit" class="btn btn-success btn-lg" name="submit"
-                                                value="buy">Alquilar</button>
-                                        </div>
+                                <div class="row pb-3">
+                                    <div class="col d-grid">
+                                        <a type="submit"  href="{% url 'alquileres:nuevo_alquiler' %}?id={{item.id}}&tipo={{tipo}}" class="btn btn-success btn-lg" name="submit"
+                                            value="buy">Alquilar</a>
                                     </div>
-                                </form>
+                                </div>
 
                             </div>
                         </div>
