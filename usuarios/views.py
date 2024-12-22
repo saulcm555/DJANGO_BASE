@@ -56,22 +56,6 @@ def cerrar_sesion(request):
         return redirect("usuarios:iniciar_sesion")
 
 
-@login_required
-def validar_correo(request):
-    usuario = request.user
-    if ValidadorUsuario.validar_correo_verificado(usuario):
-        return redirect("usuarios:perfil")
-    if request.method == "POST":
-
-        form = ValidarCorreoFormulario(data=request.POST)
-        form.user = usuario
-        if form.is_valid():
-            form.save()
-            return redirect("usuarios:perfil")
-    else:
-        form = ValidarCorreoFormulario()
-
-    return render(request, "usuarios/validar_correo.html", {"form": form})
 
 
 @login_required
@@ -102,6 +86,7 @@ def perfil(request):
 
 @login_required
 def reenvio_correo_validacion(request):
+
     perfil_usuario = PerfilUsuario.objects.get(usuario=request.user)
 
     perfil_usuario.generar_codigo_verificacion()
@@ -112,3 +97,24 @@ def reenvio_correo_validacion(request):
     return JsonResponse(
         {"success": True, "message": "Correo de validación enviado nuevamente."}
     )
+
+@login_required
+def validar_correo(request):
+    usuario = request.user
+    if ValidadorUsuario.validar_correo_verificado(usuario):
+        messages.info(request, "Correo ya verificado")
+        return redirect("usuarios:perfil")
+    
+    if request.method == "POST":
+
+        form = ValidarCorreoFormulario(data=request.POST)
+        form.user = usuario
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Correo verificado correctamente")
+            return redirect("usuarios:perfil")
+        messages.error(request, "Código de verificación incorrecto")
+    else:
+        form = ValidarCorreoFormulario()
+
+    return render(request, "usuarios/validar_correo.html", {"form": form})

@@ -14,6 +14,4 @@ def eventos_mas_gustados_context(request):
         promedio_calificacion=Avg("calificacion_evento__calificacion")
     ).order_by("-promedio_calificacion")[:5]
     
-    print("eventos_mas_gustados", eventos_mas_gustados)
-
     return {"eventos_mas_gustados": eventos_mas_gustados}
