@@ -1,18 +1,22 @@
 {% extends 'eventos/layout/base.html' %}
 {% load static %}
 {% block content %}
-    <section class=" py-5">
-        <div class="container " style="width: 100%;">
-            <div class=""
-                 style="display: flex;
+<section class=" py-5">
+    <div class="container " style="width: 100%;">
+        {% include 'core/components/utils/title.html' with titulo="Todos los Eventos de" texto=tipo_evento.nombre_evento %}
+        <div class="" style="display: flex;
                         flex-wrap: wrap;
                         gap: 2em;
                         justify-content: center;
                         align-items: center">
-                {% for tipo_evento_item in tipos_tipo_eventos %}
-                    {% include 'core/components/utils/card.html' with nombre=tipo_evento_item.tipo_evento.nombre descripcion=tipo_evento_item.tipo_evento.descripcion  imagen_url=tipo_evento_item.imagen.url id_item=tipo_evento_item.tipo_evento.id link_url='eventos:categoria-evento' %}
-                {% endfor %}
-            </div>
+            {% if eventos %}
+            {% for evento in eventos %}
+            {% include 'core/components/utils/card.html' with nombre=evento.nombre descripcion=evento.descripcion imagen_url=evento.imagen.url id_item=evento.id link_url='eventos:evento_detalle' %}
+            {% endfor %}
+            {% else %}
+            <p class="text-center text-muted">No hay eventos disponibles en este momento.</p>
+            {% endif %}
         </div>
-    </section>
+    </div>
+</section>
 {% endblock %}

@@ -87,11 +87,14 @@
     }
 </style>
 
-<div class="card bg-dark">
+<a class="card bg-dark" href="{% url link_url id_item %}">
     <div class="icon">
-        <img width="50" height="50" src="{% if imagen_url %} {{ imagen_url }} {% else %} {% static 'img/404.jpg' %} {% endif %}" href="{% url link_url id_item %}"
-            alt="Card image cap">
+
+
+            <img width="50" height="50"
+                src="{% if imagen_url %} {{ imagen_url }} {% else %} {% static 'img/404.jpg' %} {% endif %}"
+                 alt="Card image cap">
     </div>
     <p class="title">{{ nombre }}</p>
     <p class="text">{{ descripcion }}</p>
-</div>
+</a>

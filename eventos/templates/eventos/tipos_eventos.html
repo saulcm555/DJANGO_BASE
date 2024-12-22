@@ -10,7 +10,7 @@
                         justify-content: center;
                         align-items: center">
                 {% for tipo_evento_item in tipos_eventos %}
-                    {% include 'core/components/utils/card.html' with nombre=tipo_evento_item.tipo_evento.nombre descripcion=tipo_evento_item.tipo_evento.descripcion  imagen_url=tipo_evento_item.imagen.url id_item=tipo_evento_item.tipo_evento.id link_url='eventos:categoria-evento' %}
+                    {% include 'core/components/utils/cardCategory.html' with nombre=tipo_evento_item.nombre_evento descripcion=tipo_evento_item.descripcion  imagen_url=tipo_evento_item.imagen.url id_item=tipo_evento_item.id link_url='eventos:categoria-evento' %}
                 {% endfor %}
             </div>
         </div>
