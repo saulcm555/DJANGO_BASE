@@ -10,5 +10,5 @@ urlpatterns = [
     path("validar-correo/", views.validar_correo, name="validar_correo"),
     path("perfil/", views.perfil, name="perfil"),
     path("cerrar-sesion/", views.cerrar_sesion, name="cerrar_sesion"),
-    path("validar-correo-helper/", views.validar_correo_helper, name="validar_correo_helper"),
+    path('validar-correo-helper/', views.reenvio_correo_validacion, name='reenvio_correo_validacion'),
 ]

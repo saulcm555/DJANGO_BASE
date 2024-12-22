@@ -16,8 +16,6 @@ from .models import PerfilUsuario
 from utilidades import ValidadorUsuario
 
 
-
-
 def crear_cuenta(request):
     if request.user.is_authenticated:
         return redirect("usuarios:perfil")
@@ -80,10 +78,10 @@ def validar_correo(request):
 def perfil(request):
     usuario = request.user
     perfil = PerfilUsuario.objects.get(usuario=usuario)
-    
+
     # Inicializa el formulario de validación de correo para ambos métodos
     formulario_validar_correo = ValidarCorreoFormulario()
-    
+
     if request.method == "POST":
         formulario = CompletarPerfilFormulario(request.POST, instance=perfil)
         if formulario.is_valid():
@@ -91,5 +89,27 @@ def perfil(request):
             messages.success(request, "Perfil actualizado correctamente")
     else:
         formulario = CompletarPerfilFormulario(instance=perfil)
-    
-    return render(request, "usuarios/perfil.html", {"usuario": perfil, "form": formulario})
+
+    return render(
+        request,
+        "usuarios/perfil.html",
+        {
+            "usuario": perfil,
+            "form": formulario,
+            "form_validar_correo": formulario_validar_correo,
+        },
+    )
+
+
+@login_required
+def reenvio_correo_validacion(request):
+    perfil_usuario = PerfilUsuario.objects.get(usuario=request.user)
+
+    perfil_usuario.generar_codigo_verificacion()
+    perfil_usuario.save()
+
+    EmailEnviador.enviar_codigo_validar_email(perfil_usuario)
+
+    return JsonResponse(
+        {"success": True, "message": "Correo de validación enviado nuevamente."}
+    )
