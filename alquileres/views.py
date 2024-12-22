@@ -66,7 +66,9 @@ def nuevo_alquiler(request, item_id):
 
             alquiler.save()
             messages.success(request, "Alquiler creado correctamente")
-            return redirect("alquileres:alquileres")
+            messages.info(request, "Por favor, confirma tu reserva con el codigo que te hemos enviado a tu correo")
+            return redirect("alquileres:alquiler_detalle", id=alquiler.id)
+        print(formulario.errors)
         messages.warning(
             request,
             f"Error al crear el alquiler"

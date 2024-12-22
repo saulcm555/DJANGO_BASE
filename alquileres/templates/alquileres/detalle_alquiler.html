@@ -9,6 +9,13 @@
                 {% include 'core/components/utils/carrucel.html' with fotos=fotos %}
             </div>
             <div class="col-lg-7 mt-5">
+              {% if messages %}
+              <div class="alert alert-{messages.tag}" role="alert">
+                {% for message in messages %}
+                  <p>{{ message }}</p>
+                {% endfor %}
+              </div>
+              {% endif %}
                 <table class="table table-borderless" style="width: 100%;">
                     <thead>
                         <tr>
