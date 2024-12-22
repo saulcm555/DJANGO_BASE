@@ -1,9 +1,10 @@
 {% extends "usuarios/layout/base.html" %}
 {% block content %}
-<form method="post">
+{% load crispy_forms_tags %}
+<form method="post" class="center-block">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Crear cuenta</button>
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Crear cuenta</button>
 </form>
 <p> ¿Ya tienes una cuenta? <a href="{% url 'usuarios:iniciar_sesion' %}">Iniciar sesion</a></p>
 {% endblock %}

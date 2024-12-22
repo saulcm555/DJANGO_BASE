@@ -6,7 +6,7 @@
     <title>{{configuracion_negocio.nombre}}</title>
 
     <link rel="apple-touch-icon" href="{% static 'img/favicon.ico' %}">
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% if configuracion_negocio.logo.url %} {{ configuracion_negocio.logo.url }} {% else %} {% static 'img/favicon.ico' %} {% endif %}">
 
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/templatemo.css' %}">
