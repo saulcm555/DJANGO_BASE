@@ -79,7 +79,6 @@ def perfil(request):
     usuario = request.user
     perfil = PerfilUsuario.objects.get(usuario=usuario)
 
-    # Inicializa el formulario de validación de correo para ambos métodos
     formulario_validar_correo = ValidarCorreoFormulario()
 
     if request.method == "POST":
