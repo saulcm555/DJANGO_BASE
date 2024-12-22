@@ -1,125 +1,137 @@
 {% extends "alquileres/layout/base.html" %}
 {% block content %}
-{% load crispy_forms_tags %}
-
-<section class=" py-5">
-  <div class="container">
-    <div class="row" style="display: flex; justify-content: center; align-items: start; gap: 2em; position: relative;">
-
-      <div class="" style="flex: auto; max-width: 500px; position: sticky; top: 2em; z-index: 10;">
-        {% include 'core/components/utils/carrucel.html' with fotos=fotos %}
-      </div>
-      <div class="col-lg-7 mt-5">
-
-        {% if alquiler.correo_electronico_verificado %}
-        <div class="alert alert-success" role="alert">
-          <p>Alquiler confirmado</p>
-        </div>
-        {% else %}
-        <span class="text-danger">
-          <i class="fas fa-times-circle"></i> Alquiler no confirmado
-          <br>
-          Confirmar alquiler. Con el código que te hemos enviado a tu correo.
-          <hr class="my-2">
-          <button type="button" class="btn btn-success" data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop">Verificar Correo</button>
-        </span>
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-          aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Validar correo</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  {% load crispy_forms_tags %}
+  <section class=" py-5">
+    <div class="container">
+      <div class="row"
+           style="display: flex;
+                  justify-content: center;
+                  align-items: start;
+                  gap: 2em;
+                  position: relative">
+        <div class=""
+             style="flex: auto;
+                    max-width: 500px;
+                    position: sticky;
+                    top: 2em;
+                    z-index: 10">{% include 'core/components/utils/carrucel.html' with fotos=fotos %}</div>
+        <div class="col-lg-7 mt-5">
+          {% if  not request.user.is_superuser %}
+            {% if alquiler.correo_electronico_verificado %}
+              <div class="alert alert-success" role="alert">
+                <p>Alquiler confirmado</p>
               </div>
-              <div class="modal-body">
-                {% csrf_token %}
-                {{ formulario|crispy }}
+            {% else %}
+              <div class="alert alert-warning" role="alert">
+                <span class="text-danger">
+                  <i class="fas fa-times-circle"></i> Alquiler no confirmado
+                  <br>
+                  Confirmar alquiler. Con el código que te hemos enviado a tu correo.
+                  <hr class="my-2">
+                  <button type="button"
+                          class="btn btn-success"
+                          data-bs-toggle="modal"
+                          data-bs-target="#staticBackdrop">Verificar Correo</button>
+                </span>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <p class="btn btn-dark" id="renviar">Enviar otra vez</p>
-                <button id="verificar_correo" type="button" class="btn btn-success">Validar</button>
+              <div class="modal fade"
+                   id="staticBackdrop"
+                   data-bs-backdrop="static"
+                   data-bs-keyboard="false"
+                   tabindex="-1"
+                   aria-labelledby="staticBackdropLabel"
+                   aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Validar correo</h1>
+                      <button type="button"
+                              class="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      {% csrf_token %}
+                      {{ formulario|crispy }}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                      <p class="btn btn-dark" id="renviar">Enviar otra vez</p>
+                      <button id="verificar_correo" type="button" class="btn btn-success">Validar</button>
+                    </div>
+                  </div>
+                </div>
               </div>
+            {% endif %}
+          {% endif %}
+          {% if messages %}
+            <div class="alert alert-{messages.tag}" role="alert">
+              {% for message in messages %}<p>{{ message }}</p>{% endfor %}
             </div>
-          </div>
+          {% endif %}
+          <table class="table table-borderless" style="width: 100%;">
+            <thead>
+              <tr>
+                <th scope="col">Campo</th>
+                <th scope="col">Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cliente</td>
+                <td>{{ alquiler.cliente }}</td>
+              </tr>
+              <tr>
+                <td>Evento</td>
+                <td>{{ alquiler.evento }}</td>
+              </tr>
+              <tr>
+                <td>Fecha de Alquiler</td>
+                <td>{{ alquiler.fecha_alquiler }}</td>
+              </tr>
+              <tr>
+                <td>Fecha de Creación</td>
+                <td>{{ alquiler.fecha_creacion }}</td>
+              </tr>
+              <tr>
+                <td>Hora de Inicio de Alquiler</td>
+                <td>{{ alquiler.hora_inicio_alquiler }}</td>
+              </tr>
+              <tr>
+                <td>Hora Fin Planificada de Alquiler</td>
+                <td>{{ alquiler.hora_fin_planificada_alquiler }}</td>
+              </tr>
+              <tr>
+                <td>Hora Fin Real de Alquiler</td>
+                <td>{{ alquiler.hora_fin_real_alquiler }}</td>
+              </tr>
+              <tr>
+                <td>Costo de Alquiler</td>
+                <td>{{ alquiler.costo_alquiler }}</td>
+              </tr>
+              <tr>
+                <td>Calificación del Dueño</td>
+                <td>{{ alquiler.calificacion_dueno }}</td>
+              </tr>
+              <tr>
+                <td>Calificación del Cliente</td>
+                <td>{{ alquiler.calificacion_cliente }}</td>
+              </tr>
+              <tr>
+                <td>Observación</td>
+                <td>{{ alquiler.observacion }}</td>
+              </tr>
+              <tr>
+                <td>Cantidad de Anticipo</td>
+                <td>{{ alquiler.cantidad_anticipo }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        {% endif %}
-
-
-        {% if messages %}
-        <div class="alert alert-{messages.tag}" role="alert">
-          {% for message in messages %}
-          <p>{{ message }}</p>
-          {% endfor %}
-        </div>
-        {% endif %}
-        <table class="table table-borderless" style="width: 100%;">
-          <thead>
-            <tr>
-              <th scope="col">Campo</th>
-              <th scope="col">Descripción</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Cliente</td>
-              <td>{{ alquiler.cliente }}</td>
-            </tr>
-            <tr>
-              <td>Evento</td>
-              <td>{{ alquiler.evento }}
-              </td>
-            </tr>
-            <tr>
-              <td>Fecha de Alquiler</td>
-              <td>{{ alquiler.fecha_alquiler }}</td>
-            </tr>
-            <tr>
-              <td>Fecha de Creación</td>
-              <td>{{ alquiler.fecha_creacion }}</td>
-            </tr>
-            <tr>
-              <td>Hora de Inicio de Alquiler</td>
-              <td>{{ alquiler.hora_inicio_alquiler }}</td>
-            </tr>
-            <tr>
-              <td>Hora Fin Planificada de Alquiler</td>
-              <td>{{ alquiler.hora_fin_planificada_alquiler }}</td>
-            </tr>
-            <tr>
-              <td>Hora Fin Real de Alquiler</td>
-              <td>{{ alquiler.hora_fin_real_alquiler }}</td>
-            </tr>
-            <tr>
-              <td>Costo de Alquiler</td>
-              <td>{{ alquiler.costo_alquiler }}</td>
-            </tr>
-            <tr>
-              <td>Calificación del Dueño</td>
-              <td>{{ alquiler.calificacion_dueno }}</td>
-            </tr>
-            <tr>
-              <td>Calificación del Cliente</td>
-              <td>{{ alquiler.calificacion_cliente }}</td>
-            </tr>
-            <tr>
-              <td>Observación</td>
-              <td>{{ alquiler.observacion }}</td>
-            </tr>
-            <tr>
-              <td>Cantidad de Anticipo</td>
-              <td>{{ alquiler.cantidad_anticipo }}</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
-  </div>
-</section>
-
-
-<script>
+  </section>
+  <script>
   function enviarCorreoValidacion() {
     const url = "{% url 'alquileres:enviar_correo_alquiler' alquiler.id %}";  // URL de la vista para validar el correo
     console.log(url);
@@ -173,5 +185,5 @@
   
   document.getElementById("verificar_correo").addEventListener("click", verificarCorreo);
 
-</script>
+  </script>
 {% endblock %}

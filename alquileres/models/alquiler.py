@@ -73,7 +73,6 @@ class Alquiler(models.Model):
         max_length=10, blank=True, default="", verbose_name="Código de Confirmación"
     )
 
-    costo_alquiler = models.FloatField(default=0.0, verbose_name="Costo de Alquiler")
 
     correo_electronico_verificado = models.BooleanField(
         default=False, verbose_name="Correo Electrónico Verificado"
@@ -86,12 +85,12 @@ class Alquiler(models.Model):
         self.save()
 
     
-    # @property
-    # def costo_alquiler(self):
-    #     costo = self.evento.valor_referencial
-    #     for servicio_reserva in self.servicios_reserva.all():
-    #         costo += servicio_reserva.valor_unidad * servicio_reserva.cantidad
-    #     return costo
+    @property
+    def costo_alquiler(self):
+        costo = self.evento.valor_referencial
+        for servicio_reserva in self.servicios_reserva.all():
+            costo += servicio_reserva.valor_unidad * servicio_reserva.cantidad
+        return costo
 
     def clean(self):
         # Verifica que ambos campos no sean None
@@ -100,7 +99,6 @@ class Alquiler(models.Model):
                 "La hora de inicio y la hora de fin planificada son obligatorias"
             )
 
-    # Si ambas horas son válidas, compara la hora de inicio con la hora de fin planificada
         if self.hora_inicio_alquiler >= self.hora_fin_planificada_alquiler:
             raise ValidationError(
                 "La hora de inicio de la reserva debe ser menor a la hora de fin planificada de la reserva"
