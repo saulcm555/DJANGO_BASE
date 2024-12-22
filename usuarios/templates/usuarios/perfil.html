@@ -14,7 +14,7 @@
                                      width="110">
                                 <div class="mt-3">
                                     <h4>{{ usuario }}</h4>
-                                    <p class="text-secondary mb-1">{{ usuario.identificacion_cliente }}</p>
+                                    <p class="text-secondary mb-1">Cedula: {{usuario.identificacion_cliente }}</p>
                                     <p class="text-muted font-size-sm">Correo: {{ usuario.correo_electronico }}</p>
                                     {% if usuario.correo_electronico_verificado %}
                                         <span class="text-success">

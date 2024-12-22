@@ -26,7 +26,9 @@ def crear_cuenta(request):
         if form.is_valid():
             usuario = form.save()
             login(request, usuario)
-            return redirect("usuarios:validar_correo")
+            messages.success(request, "Cuenta creada correctamente")
+            messages.info(request, "Por favor, verifica tu correo electrónico")
+            return redirect("usuarios:perfil")
 
     else:
         form = CrearCuentaFormulario()
@@ -91,5 +93,3 @@ def perfil(request):
         formulario = CompletarPerfilFormulario(instance=perfil)
     
     return render(request, "usuarios/perfil.html", {"usuario": perfil, "form": formulario})
-
-
