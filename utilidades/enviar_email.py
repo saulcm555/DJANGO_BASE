@@ -26,24 +26,24 @@ class EmailEnviador:
         EmailEnviador.enviar_email(subject, message, recipient_list)
 
 
-def enviar_codigo_confirmacion(alquiler:Alquiler):
+    def enviar_codigo_confirmacion(alquiler:Alquiler):
 
-    alquiler.generar_codigo_confirmacion()
-    codigo_confirmacion = alquiler.codigo_confirmacion
-    alquiler.save()
+        alquiler.generar_codigo_confirmacion()
+        codigo_confirmacion = alquiler.codigo_confirmacion
+        alquiler.save()
 
-    asunto = "Confirmación de Alquiler"
-    mensaje = f"""
-    Estimado/a {alquiler.cliente},
-    
-    Gracias por realizar su reserva para el evento "{alquiler.evento}".
-    Por favor, use el siguiente código para confirmar su reserva:
-    
-    Código de confirmación: {codigo_confirmacion}
-    
-    Saludos,
-    Equipo de Gestión de Alquileres
-    """
-    destinatarios = [alquiler.cliente.email] 
+        asunto = "Confirmación de Alquiler"
+        mensaje = f"""
+        Estimado/a {alquiler.cliente},
+        
+        Gracias por realizar su reserva para el evento "{alquiler.evento}".
+        Por favor, use el siguiente código para confirmar su reserva:
+        
+        Código de confirmación: {codigo_confirmacion}
+        
+        Saludos,
+        Equipo de Gestión de Alquileres
+        """
+        destinatarios = [alquiler.cliente.email] 
 
-    EmailEnviador.enviar_email(asunto, mensaje, destinatarios)
+        EmailEnviador.enviar_email(asunto, mensaje, destinatarios)

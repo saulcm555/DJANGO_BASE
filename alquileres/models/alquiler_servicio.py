@@ -13,7 +13,7 @@ class AlquilerServicio(models.Model):
         ("cancelado", "Cancelado"),
     ]
 
-    reserva = models.ForeignKey(
+    alquiler = models.ForeignKey(
         Alquiler,
         on_delete=models.CASCADE,
         related_name="servicios_reserva",
@@ -33,8 +33,13 @@ class AlquilerServicio(models.Model):
         verbose_name="Estado del Servicio de Alquiler",
     )
 
-    fecha_entrega = models.DateTimeField(verbose_name="Fecha de Entrega")
+    fecha_entrega = models.DateTimeField(verbose_name="Fecha de Entrega", default=None)
+
+    def save(self, *args, **kwargs):
+        if not self.fecha_entrega:
+            self.fecha_entrega = self.alquiler.fecha_alquiler
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Servicio: {self.servicio.nombre} - Estado: {self.estado_servicio_reserva} - Reserva: {self.reserva.id}"
+        return f"Servicio: {self.servicio.nombre} - Estado: {self.estado_servicio_reserva} - Reserva: {self.alquiler.id}"
 
