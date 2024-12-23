@@ -14,7 +14,6 @@ from .models import Alquiler,AlquilerServicio
 from .forms import (
     AlquilerFormulario,
     AlquilerServicioFormulario,
-    CalificacionAlquilerFormulario,
     ConfirmarAlquilerFormulario,
 )
 
@@ -70,7 +69,6 @@ def nuevo_alquiler(request, item_id):
 
     session_key = f"servicios_seleccionados_{item_id}" 
 
-    # Inicializar siempre el formulario de servicios
     formServicios = AlquilerServicioFormulario()
 
     if request.method == "POST":
@@ -144,82 +142,6 @@ def alquiler_detalle(request, id):
             "alquileres/detalle_alquiler.html",
             {"alquiler": alquiler, "fotos": fotos, "formulario": formulario, "servicios_seleccionados": servicios_seleccionados},
         )
-
-
-def calificaciones_alquiler(request, id):
-    alquiler = Alquiler.objects.filter(id=id).first()
-    if not alquiler:
-        messages.warning(request, "Alquiler no encontrado")
-        return redirect("alquileres:alquileres")
-
-    calificaciones = alquiler.calificacion_alquiler.all()
-    if request.method == "POST":
-        if not alquiler.cliente == request.user or not request.user.is_superuser:
-            return redirect("usuarios:iniciar_sesion")
-        formulario = CalificacionAlquilerFormulario(request.POST)
-        if formulario.is_valid():
-            calificacion = formulario.save(commit=False)
-            calificacion.alquiler = alquiler
-            calificacion.usuario = request.user
-            calificacion.save()
-            return redirect("alquileres:alquileres")
-    else:
-        formulario = CalificacionAlquilerFormulario()
-
-    return render(
-        request,
-        "alquileres/calificacion_alquiler.html",
-        {
-            "alquiler": alquiler,
-            "calificaciones": calificaciones,
-            "form": formulario,
-        },
-    )
-
-
-def eventualidades_alquiler(request, id):
-    alquiler = Alquiler.objects.filter(id=id).first()
-    if not alquiler:
-        messages.warning(request, "Alquiler no encontrado")
-        return redirect("alquileres:alquileres")
-    eventualidades = alquiler.eventualidades.all()
-
-    return render(
-        request,
-        "alquileres/eventualidades_alquiler.html",
-        {
-            "alquiler": alquiler,
-            "eventualidades": eventualidades,
-        },
-    )
-
-
-def servicios_alquiler(request, id):
-    alquiler = Alquiler.objects.filter(id=id).first()
-    if not alquiler:
-        messages.warning(request, "Alquiler no encontrado")
-        return redirect("alquileres:alquileres")
-    servicios = alquiler.servicios.all()
-    if request.method == "POST":
-        if not request.user.is_superuser or not alquiler.cliente == request.user:
-            return HttpResponseForbidden()
-        formulario = AlquilerServicioFormulario(request.POST)
-        if formulario.is_valid():
-            servicio = formulario.save()
-            alquiler.servicios.add(servicio)
-            return redirect("alquileres:alquileres")
-    else:
-        formulario = AlquilerServicioFormulario()
-
-    return render(
-        request,
-        "alquileres/servicios_alquiler.html",
-        {
-            "alquiler": alquiler,
-            "servicios": servicios,
-            "form": formulario,
-        },
-    )
 
 
 def enviar_correo_alquiler(request, id):
