@@ -9,6 +9,13 @@ class CalificacionEvento(models.Model):
     class Meta:
         verbose_name = "Calificación de Evento"
         verbose_name_plural = "Calificaciones de Eventos"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["usuario", "evento"],
+                name="unique_calificacion_evento",
+                violation_error_message="Ya has calificado este evento.",
+            )
+        ]
 
     evento = models.ForeignKey(
         Evento,
@@ -30,8 +37,6 @@ class CalificacionEvento(models.Model):
     fecha_publicacion = models.DateTimeField(
         auto_now_add=True, verbose_name="Fecha de Publicación"
     )
-
-
 
     def __str__(self):
         return f"{self.usuario} - {self.evento} - {self.fecha_publicacion}"

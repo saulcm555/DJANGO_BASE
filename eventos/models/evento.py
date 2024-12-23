@@ -11,6 +11,7 @@ class Evento(models.Model):
     numero_horas_permitidas = models.IntegerField(default=0, verbose_name='Número de Horas Permitidas')
     valor_extra_hora = models.FloatField(default=0.0, verbose_name='Valor Extra por Hora')
     tipo_evento = models.ForeignKey(TipoEvento, on_delete=models.CASCADE, verbose_name='Tipo de Evento')
+
     
     def __str__(self) -> str:
         return f"{self.nombre}"

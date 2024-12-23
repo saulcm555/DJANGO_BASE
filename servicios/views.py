@@ -5,7 +5,7 @@ from django.db.models import Q
 
 
 from usuarios.decoradores import admin_required
-from .models import Servicio, FotoServicio
+from .models import Servicio, FotoServicio, CalificacionServicio
 from .forms import (
     ServicioFormulario,
     CalificacionServicioFormulario,
@@ -66,11 +66,19 @@ def servicio_detalle(request, id):
             return redirect("usuarios:iniciar_sesion")
         formulario = CalificacionServicioFormulario(request.POST)
         if formulario.is_valid():
+
+            if servicio.calificaciones_servicio.filter(usuario=request.user).exists():
+                messages.warning(request, "Ya has calificado este servicio")
+                return redirect("servicios:servicio_detalle", id=id)
+
             calificacion = formulario.save(commit=False)
             calificacion.servicio = servicio
             calificacion.usuario = request.user
             calificacion.save()
+            messages.success(request, "Calificación registrada")
             return redirect("servicios:servicio_detalle", id=id)
+        else:
+            messages.error(request, "Error al registrar la calificación")
     else:
         formulario = CalificacionServicioFormulario(
             initial={
@@ -87,9 +95,8 @@ def servicio_detalle(request, id):
             "servicio": servicio,
             "fotos": fotos,
             "promedio_range": range(0, int(promedio_calificaciones)),
-            "promedio_calificaciones": round(promedio_calificaciones,1  ),
+            "promedio_calificaciones": round(promedio_calificaciones, 1),
             "calificaciones": calificaciones,
             "form": formulario,
         },
     )
-

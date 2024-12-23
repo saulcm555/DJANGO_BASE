@@ -9,41 +9,61 @@ from .forms import CalificacionEventoFormulario
 def eventos(request):
     query = request.GET.get("query", "")
     eventos = Evento.objects.prefetch_related("fotos", "calificacion_evento")
-    
+
     if query:
         eventos = eventos.filter(
             Q(nombre__icontains=query) | Q(descripcion__icontains=query)
         )
-    
+
     eventos_data = [
         {
             "evento": evento,
-            "imagen_url": evento.fotos.first().foto.url if evento.fotos.exists() else None,
+            "imagen_url": (
+                evento.fotos.first().foto.url if evento.fotos.exists() else None
+            ),
             "promedio_calificaciones": range(
-                0, int(evento.calificacion_evento.aggregate(Avg("calificacion"))["calificacion__avg"] or 0)
+                0,
+                int(
+                    evento.calificacion_evento.aggregate(Avg("calificacion"))[
+                        "calificacion__avg"
+                    ]
+                    or 0
+                ),
             ),
         }
         for evento in eventos
     ]
-    
+
     return render(request, "eventos/eventos.html", {"eventos": eventos_data})
 
 
 def tipos_eventos(request):
     tipos_eventos = TipoEvento.objects.all()
-    return render(request, "eventos/tipos_eventos.html", {"tipos_eventos": tipos_eventos})
+    return render(
+        request, "eventos/tipos_eventos.html", {"tipos_eventos": tipos_eventos}
+    )
 
 
 def tipo_evento(request, id):
     tipo_evento = get_object_or_404(TipoEvento, id=id)
-    eventos = Evento.objects.filter(tipo_evento=tipo_evento).prefetch_related("fotos", "calificacion_evento")
-    
+    eventos = Evento.objects.filter(tipo_evento=tipo_evento).prefetch_related(
+        "fotos", "calificacion_evento"
+    )
+
     eventos_data = [
         {
             "evento": evento,
-            "imagen_url": evento.fotos.first().foto.url if evento.fotos.exists() else None,
+            "imagen_url": (
+                evento.fotos.first().foto.url if evento.fotos.exists() else None
+            ),
             "promedio_calificaciones": range(
-                0, int(evento.calificacion_evento.aggregate(Avg("calificacion"))["calificacion__avg"] or 0)
+                0,
+                int(
+                    evento.calificacion_evento.aggregate(Avg("calificacion"))[
+                        "calificacion__avg"
+                    ]
+                    or 0
+                ),
             ),
         }
         for evento in eventos
@@ -57,23 +77,34 @@ def tipo_evento(request, id):
 
 
 def evento_detalle(request, id):
-    evento = get_object_or_404(Evento.objects.prefetch_related("fotos", "calificacion_evento"), id=id)
-    
-    promedio_calificaciones = evento.calificacion_evento.aggregate(Avg("calificacion"))["calificacion__avg"] or 0
+    evento = get_object_or_404(
+        Evento.objects.prefetch_related("fotos", "calificacion_evento"), id=id
+    )
+
+    promedio_calificaciones = (
+        evento.calificacion_evento.aggregate(Avg("calificacion"))["calificacion__avg"]
+        or 0
+    )
 
     # Handle form submission
     if request.method == "POST":
         if not request.user.is_authenticated:
             return redirect("usuarios:iniciar_sesion")
-        
+
         formulario = CalificacionEventoFormulario(request.POST)
         if formulario.is_valid():
+            if evento.calificacion_evento.filter(usuario=request.user).exists():
+                messages.warning(request, "Ya has calificado este evento.")
+                return redirect("eventos:evento_detalle", id=id)
+
             calificacion = formulario.save(commit=False)
             calificacion.evento = evento
             calificacion.usuario = request.user
             calificacion.save()
             messages.success(request, "Calificación registrada con éxito.")
             return redirect("eventos:evento_detalle", id=id)
+        else:
+            messages.error(request, "Error al registrar la calificación.")
     else:
         formulario = CalificacionEventoFormulario(
             initial={
