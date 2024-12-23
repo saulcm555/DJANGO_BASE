@@ -18,7 +18,7 @@ def servicios(request):
     if query:
         servicios = servicios.filter(
             Q(nombre__icontains=query)
-            | Q(descripcion_servicio__icontains=query)
+            | Q(descripcion__icontains=query)
             | Q(descripcion_unidad__icontains=query)
         )
 
