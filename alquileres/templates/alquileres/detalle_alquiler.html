@@ -14,8 +14,8 @@
              style="flex: auto;
                     max-width: 500px;
                     position: sticky;
-                    top: 2em;
-                    z-index: 10">{% include 'core/components/utils/carrucel.html' with fotos=fotos %}</div>
+                    top: 6em;
+                    z-index: 5;">{% include 'core/components/utils/carrucel.html' with fotos=fotos %}</div>
         <div class="col-lg-7 mt-5">
           {% if  not request.user.is_superuser %}
             {% if alquiler.correo_electronico_verificado %}
@@ -132,6 +132,28 @@
       </div>
     </div>
   </section>
+
+  
+<section class="py-5">
+  <div class="container">
+    <div class="row text-center pt-3 pb-3">
+      <div class="col-lg-6 m-auto">
+        <h1 class="h1">Servicios Seleccionados</h1>
+        <div class="" style="display: flex; flex-wrap: wrap; gap: 2em; justify-content: center; align-items: center">
+          {% if servicios_seleccionados %}
+          {% for servicio in servicios_seleccionados %}
+              {% include 'core/components/utils/card.html' with nombre=servicio.servicio.nombre descripcion=servicio.servicio.descripcion imagen_url=servicio.servicio.imagen.url id_item=servicio.servicio.id link_url='servicios:servicio_detalle' %}
+          {% endfor %}
+        {% else %}
+          <p>No  hay servicios seleccionados</p>
+        {% endif %}
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
   <script>
   function enviarCorreoValidacion() {
     const url = "{% url 'alquileres:enviar_correo_alquiler' alquiler.id %}";  // URL de la vista para validar el correo
