@@ -138,10 +138,11 @@ def alquiler_detalle(request, id):
     if request.method == "GET":
         fotos = alquiler.fotos.all()
         formulario = ConfirmarAlquilerFormulario(alquiler=alquiler)
+        servicios_seleccionados = alquiler.servicios_reserva.all()
         return render(
             request,
             "alquileres/detalle_alquiler.html",
-            {"alquiler": alquiler, "fotos": fotos, "formulario": formulario},
+            {"alquiler": alquiler, "fotos": fotos, "formulario": formulario, "servicios_seleccionados": servicios_seleccionados},
         )
 
 
