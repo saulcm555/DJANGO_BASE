@@ -1,9 +1,30 @@
 from django.contrib import admin
-
-# Register your models here.
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 from .models import Evento, TipoEvento, FotoEvento, CalificacionEvento
 
 
+class EventoResource(resources.ModelResource):
+    class Meta:
+        model = Evento
+
+
+class TipoEventoResource(resources.ModelResource):
+    class Meta:
+        model = TipoEvento
+
+
+class FotoEventoResource(resources.ModelResource):
+    class Meta:
+        model = FotoEvento
+
+
+class CalificacionEventoResource(resources.ModelResource):
+    class Meta:
+        model = CalificacionEvento
+
+
+# Inline definitions
 class FotoEventoInline(admin.TabularInline):
     model = FotoEvento
     extra = 0
@@ -15,7 +36,9 @@ class CalificacionEventoInline(admin.TabularInline):
     extra = 0
 
 
-class EventoAdmin(admin.ModelAdmin):
+# Admin classes
+class EventoAdmin(ImportExportModelAdmin):
+    resource_class = EventoResource
     list_display = (
         "id",
         "nombre",
@@ -27,16 +50,19 @@ class EventoAdmin(admin.ModelAdmin):
     search_fields = ("nombre", "tipo_evento__nombre_evento")
     list_filter = ("tipo_evento", "numero_horas_permitidas", "valor_extra_hora")
     list_per_page = 10
+    inlines = [FotoEventoInline, CalificacionEventoInline]
 
 
-class TipoEventoAdmin(admin.ModelAdmin):
+class TipoEventoAdmin(ImportExportModelAdmin):
+    resource_class = TipoEventoResource
     list_display = ("id", "nombre_evento", "descripcion", "fecha_creacion")
     search_fields = ("nombre_evento",)
     list_filter = ("nombre_evento", "fecha_creacion")
     list_per_page = 10
 
 
-class FotoEventoAdmin(admin.ModelAdmin):
+class FotoEventoAdmin(ImportExportModelAdmin):
+    resource_class = FotoEventoResource
     list_display = (
         "id",
         "evento",
@@ -50,8 +76,16 @@ class FotoEventoAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
-class CalificacionEventoAdmin(admin.ModelAdmin):
-    list_display = ("id", "usuario","evento", "calificacion", "comentario", "fecha_publicacion")
+class CalificacionEventoAdmin(ImportExportModelAdmin):
+    resource_class = CalificacionEventoResource
+    list_display = (
+        "id",
+        "usuario",
+        "evento",
+        "calificacion",
+        "comentario",
+        "fecha_publicacion",
+    )
     search_fields = ("evento__nombre", "usuario__username")
     list_filter = (
         "calificacion",
@@ -60,9 +94,8 @@ class CalificacionEventoAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
-admin.site.register(
-    Evento, EventoAdmin, inlines=[FotoEventoInline, CalificacionEventoInline]
-)
+# Register models with the admin
+admin.site.register(Evento, EventoAdmin)
 admin.site.register(TipoEvento, TipoEventoAdmin)
 admin.site.register(FotoEvento, FotoEventoAdmin)
 admin.site.register(CalificacionEvento, CalificacionEventoAdmin)

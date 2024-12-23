@@ -1,15 +1,10 @@
 from django.contrib import admin
 
+from django.contrib.admin import SimpleListFilter
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
-from import_export.admin import ImportExportActionModelAdmin
-
-from django.contrib.admin import SimpleListFilter
 
 from .models import PerfilUsuario
-
-
-from django.contrib.admin import SimpleListFilter
 
 
 class DatosCompletosFilter(SimpleListFilter):
@@ -45,12 +40,14 @@ class DatosCompletosFilter(SimpleListFilter):
             )
 
 
-from django.contrib import admin
-from .models import PerfilUsuario
+class PerfilUsuarioResource(resources.ModelResource):
+    class Meta:
+        model = PerfilUsuario
 
 
 @admin.register(PerfilUsuario)
-class PerfilUsuarioAdmin(admin.ModelAdmin):
+class PerfilUsuarioAdmin(ImportExportModelAdmin):
+    resource_class = PerfilUsuarioResource
     list_display = (
         "id",
         "usuario",
@@ -69,7 +66,7 @@ class PerfilUsuarioAdmin(admin.ModelAdmin):
         "nombres",
         "apellidos",
         "correo_electronico",
-        "telefono"
+        "telefono",
     )
 
     list_filter = (

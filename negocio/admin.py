@@ -1,10 +1,16 @@
 from django.contrib import admin
-
-# Register your models here.
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 from .models import ConfiguracionNegocio
 
 
-class ConfiguracionNegocioAdmin(admin.ModelAdmin):
+class ConfiguracionNegocioResource(resources.ModelResource):
+    class Meta:
+        model = ConfiguracionNegocio
+
+
+class ConfiguracionNegocioAdmin(ImportExportModelAdmin):
+    resource_class = ConfiguracionNegocioResource
     list_display = (
         "nombre",
         "correo",
@@ -13,6 +19,6 @@ class ConfiguracionNegocioAdmin(admin.ModelAdmin):
         "tipo_cuenta",
         "numero_cuenta",
     )
-    
+
 
 admin.site.register(ConfiguracionNegocio, ConfiguracionNegocioAdmin)
