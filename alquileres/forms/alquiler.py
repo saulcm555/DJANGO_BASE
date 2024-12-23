@@ -44,14 +44,11 @@ class AlquilerFormulario(forms.ModelForm):
         hora_inicio_alquiler = cleaned_data.get("hora_inicio_alquiler")
         hora_fin_planificada_alquiler = cleaned_data.get("hora_fin_planificada_alquiler")
         
-        # Validación de hora de inicio y hora de fin
         if hora_inicio_alquiler and hora_fin_planificada_alquiler:
             if hora_inicio_alquiler >= hora_fin_planificada_alquiler:
                 self.add_error(
-                    None,  # Mensaje no asociado a un campo específico
+                    None,
                     "La hora de inicio de la reserva debe ser menor a la hora de fin planificada de la reserva"
                 )
         
         return cleaned_data
-    def __str__(self):
-        return f"Alquiler de {self.evento} para {self.cliente}"

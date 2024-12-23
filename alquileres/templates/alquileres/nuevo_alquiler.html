@@ -1,13 +1,17 @@
 {% extends "alquileres/layout/base.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
+
 {% block content %}
 <section class="py-5">
     <div class="d-flex justify-content-center align-items-center custom-min-height">
         <div class="card p-4 shadow-sm custom-card">
             <h2 class="text-center mb-4">Crear Reserva</h2>
-            <form method="post" class="form-group">
+
+            <!-- Formulario para la creación del alquiler -->
+            <form method="post" class="form-group mb-4">
                 {% csrf_token %}
+                <h4 class="text-center mb-3">Detalles del Alquiler</h4>
 
                 <!-- Mostrar mensajes globales -->
                 {% if messages %}
@@ -27,7 +31,7 @@
                     </div>
                 {% endif %}
 
-                <!-- Mostrar campos del formulario -->
+                <!-- Campos del formulario principal -->
                 <div class="row">
                     {% for field in form %}
                         <div class="col-md-6 mb-3">
@@ -46,12 +50,32 @@
                 <button type="submit" class="btn btn-success w-100 mt-3">Crear reserva</button>
             </form>
 
-            <form method="post" class="mt-3">
-                <h2 class="text-center mb-4">Añadir servicios</h2>
+            <!-- Formulario para agregar servicios -->
+            <form method="post" class="form-group">
                 {% csrf_token %}
+                <h4 class="text-center mb-3">Añadir Servicios</h4>
+
                 {{ formServicios|crispy }}
-                <button type="submit" class="btn btn-success w-100 mt-3">Crear reserva</button>
+
+                <button type="submit" name="add_service" class="btn btn-success w-100 mt-3">Añadir servicio</button>
             </form>
+
+            <!-- Lista de servicios seleccionados -->
+            <div class="mt-4">
+                <h5 class="text-center">Servicios Seleccionados:</h5>
+                <ul class="list-group">
+                    {% if servicios_seleccionados %}
+                        {% for servicio in servicios_seleccionados %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ servicio.nombre }} 
+                                <span class="badge bg-secondary">Cantidad: {{ servicio.cantidad }}</span>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center text-muted">No se han agregado servicios aún.</p>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </div>
 </section>

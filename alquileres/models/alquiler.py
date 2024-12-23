@@ -89,7 +89,7 @@ class Alquiler(models.Model):
     def costo_alquiler(self):
         costo = self.evento.valor_referencial
         for servicio_reserva in self.servicios_reserva.all():
-            costo += servicio_reserva.valor_unidad * servicio_reserva.cantidad
+            costo += servicio_reserva.servicio.valor_unidad * servicio_reserva.cantidad
         return costo
 
     def clean(self):
