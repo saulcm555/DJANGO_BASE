@@ -1,49 +1,95 @@
 {% extends 'core/layout/base.html' %}
 {% load static %}
 {% block content %}
-  <section class="position-relative overflow-hidden text-white pt-10"
-           style="min-height: 50vh">
-    <!-- Imagen de fondo -->
-    <div class="position-absolute top-0 start-0 w-100 h-100"
-         style="background-image: url('https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=2670&auto=format&fit=crop');
+<section class="position-relative overflow-hidden text-white pt-10" style="min-height: 50vh">
+  <!-- Imagen de fondo -->
+  <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url('https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=2670&auto=format&fit=crop');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat"></div>
-    <!-- Capa de opacidad -->
-    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark"
-         style="opacity: 0.5"></div>
-    <!-- Contenido principal -->
-    <div class="position-relative py-7 py-md-10 px-4 px-md-8 "
-         style="display: flex;
+  <!-- Capa de opacidad -->
+  <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark" style="opacity: 0.5"></div>
+  <!-- Contenido principal -->
+  <div class="position-relative py-7 py-md-10 px-4 px-md-8 " style="display: flex;
                 justify-content: center;
                 align-items: center;
                 margin-top: 2.4em">
-      <div class="container">
-        <div class="text-center text-md-start">
-          <h2 class="display-3 fw-bold pt-10 pt-md-14">{{ configuracion_negocio.nombre }}</h2>
-          <p class="d-none d-md-block mt-4 fs-4">
-            Bienvenido a nuestra página de reservas de eventos. Aquí podrás encontrar una variedad de eventos emocionantes y reservar tu lugar de manera rápida y sencilla.
-          </p>
-          <div class="mt-5">
-            <a href="{% url 'eventos:eventos' %}" class="btn btn-success btn-lg">Ver Eventos</a>
-          </div>
+    <div class="container">
+      <div class="text-center text-md-start">
+        <h2 class="display-3 fw-bold pt-10 pt-md-14">{{ configuracion_negocio.nombre }}</h2>
+        <p class="d-none d-md-block mt-4 fs-4">
+          Bienvenido a nuestra página de reservas de eventos. Aquí podrás encontrar una variedad de eventos emocionantes
+          y reservar tu lugar de manera rápida y sencilla.
+        </p>
+        <div class="mt-5">
+          <a href="{% url 'eventos:eventos' %}" class="btn btn-success btn-lg">Ver Eventos</a>
         </div>
       </div>
     </div>
-  </section>
-  <section class=" py-5 container">
-    {% include 'core/components/utils/title.html' with titulo="Categorias" texto=" de Eventos" %}
-    <div class="row">
-      <div class=""
-           style="display: flex;
+  </div>
+</section>
+<section class=" py-5 container">
+  {% include 'core/components/utils/title.html' with titulo="Categorias" texto=" de Eventos" %}
+  <div class="row">
+    <div class="" style="display: flex;
                   flex-wrap: wrap;
                   gap: 2em;
                   justify-content: center;
                   align-items: center">
-        {% for tipo_evento in tipo_eventos %}
-          {% include 'core/components/utils/cardCategory.html' with nombre=tipo_evento.nombre_evento descripcion=tipo_evento.descripcion imagen_url=tipo_evento.imagen.url link_url="eventos:categoria-evento" id_item=tipo_evento.id %}
-        {% endfor %}
+      {% for tipo_evento in tipo_eventos %}
+      {% include 'core/components/utils/cardCategory.html' with nombre=tipo_evento.nombre_evento descripcion=tipo_evento.descripcion imagen_url=tipo_evento.imagen.url link_url="eventos:categoria-evento" id_item=tipo_evento.id %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row text-center pt-3 pb-3">
+      <div class="col-lg-6 m-auto">
+        <h1 class="h1">¿Qué es {{ configuracion_negocio.nombre }}?</h1>
+        <p>
+          {{ configuracion_negocio.nombre }} es un sitio web que ofrece servicios de reserva de espacios para eventos y
+          servicios.
+          El objetivo es facilitar la reserva de espacios para eventos y servicios, así como la gestión de los mismos.
+        </p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+
+<section class="py-5">
+  <div class="container">
+    <div class="row text-center pt-3 pb-3">
+      {% include 'core/components/utils/title.html' with titulo="Nuestras" texto=" Promociones" %}
+      <div class="col-lg-6 m-auto" style="display: flex; justify-content: center; align-items: center;">
+
+
+        {% for promocion in promociones %}
+        {% include 'core/components/utils/cardCategory.html' with nombre=promocion.nombre_promocion descripcion=promocion.descripcion_promocion imagen_url=promocion.imagen.url  %}
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row text-center pt-3 pb-3">
+      <div class="col-lg-6 m-auto">
+        <h1 class="h1"> Nuestro Equipo</h1>
+        <p>
+          Nuestro equipo es una comunidad de personas que comparten la misma idea de que {{ configuracion_negocio.nombre }}
+          sea una plataforma de reserva de espacios para eventos y servicios.
+          Somos una comunidad que busca la diversidad y la innovación en nuestro trabajo, y nos esforzamos por hacer
+          {{ configuracion_negocio.nombre }} lo mejor posible.
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
 {% endblock %}

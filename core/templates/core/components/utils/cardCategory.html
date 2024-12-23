@@ -87,7 +87,7 @@
     }
 </style>
 
-<a class="card bg-dark" href="{% url link_url id_item %}">
+<a class="card bg-dark" href="{% if link_url %}{% url link_url id_item %}{% else %}#{% endif %}">
     <div class="icon">
 
 
