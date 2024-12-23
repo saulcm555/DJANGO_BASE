@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
     <section class="py-5">
-        {% include 'core/components/utils/busqueda.html' %}
+        {% include 'core/components/utils/busqueda.html' with link='alquileres:alquileres' %}
         <div class="container" style="width: 100%;">
             {% if request.user.is_superuser %}
                 {% include 'core/components/utils/title.html' with titulo="Todos los" texto="alquileres" %}
