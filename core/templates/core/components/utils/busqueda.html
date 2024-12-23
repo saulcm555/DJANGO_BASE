@@ -1,0 +1,11 @@
+<div class="row m-4" style="display: flex; justify-content: center; align-items: center; gap: 2em;">
+    <form method="GET" action="{% url 'eventos:eventos' %} " class="form-group col-md-5 mb-3" style="display: flex; gap: 1em;">
+        <input type="text"
+               name="query"
+               placeholder="Buscar eventos..."
+               value="{{ request.GET.query }}"
+               class="form-control"
+               >
+        <button type="submit" class="btn btn-success">Buscar</button>
+    </form>
+</div>

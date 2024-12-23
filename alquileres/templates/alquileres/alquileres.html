@@ -2,13 +2,7 @@
 {% load static %}
 {% block content %}
     <section class="py-5">
-        <form method="GET" action="{% url 'eventos:eventos' %}">
-            <input type="text"
-                   name="query"
-                   placeholder="Buscar eventos..."
-                   value="{{ request.GET.query }}">
-            <button type="submit">Buscar</button>
-        </form>
+        {% include 'core/components/utils/busqueda.html' %}
         <div class="container" style="width: 100%;">
             {% if request.user.is_superuser %}
                 {% include 'core/components/utils/title.html' with titulo="Todos los" texto="alquileres" %}
