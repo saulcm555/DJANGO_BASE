@@ -1,93 +1,78 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.http import HttpResponseForbidden, HttpResponseNotFound
-from django.db.models import Q
-
+from django.http import HttpResponseForbidden
+from django.db.models import Q, Avg
 from .models import Evento, TipoEvento
-from .forms import (
-    EventoFormulario,
-    CalificacionEventoFormulario,
-    FotoEventoFormulario,
-)
+from .forms import CalificacionEventoFormulario
 
 
 def eventos(request):
     query = request.GET.get("query", "")
-    eventos = Evento.objects.all()
+    eventos = Evento.objects.prefetch_related("fotos", "calificacion_evento")
+    
     if query:
         eventos = eventos.filter(
             Q(nombre__icontains=query) | Q(descripcion__icontains=query)
         )
-    queryset = []
-    for evento in eventos:
-        primera_foto = evento.fotos.first()
-        calificaciones = evento.calificacion_evento.all()
-        promedio_calificaciones = 0
-        if calificaciones:
-            promedio_calificaciones = sum(
-                [calificacion.calificacion for calificacion in calificaciones]
-            ) / len(calificaciones)
-
-        if primera_foto:
-            imagen_url = primera_foto.foto.url
-        else:
-            imagen_url = None
-        queryset.append(
-            {
-                "evento": evento,
-                "imagen_url": imagen_url,
-                "promedio_calificaciones": range(0, int(promedio_calificaciones)),
-            }
-        )
-
-    return render(request, "eventos/eventos.html", {"eventos": queryset})
+    
+    eventos_data = [
+        {
+            "evento": evento,
+            "imagen_url": evento.fotos.first().foto.url if evento.fotos.exists() else None,
+            "promedio_calificaciones": range(
+                0, int(evento.calificacion_evento.aggregate(Avg("calificacion"))["calificacion__avg"] or 0)
+            ),
+        }
+        for evento in eventos
+    ]
+    
+    return render(request, "eventos/eventos.html", {"eventos": eventos_data})
 
 
 def tipos_eventos(request):
     tipos_eventos = TipoEvento.objects.all()
-    return render(
-        request, "eventos/tipos_eventos.html", {"tipos_eventos": tipos_eventos}
-    )
+    return render(request, "eventos/tipos_eventos.html", {"tipos_eventos": tipos_eventos})
 
 
 def tipo_evento(request, id):
-    tipo_evento = TipoEvento.objects.filter(id=id).first()
-    if not tipo_evento:
-        messages.warning(request, "Tipo de evento no encontrado")
-        return redirect("eventos:tipos_eventos")
-
-    eventos = Evento.objects.filter(tipo_evento=tipo_evento)
+    tipo_evento = get_object_or_404(TipoEvento, id=id)
+    eventos = Evento.objects.filter(tipo_evento=tipo_evento).prefetch_related("fotos", "calificacion_evento")
+    
+    eventos_data = [
+        {
+            "evento": evento,
+            "imagen_url": evento.fotos.first().foto.url if evento.fotos.exists() else None,
+            "promedio_calificaciones": range(
+                0, int(evento.calificacion_evento.aggregate(Avg("calificacion"))["calificacion__avg"] or 0)
+            ),
+        }
+        for evento in eventos
+    ]
 
     return render(
         request,
         "eventos/tipo_evento.html",
-        {"tipo_evento": tipo_evento, "eventos": eventos},
+        {"tipo_evento": tipo_evento, "eventos": eventos_data},
     )
 
 
 def evento_detalle(request, id):
-    evento = Evento.objects.filter(id=id).first()
-    if not evento:
-        messages.warning(request, "Evento no encontrado")
-        return redirect("eventos:eventos")
+    evento = get_object_or_404(Evento.objects.prefetch_related("fotos", "calificacion_evento"), id=id)
+    
+    promedio_calificaciones = evento.calificacion_evento.aggregate(Avg("calificacion"))["calificacion__avg"] or 0
 
-    calificaciones = evento.calificacion_evento.all()
-    promedio_calificaciones = 0
-    if calificaciones:
-        promedio_calificaciones = sum(
-            [calificacion.calificacion for calificacion in calificaciones]
-        ) / len(calificaciones)
-
-    # Manejar el formulario de calificaciones
+    # Handle form submission
     if request.method == "POST":
         if not request.user.is_authenticated:
             return redirect("usuarios:iniciar_sesion")
+        
         formulario = CalificacionEventoFormulario(request.POST)
         if formulario.is_valid():
             calificacion = formulario.save(commit=False)
             calificacion.evento = evento
             calificacion.usuario = request.user
             calificacion.save()
+            messages.success(request, "Calificación registrada con éxito.")
             return redirect("eventos:evento_detalle", id=id)
     else:
         formulario = CalificacionEventoFormulario(
@@ -97,8 +82,6 @@ def evento_detalle(request, id):
             }
         )
 
-    fotos = evento.fotos.all()
-
     return render(
         request,
         "eventos/detalle_evento.html",
@@ -106,8 +89,8 @@ def evento_detalle(request, id):
             "evento": evento,
             "promedio_range": range(0, int(promedio_calificaciones)),
             "promedio_calificaciones": round(promedio_calificaciones, 1),
-            "fotos": fotos,
-            "calificaciones": calificaciones,
+            "fotos": evento.fotos.all(),
+            "calificaciones": evento.calificacion_evento.all(),
             "form": formulario,
         },
     )
