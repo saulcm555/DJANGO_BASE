@@ -53,3 +53,5 @@ class AlquilerFormulario(forms.ModelForm):
                 )
         
         return cleaned_data
+    def __str__(self):
+        return f"Alquiler de {self.evento} para {self.cliente}"

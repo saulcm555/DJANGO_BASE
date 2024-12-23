@@ -78,9 +78,10 @@ def nuevo_alquiler(request, item_id):
             return redirect("alquileres:alquiler_detalle", id=alquiler.id)
         messages.warning(request, "Error al crear el alquiler")
     else:
+        formServicios = AlquilerServicioFormulario()
         formulario = AlquilerFormulario()
 
-    return render(request, "alquileres/nuevo_alquiler.html", {"form": formulario})
+    return render(request, "alquileres/nuevo_alquiler.html", {"form": formulario, "formServicios": formServicios})
 
 
 def alquiler_detalle(request, id):
