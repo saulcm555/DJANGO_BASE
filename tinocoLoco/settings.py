@@ -27,9 +27,6 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 # Application definition
 
 INSTALLED_APPS = [
-    "jazzmin",
-    "crispy_forms",
-    "crispy_bootstrap5",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -38,6 +35,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Apps de terceros
     "cloudinary",
+    "jazzmin",
+    "crispy_forms",
+    "crispy_bootstrap5",
+    "import_export",
     "cloudinary_storage",
     # Apps propias
     "negocio.apps.NegocioConfig",
@@ -160,7 +161,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR
-    / "static",  # Asumiendo que tienes una carpeta "static" en tu directorio base
+    / "static", 
 ]
 
 # Directorio donde se almacenarán los archivos estáticos recopilados por 'collectstatic'

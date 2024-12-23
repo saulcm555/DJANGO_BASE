@@ -7,7 +7,19 @@ from .models import (
     FotoAlquiler,
     Promocion,
     CalificacionAlquiler,
+    AlquilerServicio,
 )
+
+
+class AlquilerServicioInline(admin.TabularInline):
+    model = AlquilerServicio
+    extra = 1
+    readonly_fields = (
+        "servicio",
+        "cantidad",
+        "estado_servicio_reserva",
+        "fecha_entrega",
+    )
 
 
 class FotoAlquilerInline(admin.TabularInline):
@@ -141,12 +153,37 @@ class PromocionAdmin(admin.ModelAdmin):
         "fecha_caducidad",
         "estado_promocion",
     )
+    
+class AlquilerServicioAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "id",
+        "alquiler",
+        "servicio",
+        "cantidad",
+        "estado_servicio_reserva",
+        "fecha_entrega",
+    )
+
+    search_fields = (
+        "alquiler__cliente__username",
+        "servicio__nombre",
+        "estado_servicio_reserva",
+    )
+
+    list_filter = (
+        "fecha_entrega",
+        "estado_servicio_reserva",
+    )
 
 
 admin.site.register(
-    Alquiler, AlquilerAdmin, inlines=[FotoAlquilerInline, EventualidadInline, CalificacionAlquilerInline]
+    Alquiler,
+    AlquilerAdmin,
+    inlines=[FotoAlquilerInline, EventualidadInline, CalificacionAlquilerInline, AlquilerServicioInline],
 )
 admin.site.register(Eventualidad, EventualidadAdmin)
 admin.site.register(FotoAlquiler, FotoAlquilerAdmin)
 admin.site.register(CalificacionAlquiler, CalificacionAlquilerAdmin)
 admin.site.register(Promocion, PromocionAdmin)
+admin.site.register(AlquilerServicio, AlquilerServicioAdmin)
