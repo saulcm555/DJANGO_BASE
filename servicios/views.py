@@ -67,7 +67,7 @@ def servicio_detalle(request, id):
         formulario = CalificacionServicioFormulario(request.POST)
         if formulario.is_valid():
 
-            if servicio.calificaciones_servicio.filter(usuario=request.user).exists():
+            if servicio.calificacion_servicio.filter(usuario=request.user).exists():
                 messages.warning(request, "Ya has calificado este servicio")
                 return redirect("servicios:servicio_detalle", id=id)
 
