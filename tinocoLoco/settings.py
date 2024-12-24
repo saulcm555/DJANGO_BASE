@@ -67,7 +67,7 @@ cloudinary.config(
     api_key="179729115289615",
     api_secret="fqwB9EsbAEpSjl9whJGGRCmjqDw",
 )
-
+CLOUDINARY_URL = "cloudinary://179729115289615:fqwB9EsbAEpSjl9whJGGRCmjqDw@dj34q6boj"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 
