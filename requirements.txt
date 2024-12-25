@@ -32,4 +32,4 @@ tablib==3.7.0
 tqdm==4.67.1
 tzdata==2024.2
 urllib3==2.2.3
-gunicorn=23.0.0
+gunicorn==23.0.0
