@@ -1,16 +1,12 @@
 {% load static %}
-
 <style>
-    
     .card {
         width: 100%;
         max-width: 300px;
         min-width: 200px;
-        height: 250px; 
+        height: 200px;  /* Aumentamos la altura de la tarjeta */
         margin: 10px;
         border-radius: 10px;
-        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.24);
-        border: 2px solid rgba(7, 7, 7, 0.12);
         font-size: 16px;
         transition: all 0.3s ease;
         position: relative;
@@ -20,19 +16,41 @@
         flex-direction: column;
         cursor: pointer;
         font-family: 'Poppins', sans-serif;
+        background: transparent;
+        border: none;
+        box-shadow: none;
     }
-
+    
+    .icon {
+        margin: 0 auto;
+        width: 150px;  /* Reducimos un poco el ancho */
+        height: 150px;  /* Reducimos un poco la altura */
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        background: none;
+    }
+    
+    .icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    
     .card .title {
         width: 100%;
         margin: 0;
         text-align: center;
-        margin-top: 20px; 
+        margin-top: 30px;  /* Aumentamos un poco el margen superior */
         color: white;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 4px;
     }
-
+    
     .card .text {
         width: 80%;
         margin: 0 auto;
@@ -46,19 +64,29 @@
         max-height: 0;
         transition: all 0.3s ease;
     }
-
+    
     .card:hover {
-        height: 320px; 
+        height: 420px;  /* Aumentamos la altura al hacer hover */
     }
-
+    
     .card:hover .text {
         transition: all 0.3s ease;
         opacity: 1;
-        max-height: 40px;
+        max-height: 60px;  /* Aumentamos un poco el espacio para el texto */
+    }
+    
+    .icon svg {
+        display: none;
     }
 </style>
-
-<a class="card bg-dark" href="{% if link_url %}{% url link_url id_item %}{% else %}#{% endif %}">
+<a class="card bg-dark"
+   href="{% if link_url %}{% url link_url id_item %}{% else %}#{% endif %}">
+    <div class="icon">
+        <img width="50"
+             height="50"
+             src="{% if imagen_url %} {{ imagen_url }} {% else %} {% static 'img/404.jpg' %} {% endif %}"
+             alt="Card image cap">
+    </div>
     <p class="title">{{ nombre }}</p>
     <p class="text">{{ descripcion }}</p>
 </a>
