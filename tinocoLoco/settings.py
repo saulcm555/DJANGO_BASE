@@ -65,7 +65,7 @@ cloudinary.config(
     cloud_name="dj34q6boj",
     api_key="179729115289615",
     api_secret="fqwB9EsbAEpSjl9whJGGRCmjqDw",
-        secure=True,
+    secure=True,
     debug=True,
 )
 CLOUDINARY_URL = "cloudinary://179729115289615:fqwB9EsbAEpSjl9whJGGRCmjqDw@dj34q6boj"
@@ -75,6 +75,7 @@ DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -160,18 +161,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 
-
 # Archivos estáticos
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",  # Carpeta donde trabajas con archivos estáticos locales
 ]
-STATIC_ROOT = BASE_DIR / "staticfiles"  
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Archivos multimedia
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-
 
 
 # Default primary key field type
@@ -183,3 +182,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "usuarios:iniciar_sesion"
 LOGIN_REDIRECT_URL = "core:home"
 LOGOUT_REDIRECT_URL = "usuarios:iniciar_sesion"
+
+
+if not DEBUG:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
