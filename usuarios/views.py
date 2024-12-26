@@ -119,6 +119,8 @@ def reenvio_correo_validacion(request):
     )
 
 
+
+
 @login_required
 def validar_correo(request):
     usuario = request.user
@@ -127,7 +129,7 @@ def validar_correo(request):
         return redirect("usuarios:perfil")
 
     if request.method == "POST":
-
+        print(request.POST)
         form = ValidarCorreoFormulario(data=request.POST)
         form.user = usuario
         if form.is_valid():

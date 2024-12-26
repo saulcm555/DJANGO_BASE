@@ -1,12 +1,70 @@
 {% extends 'core/layout/base.html' %}
 {% load static %}
 {% block content %}
-<section class="position-relative overflow-hidden text-white pt-10" style="min-height: 50vh">
-  <!-- Imagen de fondo -->
-  <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url('https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=2670&auto=format&fit=crop');
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat"></div>
+
+<style>
+  .carousel-control-next {
+    border-radius: 8px 0 0 8px;
+}
+.carousel-control-prev, .carousel-control-next{
+  border : none;
+  background: rgba(255, 255, 255, 0);
+}
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    padding: 12px;
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 768px) {
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 10%;
+    }
+    
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 30px;
+        height: 30px;
+    }
+}
+</style>
+
+<section class="position-relative overflow-hidden text-white pt-10" style="min-height: 57vh; margin-bottom: 100px;">
+  <!-- Carrusel -->
+  <div id="carouselExample" class="carousel slide position-absolute top-0 start-0 w-100 h-100" data-bs-ride="carousel">
+    <div class="carousel-inner" style="background-size: cover; background-position: center;">
+      <!-- Slide 1 -->
+      <div class="carousel-item active">
+        <img src="https://i.ytimg.com/vi/HI1kNjAMN6o/maxresdefault.jpg" class="d-block w-100" alt="Imagen 1">
+      </div>
+      <!-- Slide 2 -->
+      <div class="carousel-item">
+        <img src="https://i.ytimg.com/vi/EgYUcdJnNpQ/maxresdefault.jpg" class="d-block w-100" alt="Imagen 2">
+      </div>
+      <!-- Slide 3 -->
+      <div class="carousel-item">
+        <img src="https://gruporiental.com/cantoneseventos/wp-content/uploads/2019/02/eventos-1280x655.jpg" class="d-block w-100" alt="Imagen 3">
+      </div>
+    </div>
+    <!-- Controles -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+  </div>
   <!-- Capa de opacidad -->
   <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark" style="opacity: 0.5"></div>
   <!-- Contenido principal -->
@@ -14,12 +72,13 @@
                 justify-content: center;
                 align-items: center;
                 margin-top: 2.4em">
-    <div class="container">
+    <div class="container" style="max-width: 800px; padding: 0 20px;">
       <div class="text-center text-md-start">
-        <h2 class="display-3 fw-bold pt-10 pt-md-14">{{ configuracion_negocio.nombre }}</h2>
+        <h2 class="display-3 fw-bold pt-10 pt-md-14">¡Bienvenido a {{ configuracion_negocio.nombre }}!</h2>
         <p class="d-none d-md-block mt-4 fs-4">
-          Bienvenido a nuestra página de reservas de eventos. Aquí podrás encontrar una variedad de eventos emocionantes
-          y reservar tu lugar de manera rápida y sencilla.
+          Transformamos tus ideas en eventos inolvidables. Ya sea que planees una boda, un
+          cumpleaños o un evento corporativo, contamos con los servicios, la experiencia y la creatividad necesarios
+          para superar tus expectativas. ¡Haz de tu ocasión especial un éxito garantizado con nosotros!
         </p>
         <div class="mt-5">
           <a href="{% url 'eventos:eventos' %}" class="btn btn-success btn-lg">Ver Eventos</a>
@@ -28,6 +87,7 @@
     </div>
   </div>
 </section>
+
 <section class=" py-5 container">
   {% include 'core/components/utils/title.html' with titulo="Categorias" texto=" de Eventos" %}
   <div class="row">
@@ -49,9 +109,10 @@
       <div class="col-lg-6 m-auto">
         <h1 class="h1">¿Qué es {{ configuracion_negocio.nombre }}?</h1>
         <p>
-          {{ configuracion_negocio.nombre }} es un sitio web que ofrece servicios de reserva de espacios para eventos y
-          servicios.
-          El objetivo es facilitar la reserva de espacios para eventos y servicios, así como la gestión de los mismos.
+          {{ configuracion_negocio.nombre }} es una plataforma de reserva de espacios para eventos y servicios. Nuestra
+          ayudarte a crear experiencias únicas, ofreciendo soluciones integrales como decoración temática, renta de
+          mobiliario, audio e iluminación profesional, y entretenimiento. Nos adaptamos a tus necesidades y te brindamos
+          opciones personalizadas para garantizar que cada evento sea tan especial como lo imaginaste.
         </p>
       </div>
     </div>
@@ -67,7 +128,7 @@
 
 
         {% for promocion in promociones %}
-        {% include 'core/components/utils/cardCategory.html' with nombre=promocion.nombre_promocion descripcion=promocion.descripcion_promocion imagen_url=promocion.imagen.url  %}
+        {% include 'core/components/utils/cardCategory.html' with nombre=promocion.nombre_promocion descripcion=promocion.descripcion_promocion imagen_url=promocion.imagen.url %}
         {% endfor %}
 
       </div>
@@ -79,13 +140,13 @@
   <div class="container">
     <div class="row text-center pt-3 pb-3">
       <div class="col-lg-6 m-auto">
-        <h1 class="h1"> Nuestro Equipo</h1>
+        <h1 class="h1">Sobre Nuestro Equipo</h1>
         <p>
-          Nuestro equipo es una comunidad de personas que comparten la misma idea de que {{ configuracion_negocio.nombre }}
-          sea una plataforma de reserva de espacios para eventos y servicios.
-          Somos una comunidad que busca la diversidad y la innovación en nuestro trabajo, y nos esforzamos por hacer
-          {{ configuracion_negocio.nombre }} lo mejor posible.
-          
+          En {{ configuracion_negocio.nombre }} nos encanta crear experiencias únicas. Somos una comunidad de personas
+          realidad tus sueños. Desde diseñadores creativos y planificadores expertos hasta técnicos en sonido e
+          iluminación, cada miembro de nuestro equipo aporta su experiencia y compromiso para asegurarse de que cada
+          detalle esté perfectamente cuidado. Nuestra misión es superar tus expectativas y brindarte momentos
+          inolvidables.
         </p>
       </div>
     </div>
