@@ -1,113 +1,106 @@
 {% extends "usuarios/layout/base.html" %}
 {% load static %}
 {% block content %}
-    {% load crispy_forms_tags %}
-    <div class="container mt-5">
-        <div class="main-body">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex flex-column align-items-center text-center">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                                     alt="Admin"
-                                     class="rounded-circle p-1 bg-primary"
-                                     width="110">
-                                <div class="mt-3">
-                                    <h4>{{ usuario }}</h4>
-                                    <p class="text-secondary mb-1">{{ usuario.identificacion_cliente }}</p>
-                                    <p class="text-muted font-size-sm">Correo: {{ usuario.correo_electronico }}</p>
-                                    {% if usuario.datos_completos %}
-                                        <span class="text-success">
-                                            <i class="fas fa-check-circle"></i> Datos Completos
-                                        </span>
-                                    {% else %}
-                                        <span class="text-danger">
-                                            <i class="fas fa-times-circle"></i> Datos Incompletos
-                                        </span>
-                                    {% endif %}
+{% load crispy_forms_tags %}
+<div class="container mt-5">
+    <div class="main-body">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Admin"
+                                class="rounded-circle p-1 bg-primary" width="110">
+                            <div class="mt-3">
+                                <h4>{{ usuario }}</h4>
+                                <p class="text-secondary mb-1">{{ usuario.identificacion_cliente }}</p>
+                                <p class="text-muted font-size-sm">Correo: {{ usuario.correo_electronico }}</p>
+                                {% if usuario.datos_completos %}
+                                <span class="text-success">
+                                    <i class="fas fa-check-circle"></i> Datos Completos
+                                </span>
+                                {% else %}
+                                <span class="text-danger">
+                                    <i class="fas fa-times-circle"></i> Datos Incompletos
+                                </span>
+                                {% endif %}
+                                <hr class="my-2">
+                                {% if usuario.correo_electronico_verificado %}
+                                <span class="text-success">
+                                    <i class="fas fa-check-circle"></i> Verificado
+                                </span>
+                                {% else %}
+                                <span class="text-danger">
+                                    <i class="fas fa-times-circle"></i> No Verificado
                                     <hr class="my-2">
-                                    {% if usuario.correo_electronico_verificado %}
-                                        <span class="text-success">
-                                            <i class="fas fa-check-circle"></i> Verificado
-                                        </span>
-                                    {% else %}
-                                        <span class="text-danger">
-                                            <i class="fas fa-times-circle"></i> No Verificado
-                                            <hr class="my-2">
-                                            <button type="button"
-                                                    class="btn btn-success"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#staticBackdrop">Verificar Correo</button>
-                                        </span>
-                                        <div class="modal fade"
-                                             id="staticBackdrop"
-                                             data-bs-backdrop="static"
-                                             data-bs-keyboard="false"
-                                             tabindex="-1"
-                                             aria-labelledby="staticBackdropLabel"
-                                             aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Validar correo</h1>
-                                                        <button type="button"
-                                                                class="btn-close"
-                                                                data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        {% csrf_token %}
-                                                        {{ form_validar_correo|crispy }}
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                        <p class="btn btn-dark" id="renviar" >Enviar otra vez</p>
-                                                        <button id="verificar_correo" type="button" class="btn btn-success">Validar</button>
-                                                    </div>
-                                                </div>
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop">Verificar Correo</button>
+                                </span>
+                                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+                                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Validar correo
+                                                </h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {% csrf_token %}
+                                                {{ form_validar_correo|crispy }}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Cerrar</button>
+                                                <p class="btn btn-dark" id="renviar">Enviar otra vez</p>
+                                                <button id="verificar_correo" type="button"
+                                                    class="btn btn-success">Validar</button>
                                             </div>
                                         </div>
-                                    {% endif %}
+                                    </div>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-8">
-                    <div class="card">
-                        {% if messages %}
-                            <div>
-                                {% for message in messages %}
-                                    <div class="alert alert-{{ message.tags }} mt-3" role="alert">{{ message }}</div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card">
+                    {% if messages %}
+                    <div>
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} mt-3" role="alert">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <div class="row">
+                                {% for field in form %}
+                                <div class="col-md-6 mb-3">{{ field|as_crispy_field }}</div>
+                                {% if forloop.counter|divisibleby:2 %}
+                            </div>
+                            <div class="row">
+                                {% endif %}
                                 {% endfor %}
                             </div>
-                        {% endif %}
-                        <div class="card-body">
-                            <form method="POST" action="">
-                                {% csrf_token %}
-                                <div class="row">
-                                    {% for field in form %}
-                                        <div class="col-md-6 mb-3">{{ field|as_crispy_field }}</div>
-                                        {% if forloop.counter|divisibleby:2 %}
-                                        </div>
-                                        <div class="row">
-                                        {% endif %}
-                                    {% endfor %}
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-success w-100 px-4">Actualizar</button>
                                 </div>
-                                <div class="row mt-3">
-                                    <div class="col-md-12">
-                                        <button type="submit" class="btn btn-success w-100 px-4">Actualizar</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
+</div>
+<script>
     function enviarCorreoValidacion() {
         const url = "{% url 'usuarios:reenvio_correo_validacion' %}";  // URL de la vista para validar el correo
         fetch(url)
@@ -128,7 +121,7 @@
         const url = "{% url 'usuarios:validar_correo' %}";  // URL de la vista para validar el correo
         const formData = new FormData();
         formData.append("codigo_verificacion", document.getElementById("id_codigo_verificacion").value);
-    
+
         fetch(url, {
             method: 'POST',
             headers: {
@@ -136,21 +129,21 @@
             },
             body: formData  // Enviamos los datos como FormData
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+            .then(response => response.json())
+            .then(data => {
+                if (data.errors) {
+                    alert("Error: " + Object.values(data.errors).join(", "));  // Muestra los errores
+                    return
+                }
                 window.location.reload();
-            } else if (data.errors) {
-                alert("Error: " + Object.values(data.errors).join(", "));  // Muestra los errores
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            alert('Error al enviar el correo.');
-        });
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Error al enviar el correo.');
+            });
     }
-    
+
     document.getElementById("verificar_correo").addEventListener("click", verificarCorreo);
-    
-    </script>
+
+</script>
 {% endblock content %}
