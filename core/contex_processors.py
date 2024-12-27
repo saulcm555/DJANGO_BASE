@@ -1,4 +1,4 @@
-from negocio.models import ConfiguracionNegocio
+wfrom negocio.models import ConfiguracionNegocio
 
 from django.db.models import Avg
 
