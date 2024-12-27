@@ -15,7 +15,8 @@ class Promocion(models.Model):
     nombre_promocion = models.CharField(
         max_length=100, verbose_name="Nombre de la Promoción"
     )
-    imagen = CloudinaryField("Imagen de la promocion", null=True, blank=True)
+
+    imagen = CloudinaryField("Imagen de la Promoción", null=True, blank=True)
     descripcion_promocion = models.CharField(
         max_length=100, verbose_name="Descripción de la Promoción"
     )
