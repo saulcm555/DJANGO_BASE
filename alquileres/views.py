@@ -48,7 +48,16 @@ def alquileres(request):
 
     return render(request, "alquileres/alquileres.html", {"alquileres": queryset})
 
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.http import JsonResponse
+from django.db import transaction
+from django.views.decorators.http import require_http_methods
+
 def nuevo_alquiler(request, item_id):
+    """Vista principal para crear un nuevo alquiler"""
     if not request.user.is_authenticated:
         messages.warning(request, "Debes iniciar sesión para alquilar un espacio")
         return redirect("usuarios:iniciar_sesion")
@@ -60,81 +69,102 @@ def nuevo_alquiler(request, item_id):
         )
         return redirect("usuarios:perfil")
 
-    evento = Evento.objects.filter(id=item_id).first()
-    if not evento:
-        messages.warning(request, "Evento no encontrado")
-        return redirect("eventos:eventos")
-
+    # Obtener evento
+    evento = get_object_or_404(Evento, id=item_id)
     session_key = f"servicios_seleccionados_{item_id}"
-    formServicios = AlquilerServicioFormulario()
 
     if request.method == "POST":
-        print(request.headers)  # Debug headers
-        print(request.POST)  # Debug POST data
+        # Determinar si es una petición AJAX para servicios
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return agregar_servicio(request, session_key)
+            
+        # Si no es AJAX, procesar el formulario de alquiler
+        return procesar_alquiler(request, evento, session_key)
 
-        # Improved check for AJAX request and POST with add_service
-        is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
-        is_add_service = "add_service" in request.POST
+    # GET request - mostrar formulario
+    context = {
+        'form': AlquilerFormulario(),
+        'formServicios': AlquilerServicioFormulario(),
+        'servicios_seleccionados': request.session.get(session_key, [])
+    }
+    return render(request, "alquileres/nuevo_alquiler.html", context)
 
-        print(f"Is AJAX: {is_ajax}, Is Add Service: {is_add_service}")
+def procesar_alquiler(request, evento, session_key):
+    """Procesar la creación del alquiler con sus servicios"""
+    formulario = AlquilerFormulario(request.POST)
+    if not formulario.is_valid():
+        messages.error(request, "Por favor corrija los errores en el formulario")
+        return render(request, "alquileres/nuevo_alquiler.html", {
+            'form': formulario,
+            'formServicios': AlquilerServicioFormulario(),
+            'servicios_seleccionados': request.session.get(session_key, [])
+        })
 
-        if is_ajax and is_add_service:
-            print("ES AJAX")
-            formServicios = AlquilerServicioFormulario(request.POST)
-            if formServicios.is_valid():
-                servicio = formServicios.cleaned_data["servicio"]
-                cantidad = formServicios.cleaned_data["cantidad"]
-
-                if session_key not in request.session:
-                    request.session[session_key] = []
-
-                request.session[session_key].append(
-                    {"id": servicio.id, "nombre": servicio.nombre, "cantidad": cantidad}
-                )
-                request.session.modified = True
-
-                return JsonResponse(
-                    {"success": True, "servicios": request.session[session_key]}
-                )
-
-            return JsonResponse({"success": False, "errors": formServicios.errors})
-
-        print("NO ES AJAX")
-        formulario = AlquilerFormulario(request.POST)
-        if formulario.is_valid():
+    try:
+        with transaction.atomic():
+            # Crear alquiler
             alquiler = formulario.save(commit=False)
             alquiler.cliente = request.user
             alquiler.evento = evento
             alquiler.save()
 
-            servicios_seleccionados = request.session.pop(session_key, [])
+            # Agregar servicios seleccionados
+            servicios_seleccionados = request.session.get(session_key, [])
             for servicio_data in servicios_seleccionados:
-                servicio = Servicio.objects.get(id=servicio_data["id"])
+                servicio = get_object_or_404(Servicio, id=servicio_data["id"])
                 AlquilerServicio.objects.create(
                     alquiler=alquiler,
                     servicio=servicio,
-                    cantidad=servicio_data["cantidad"],
+                    cantidad=servicio_data["cantidad"]
                 )
 
+            # Limpiar sesión y enviar correo
+            request.session.pop(session_key, None)
             EmailEnviador.enviar_codigo_confirmacion(alquiler)
+            
+            messages.success(request, "Alquiler creado exitosamente")
             return redirect("alquileres:alquiler_detalle", id=alquiler.id)
 
-        messages.warning(request, "Error al crear el alquiler")
+    except Exception as e:
+        messages.error(request, f"Error al crear el alquiler: {str(e)}")
+        return redirect("alquileres:nuevo_alquiler", item_id=evento.id)
 
-    else:
-        formulario = AlquilerFormulario()
+def agregar_servicio(request, session_key):
+    """Procesar la adición de servicios vía AJAX"""
+    form = AlquilerServicioFormulario(request.POST)
+    if not form.is_valid():
+        return JsonResponse({
+            "success": False,
+            "errors": form.errors
+        })
 
-    servicios_seleccionados = request.session.get(session_key, [])
+    servicio = form.cleaned_data["servicio"]
+    cantidad = form.cleaned_data["cantidad"]
+    
+    # Obtener o inicializar lista de servicios
+    servicios = request.session.get(session_key, [])
+    
+    # Verificar si el servicio ya existe
+    if any(s["id"] == servicio.id for s in servicios):
+        return JsonResponse({
+            "success": False,
+            "errors": {"servicio": ["Este servicio ya ha sido agregado"]}
+        })
+    
+    # Agregar nuevo servicio
+    servicios.append({
+        "id": servicio.id,
+        "nombre": servicio.nombre,
+        "cantidad": cantidad
+    })
+    
+    request.session[session_key] = servicios
+    request.session.modified = True
 
-    return render(
-        request,
-        "alquileres/nuevo_alquiler.html",
-        {
-            "form": formulario,
-            "formServicios": formServicios,
-            "servicios_seleccionados": servicios_seleccionados,
-        },
-    )
+    return JsonResponse({
+        "success": True,
+        "servicios": servicios
+    })
 
 
 def alquiler_detalle(request, id):

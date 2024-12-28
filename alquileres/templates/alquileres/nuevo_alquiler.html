@@ -1,108 +1,147 @@
 {% extends "alquileres/layout/base.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
+
 {% block content %}
-    <section class="py-5">
-        <div class="d-flex justify-content-center align-items-center custom-min-height">
-            <div class="card p-4 shadow-sm custom-card">
-                <h2 class="text-center mb-4">Crear Reserva</h2>
-                <!-- Formulario para la creación del alquiler -->
-                <form method="post" class="form-group mb-4">
-                    {% csrf_token %}
-                    <h4 class="text-center mb-3">Detalles del Alquiler</h4>
-                    <!-- Mostrar mensajes globales -->
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} mt-3" role="alert">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-                    <!-- Mostrar errores no relacionados a campos -->
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger mt-3" role="alert">
-                            {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
-                        </div>
-                    {% endif %}
-                    <!-- Campos del formulario principal -->
-                    <div class="row">
-                        {% for field in form %}
-                            <div class="col-md-6 mb-3">
-                                {{ field|as_crispy_field }}
-                                {% if field.errors %}
-                                    <div class="alert alert-danger mt-2" role="alert">
-                                        {% for error in field.errors %}<p>{{ error }}</p>{% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <button type="submit" class="btn btn-success w-100 mt-3">Crear reserva</button>
-                </form>
+<section class="py-5">
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="card p-4 shadow-sm" style="width: 100%; max-width: 800px;">
+            <h2 class="text-center mb-4">Crear Reserva</h2>
+            
+            {% if messages %}
+            <div class="messages mb-4">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Formulario principal de alquiler -->
+            <form method="post" id="alquilerForm" class="mb-4">
+                {% csrf_token %}
+                <h4 class="text-center mb-3">Detalles del Alquiler</h4>
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary w-100 mt-3">Crear Reserva</button>
+            </form>
+
+            <!-- Sección de servicios -->
+            <div class="servicios-section mt-4">
+                <h4 class="text-center mb-3">Servicios Adicionales</h4>
+                
                 <!-- Formulario para agregar servicios -->
-                <form method="post" id="formServicios" class="form-group">
+                <form id="serviciosForm" class="mb-4">
                     {% csrf_token %}
-                    <h4 class="text-center mb-3">Añadir Servicios</h4>
                     {{ formServicios|crispy }}
-                    {% comment %} <input type="hidden" name="alquiler_id" value=""> {% endcomment %}
-                    <button type="submit" name="add_service" class="btn btn-success w-100 mt-3">Añadir servicio</button>
+                    <button type="submit" class="btn btn-success w-100">Agregar Servicio</button>
                 </form>
+
                 <!-- Lista de servicios seleccionados -->
-                <div class="mt-4">
-                    <h5 class="text-center">Servicios Seleccionados:</h5>
-                    <ul class="list-group">
+                <div id="serviciosLista" class="mt-4">
+                    <h5>Servicios Seleccionados:</h5>
+                    <div class="list-group">
                         {% if servicios_seleccionados %}
                             {% for servicio in servicios_seleccionados %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    {{ servicio.nombre }}
-                                    <span class="badge bg-secondary">Cantidad: {{ servicio.cantidad }}</span>
-                                </li>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ servicio.nombre }}</strong>
+                                    <span class="ms-2 text-muted">Cantidad: {{ servicio.cantidad }}</span>
+                                </div>
+                                <button class="btn btn-danger btn-sm" 
+                                        onclick="eliminarServicio({{ servicio.id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
                             {% endfor %}
                         {% else %}
-                            <p class="text-center text-muted">No se han agregado servicios aún.</p>
+                            <p class="text-muted text-center">No hay servicios seleccionados</p>
                         {% endif %}
-                    </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
-    <script>
-    $("#formServicios").on("submit", function (e) {
-        e.preventDefault(); // Prevent the default form submission
-    
-        const form = $(this);
-        $.ajax({
-            url: window.location.href,  // Ensure the URL is correct for the request
-            type: "POST",
-            data: form.serialize(),  // Serialize form data
-            headers: { "X-Requested-With": "XMLHttpRequest" },  // Explicitly set header
-            success: function(response) {
-                if (response.success) {
-                    // On success, reset the form and update the service list
-                    form[0].reset();
-                    const servicios = response.servicios;
-                    const lista = $(".list-group");
-                    lista.empty();
-                    if (servicios.length > 0) {
-                        servicios.forEach(function (servicio) {
-                            lista.append(`
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    ${servicio.nombre}
-                                    <span class="badge bg-secondary">Cantidad: ${servicio.cantidad}</span>
-                                </li>
-                            `);
-                        });
-                    } else {
-                        lista.append('<p class="text-center text-muted">No se han agregado servicios aún.</p>');
-                    }
-                } else {
-                    alert("Error al agregar servicio: " + JSON.stringify(response.errors));
-                }
-            },
-            error: function () {
-                alert("Ocurrió un error al procesar la solicitud.");
-            },
-        });
-    });
-    
+    </div>
+</section>
 
-    </script>
+{% block extra_js %}
+<script>
+document.getElementById('serviciosForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    formData.append('add_service', 'true');
+
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            actualizarListaServicios(data.servicios);
+            this.reset();
+        } else {
+            mostrarErrores(data.errors);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al agregar el servicio');
+    });
+});
+
+function actualizarListaServicios(servicios) {
+    const lista = document.querySelector('#serviciosLista .list-group');
+    lista.innerHTML = '';
+
+    if (servicios.length === 0) {
+        lista.innerHTML = '<p class="text-muted text-center">No hay servicios seleccionados</p>';
+        return;
+    }
+
+    servicios.forEach(servicio => {
+        const item = document.createElement('div');
+        item.className = 'list-group-item d-flex justify-content-between align-items-center';
+        item.innerHTML = `
+            <div>
+                <strong>${servicio.nombre}</strong>
+                <span class="ms-2 text-muted">Cantidad: ${servicio.cantidad}</span>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="eliminarServicio(${servicio.id})">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+        lista.appendChild(item);
+    });
+}
+
+function mostrarErrores(errors) {
+    // Limpiar errores anteriores
+    const alertas = document.querySelectorAll('.alert-danger');
+    alertas.forEach(alerta => alerta.remove());
+
+    // Crear nuevo mensaje de error
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-danger mt-3';
+    
+    for (const field in errors) {
+        const mensaje = `${field}: ${errors[field].join(', ')}`;
+        const p = document.createElement('p');
+        p.textContent = mensaje;
+        alertDiv.appendChild(p);
+    }
+
+    const form = document.getElementById('serviciosForm');
+    form.insertBefore(alertDiv, form.firstChild);
+
+    // Remover alerta después de 5 segundos
+    setTimeout(() => alertDiv.remove(), 5000);
+}
+</script>
+{% endblock %}
 {% endblock %}

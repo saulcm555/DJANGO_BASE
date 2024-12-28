@@ -15,9 +15,9 @@
                     max-width: 500px;
 ">
 {%  if fotos %}
-{% include 'core/components/utils/carrucel.html' with fotos=fotos %}
+  {% include 'core/components/utils/carrucel.html' with fotos=fotos %}
 {% else %}
-{% include 'core/components/utils/carrucel.html' with fotos=evento.fotos %}
+  {% include 'core/components/utils/carrucel.html' with fotos=evento.fotos %}
 {% endif %}
 </div>
 
