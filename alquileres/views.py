@@ -10,7 +10,7 @@ from utilidades import EmailEnviador
 from eventos.models import Evento
 from servicios.models import Servicio
 
-from .models import Alquiler,AlquilerServicio
+from .models import Alquiler, AlquilerServicio
 from .forms import (
     AlquilerFormulario,
     AlquilerServicioFormulario,
@@ -49,7 +49,6 @@ def alquileres(request):
     return render(request, "alquileres/alquileres.html", {"alquileres": queryset})
 
 
-
 def nuevo_alquiler(request, item_id):
     if not request.user.is_authenticated:
         messages.warning(request, "Debes iniciar sesión para alquilar un espacio")
@@ -67,12 +66,15 @@ def nuevo_alquiler(request, item_id):
         messages.warning(request, "Evento no encontrado")
         return redirect("eventos:eventos")
 
-    session_key = f"servicios_seleccionados_{item_id}" 
+    session_key = f"servicios_seleccionados_{item_id}"
 
     formServicios = AlquilerServicioFormulario()
 
     if request.method == "POST":
-        if "add_service" in request.POST:
+        if (
+            request.headers.get("x-requested-with") == "XMLHttpRequest"
+            and "add_service" in request.POST
+        ):
             formServicios = AlquilerServicioFormulario(request.POST)
             if formServicios.is_valid():
                 servicio = formServicios.cleaned_data["servicio"]
@@ -84,9 +86,12 @@ def nuevo_alquiler(request, item_id):
                 request.session[session_key].append(
                     {"id": servicio.id, "nombre": servicio.nombre, "cantidad": cantidad}
                 )
-                request.session.modified = True 
+                request.session.modified = True
 
-            return redirect("alquileres:nuevo_alquiler", item_id=item_id)
+                return JsonResponse(
+                    {"success": True, "servicios": request.session[session_key]}
+                )
+            return JsonResponse({"success": False, "errors": formServicios.errors})
 
         formulario = AlquilerFormulario(request.POST)
         if formulario.is_valid():
@@ -125,8 +130,6 @@ def nuevo_alquiler(request, item_id):
     )
 
 
-
-
 def alquiler_detalle(request, id):
     alquiler = Alquiler.objects.filter(id=id).first()
     if not alquiler:
@@ -140,7 +143,12 @@ def alquiler_detalle(request, id):
         return render(
             request,
             "alquileres/detalle_alquiler.html",
-            {"alquiler": alquiler, "fotos": fotos, "formulario": formulario, "servicios_seleccionados": servicios_seleccionados},
+            {
+                "alquiler": alquiler,
+                "fotos": fotos,
+                "formulario": formulario,
+                "servicios_seleccionados": servicios_seleccionados,
+            },
         )
 
 

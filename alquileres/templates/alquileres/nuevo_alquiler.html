@@ -1,82 +1,105 @@
 {% extends "alquileres/layout/base.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
-
 {% block content %}
-<section class="py-5">
-    <div class="d-flex justify-content-center align-items-center custom-min-height">
-        <div class="card p-4 shadow-sm custom-card">
-            <h2 class="text-center mb-4">Crear Reserva</h2>
-
-            <!-- Formulario para la creación del alquiler -->
-            <form method="post" class="form-group mb-4">
-                {% csrf_token %}
-                <h4 class="text-center mb-3">Detalles del Alquiler</h4>
-
-                <!-- Mostrar mensajes globales -->
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} mt-3" role="alert">
-                            {{ message }}
+    <section class="py-5">
+        <div class="d-flex justify-content-center align-items-center custom-min-height">
+            <div class="card p-4 shadow-sm custom-card">
+                <h2 class="text-center mb-4">Crear Reserva</h2>
+                <!-- Formulario para la creación del alquiler -->
+                <form method="post" class="form-group mb-4">
+                    {% csrf_token %}
+                    <h4 class="text-center mb-3">Detalles del Alquiler</h4>
+                    <!-- Mostrar mensajes globales -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} mt-3" role="alert">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <!-- Mostrar errores no relacionados a campos -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger mt-3" role="alert">
+                            {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
                         </div>
-                    {% endfor %}
-                {% endif %}
-
-                <!-- Mostrar errores no relacionados a campos -->
-                {% if form.non_field_errors %}
-                    <div class="alert alert-danger mt-3" role="alert">
-                        {% for error in form.non_field_errors %}
-                            <p>{{ error }}</p>
+                    {% endif %}
+                    <!-- Campos del formulario principal -->
+                    <div class="row">
+                        {% for field in form %}
+                            <div class="col-md-6 mb-3">
+                                {{ field|as_crispy_field }}
+                                {% if field.errors %}
+                                    <div class="alert alert-danger mt-2" role="alert">
+                                        {% for error in field.errors %}<p>{{ error }}</p>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
                         {% endfor %}
                     </div>
-                {% endif %}
-
-                <!-- Campos del formulario principal -->
-                <div class="row">
-                    {% for field in form %}
-                        <div class="col-md-6 mb-3">
-                            {{ field|as_crispy_field }}
-                            {% if field.errors %}
-                                <div class="alert alert-danger mt-2" role="alert">
-                                    {% for error in field.errors %}
-                                        <p>{{ error }}</p>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
+                    <button type="submit" class="btn btn-success w-100 mt-3">Crear reserva</button>
+                </form>
+                <!-- Formulario para agregar servicios -->
+                <form method="post" class="form-group">
+                    {% csrf_token %}
+                    <h4 class="text-center mb-3">Añadir Servicios</h4>
+                    {{ formServicios|crispy }}
+                    <button type="submit" name="add_service" class="btn btn-success w-100 mt-3">Añadir servicio</button>
+                </form>
+                <!-- Lista de servicios seleccionados -->
+                <div class="mt-4">
+                    <h5 class="text-center">Servicios Seleccionados:</h5>
+                    <ul class="list-group">
+                        {% if servicios_seleccionados %}
+                            {% for servicio in servicios_seleccionados %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ servicio.nombre }}
+                                    <span class="badge bg-secondary">Cantidad: {{ servicio.cantidad }}</span>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-center text-muted">No se han agregado servicios aún.</p>
+                        {% endif %}
+                    </ul>
                 </div>
-
-                <button type="submit" class="btn btn-success w-100 mt-3">Crear reserva</button>
-            </form>
-
-            <!-- Formulario para agregar servicios -->
-            <form method="post" class="form-group">
-                {% csrf_token %}
-                <h4 class="text-center mb-3">Añadir Servicios</h4>
-
-                {{ formServicios|crispy }}
-
-                <button type="submit" name="add_service" class="btn btn-success w-100 mt-3">Añadir servicio</button>
-            </form>
-
-            <!-- Lista de servicios seleccionados -->
-            <div class="mt-4">
-                <h5 class="text-center">Servicios Seleccionados:</h5>
-                <ul class="list-group">
-                    {% if servicios_seleccionados %}
-                        {% for servicio in servicios_seleccionados %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                {{ servicio.nombre }} 
-                                <span class="badge bg-secondary">Cantidad: {{ servicio.cantidad }}</span>
-                            </li>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text-center text-muted">No se han agregado servicios aún.</p>
-                    {% endif %}
-                </ul>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("form").on("submit", function (e) {
+                e.preventDefault(); // Prevenir el envío tradicional del formulario
+    
+                const form = $(this);
+                if (form.find("[name='add_service']").length) { // Si es el formulario de agregar servicio
+                    $.ajax({
+                        url: window.location.href,
+                        type: "POST",
+                        data: form.serialize(),
+                        headers: { "X-Requested-With": "XMLHttpRequest" },
+                        success: function (response) {
+                            if (response.success) {
+                                const servicios = response.servicios;
+                                const lista = $(".list-group");
+                                lista.empty(); // Limpiar la lista actual
+    
+                                servicios.forEach(function (servicio) {
+                                    lista.append(`
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            ${servicio.nombre}
+                                            <span class="badge bg-secondary">Cantidad: ${servicio.cantidad}</span>
+                                        </li>
+                                    `);
+                                });
+                            } else {
+                                alert("Error al agregar servicio: " + JSON.stringify(response.errors));
+                            }
+                        },
+                        error: function () {
+                            alert("Ocurrió un error al procesar la solicitud.");
+                        },
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock %}
