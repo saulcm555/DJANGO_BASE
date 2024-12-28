@@ -48,7 +48,6 @@ def alquileres(request):
 
     return render(request, "alquileres/alquileres.html", {"alquileres": queryset})
 
-
 def nuevo_alquiler(request, item_id):
     if not request.user.is_authenticated:
         messages.warning(request, "Debes iniciar sesión para alquilar un espacio")
@@ -67,14 +66,20 @@ def nuevo_alquiler(request, item_id):
         return redirect("eventos:eventos")
 
     session_key = f"servicios_seleccionados_{item_id}"
-
     formServicios = AlquilerServicioFormulario()
 
     if request.method == "POST":
-        if (
-            request.headers.get("x-requested-with") == "XMLHttpRequest"
-            and "add_service" in request.POST
-        ):
+        print(request.headers)  # Debug headers
+        print(request.POST)  # Debug POST data
+
+        # Improved check for AJAX request and POST with add_service
+        is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+        is_add_service = "add_service" in request.POST
+
+        print(f"Is AJAX: {is_ajax}, Is Add Service: {is_add_service}")
+
+        if is_ajax and is_add_service:
+            print("ES AJAX")
             formServicios = AlquilerServicioFormulario(request.POST)
             if formServicios.is_valid():
                 servicio = formServicios.cleaned_data["servicio"]
@@ -91,8 +96,10 @@ def nuevo_alquiler(request, item_id):
                 return JsonResponse(
                     {"success": True, "servicios": request.session[session_key]}
                 )
+
             return JsonResponse({"success": False, "errors": formServicios.errors})
 
+        print("NO ES AJAX")
         formulario = AlquilerFormulario(request.POST)
         if formulario.is_valid():
             alquiler = formulario.save(commit=False)

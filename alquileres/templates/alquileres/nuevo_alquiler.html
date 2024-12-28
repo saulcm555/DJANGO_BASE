@@ -38,10 +38,11 @@
                     <button type="submit" class="btn btn-success w-100 mt-3">Crear reserva</button>
                 </form>
                 <!-- Formulario para agregar servicios -->
-                <form method="post" class="form-group">
+                <form method="post" id="formServicios" class="form-group">
                     {% csrf_token %}
                     <h4 class="text-center mb-3">Añadir Servicios</h4>
                     {{ formServicios|crispy }}
+                    {% comment %} <input type="hidden" name="alquiler_id" value=""> {% endcomment %}
                     <button type="submit" name="add_service" class="btn btn-success w-100 mt-3">Añadir servicio</button>
                 </form>
                 <!-- Lista de servicios seleccionados -->
@@ -63,43 +64,45 @@
             </div>
         </div>
     </section>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $("form").on("submit", function (e) {
-                e.preventDefault(); // Prevenir el envío tradicional del formulario
+    $("#formServicios").on("submit", function (e) {
+        e.preventDefault(); // Prevent the default form submission
     
-                const form = $(this);
-                if (form.find("[name='add_service']").length) { // Si es el formulario de agregar servicio
-                    $.ajax({
-                        url: window.location.href,
-                        type: "POST",
-                        data: form.serialize(),
-                        headers: { "X-Requested-With": "XMLHttpRequest" },
-                        success: function (response) {
-                            if (response.success) {
-                                const servicios = response.servicios;
-                                const lista = $(".list-group");
-                                lista.empty(); // Limpiar la lista actual
-    
-                                servicios.forEach(function (servicio) {
-                                    lista.append(`
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            ${servicio.nombre}
-                                            <span class="badge bg-secondary">Cantidad: ${servicio.cantidad}</span>
-                                        </li>
-                                    `);
-                                });
-                            } else {
-                                alert("Error al agregar servicio: " + JSON.stringify(response.errors));
-                            }
-                        },
-                        error: function () {
-                            alert("Ocurrió un error al procesar la solicitud.");
-                        },
-                    });
+        const form = $(this);
+        $.ajax({
+            url: window.location.href,  // Ensure the URL is correct for the request
+            type: "POST",
+            data: form.serialize(),  // Serialize form data
+            headers: { "X-Requested-With": "XMLHttpRequest" },  // Explicitly set header
+            success: function(response) {
+                if (response.success) {
+                    // On success, reset the form and update the service list
+                    form[0].reset();
+                    const servicios = response.servicios;
+                    const lista = $(".list-group");
+                    lista.empty();
+                    if (servicios.length > 0) {
+                        servicios.forEach(function (servicio) {
+                            lista.append(`
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    ${servicio.nombre}
+                                    <span class="badge bg-secondary">Cantidad: ${servicio.cantidad}</span>
+                                </li>
+                            `);
+                        });
+                    } else {
+                        lista.append('<p class="text-center text-muted">No se han agregado servicios aún.</p>');
+                    }
+                } else {
+                    alert("Error al agregar servicio: " + JSON.stringify(response.errors));
                 }
-            });
+            },
+            error: function () {
+                alert("Ocurrió un error al procesar la solicitud.");
+            },
         });
+    });
+    
+
     </script>
 {% endblock %}
