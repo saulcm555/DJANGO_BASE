@@ -13,9 +13,7 @@
         <div class=""
              style="flex: auto;
                     max-width: 500px;
-                    position: sticky;
-                    top: 6em;
-                    z-index: 5;">{% include 'core/components/utils/carrucel.html' with fotos=fotos %}</div>
+">{% include 'core/components/utils/carrucel.html' with fotos=fotos %}</div>
         <div class="col-lg-7 mt-5">
           {% if  not request.user.is_superuser %}
             {% if alquiler.correo_electronico_verificado %}
