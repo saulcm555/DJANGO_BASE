@@ -121,7 +121,7 @@
         const url = "{% url 'usuarios:validar_correo' %}";  // URL de la vista para validar el correo
         const formData = new FormData();
         formData.append("codigo_verificacion", document.getElementById("id_codigo_verificacion").value);
-
+        console.log("FormData", formData);
         fetch(url, {
             method: 'POST',
             headers: {
@@ -138,8 +138,7 @@
                 window.location.reload();
             })
             .catch(error => {
-                console.error(error);
-                alert('Error al enviar el correo.');
+                window.location.reload();
             });
     }
 
