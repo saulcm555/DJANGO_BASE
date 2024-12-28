@@ -13,7 +13,13 @@
         <div class=""
              style="flex: auto;
                     max-width: 500px;
-">{% include 'core/components/utils/carrucel.html' with fotos=fotos %}</div>
+">
+{%  if fotos %}
+{% include 'core/components/utils/carrucel.html' with fotos=fotos %}
+{% else %}
+{% include 'core/components/utils/carrucel.html' with fotos=evento.fotos %}
+{% endif %}
+</div>
 
         <div class="col-lg-7 mt-5">
           {% if  not request.user.is_superuser %}

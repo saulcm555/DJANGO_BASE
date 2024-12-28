@@ -140,6 +140,7 @@ def alquiler_detalle(request, id):
         fotos = alquiler.fotos.all()
         formulario = ConfirmarAlquilerFormulario(alquiler=alquiler)
         servicios_seleccionados = alquiler.servicios_reserva.all()
+        evento = alquiler.evento
         return render(
             request,
             "alquileres/detalle_alquiler.html",
@@ -148,6 +149,7 @@ def alquiler_detalle(request, id):
                 "fotos": fotos,
                 "formulario": formulario,
                 "servicios_seleccionados": servicios_seleccionados,
+                "evento": evento,
             },
         )
 
