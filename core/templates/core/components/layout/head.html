@@ -5,15 +5,15 @@
 
     <title>{{configuracion_negocio.nombre}}</title>
 
-    <link rel="apple-touch-icon" href="https://lesquel.github.io/staticSaul/favicon.ico">
+    <link rel="apple-touch-icon" href="{% static 'img/favicon.ico' %}">
     <link rel="shortcut icon" type="image/x-icon" href="{% if configuracion_negocio.logo.url %} {{ configuracion_negocio.logo.url }} {% else %} https://lesquel.github.io/staticSaul/img/favicon.ico {% endif %}">
 
-    <link rel="stylesheet" href="https://lesquel.github.io/staticSaul/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://lesquel.github.io/staticSaul/css/templatemo.css">
-    <link rel="stylesheet" href="https://lesquel.github.io/staticSaul/css/custom.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/templatemo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
     <!-- Load fonts style after rendering the layout styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
-    <link rel="stylesheet" href="https://lesquel.github.io/staticSaul/css/fontawesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
 
 </head>

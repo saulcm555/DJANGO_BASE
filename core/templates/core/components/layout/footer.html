@@ -11,51 +11,35 @@
                     </li>
                     <li>
                         <i class="fa fa-phone fa-fw"></i>
-                        <a class="text-decoration-none" href="tel:{{ configuracion_negocio.telefono }}">{{ configuracion_negocio.telefono }}</a>
+                        <a class="text-decoration-none"
+                           href="tel:{{ configuracion_negocio.telefono }}">{{ configuracion_negocio.telefono }}</a>
                     </li>
                     <li>
                         <i class="fa fa-envelope fa-fw"></i>
-                        <a class="text-decoration-none" href="mailto:{{ configuracion_negocio.correo }}">{{ configuracion_negocio.correo }}</a>
+                        <a class="text-decoration-none"
+                           href="mailto:{{ configuracion_negocio.correo }}">{{ configuracion_negocio.correo }}</a>
                     </li>
                 </ul>
             </div>
-            
             <div class="col-md-4 pt-5">
                 <h2 class="h2 text-light border-bottom pb-3 border-light">Eventos más populares</h2>
                 <ul class="list-unstyled text-light footer-link-list">
                     {% for evento in eventos_mas_gustados %}
                         <li>
-                            <a class="text-decoration-none" href="{% url 'eventos:evento_detalle' evento.id %}">{{ evento.nombre }}</a>
+                            <a class="text-decoration-none"
+                               href="{% url 'eventos:evento_detalle' evento.id %}">{{ evento.nombre }}</a>
                         </li>
                     {% endfor %}
                 </ul>
             </div>
-
-            <div class="col-md-4 pt-5">
-                <h2 class="h2 text-light border-bottom pb-3 border-light">Más información</h2>
-                <ul class="list-unstyled text-light footer-link-list">
-                    <li>
-                        <a class="text-decoration-none" href="{% url 'core:home' %}">Home</a>
-                    </li>
-                    <li>
-                        <a class="text-decoration-none" href="{% url 'eventos:eventos' %}">Eventos</a>
-                    </li>
-                    <li>
-                        <a class="text-decoration-none" href="{% url 'servicios:servicios' %}">Servicios</a>
-                    </li>
-                    <li>
-                        <a class="text-decoration-none" href="{% url 'alquileres:alquileres' %}">
-                            {% if request.user.is_superuser %}
-                                Reservas de eventos
-                            {% else %}
-                                Mis Reservas
-                            {% endif %}
-                        </a>
-                    </li>
-                </ul>
+            <div class="col-auto">
+                <img src="{% static 'img/logo_uleam.png' %}"
+                     alt="Logo"
+                     class="img-fluid"
+                     style="max-height: 350px">
             </div>
         </div>
-        
+
         <div class="row text-light mb-4">
             <div class="col-12 mb-3">
                 <div class="w-100 my-3 border-top border-light"></div>
@@ -86,8 +70,9 @@
                 </ul>
             </div>
         </div>
-    </div>
 
+
+    </div>
     <div class="w-100 bg-black py-3">
         <div class="container">
             <div class="row pt-2">
@@ -100,10 +85,9 @@
             </div>
         </div>
     </div>
-
-    <script src="https://lesquel.github.io/staticSaul/js/jquery-1.11.0.min.js"></script>
-    <script src="https://lesquel.github.io/staticSaul/js/jquery-migrate-1.2.1.min.js"></script>
-    <script src="https://lesquel.github.io/staticSaul/js/bootstrap.bundle.min.js"></script>
-    <script src="https://lesquel.github.io/staticSaul/js/templatemo.js"></script>
-    <script src="https://lesquel.github.io/staticSaul/js/custom.js"></script>
+    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/templatemo.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
 </footer>
