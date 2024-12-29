@@ -1,7 +1,8 @@
 {% extends "alquileres/layout/base.html" %}
+{% load static %}
 {% block content %}
   {% load crispy_forms_tags %}
-  <section class=" py-5">
+  <section class="py-5">
     <div class="container">
       {% include "core/components/utils/title.html" with titulo="Detalle del alquiler #" texto=alquiler.id %}
       <div class="row"
@@ -10,7 +11,7 @@
                   align-items: start;
                   gap: 2em;
                   position: relative">
-        <div class="" style="flex: auto; max-width: 500px; ">
+        <div class="" style="flex: auto; max-width: 500px;">
           {% if fotos %}
             {% include 'core/components/utils/carrucel.html' with fotos=fotos %}
           {% else %}
@@ -18,7 +19,7 @@
           {% endif %}
         </div>
         <div class="col-lg-7 mt-5">
-          {% if  not request.user.is_superuser %}
+          {% if not request.user.is_superuser %}
             {% if alquiler.correo_electronico_verificado %}
               <div class="alert alert-success" role="alert">
                 <p>Alquiler confirmado</p>
@@ -28,7 +29,7 @@
                 <span class="text-danger">
                   <i class="fas fa-times-circle"></i> Alquiler no confirmado
                   <br>
-                  Confirmar alquiler. Con el código que te hemos enviado a tu correo.
+                  Confirmar alquiler con el código que te hemos enviado a tu correo.
                   <hr class="my-2">
                   <button type="button"
                           class="btn btn-success"
@@ -105,105 +106,130 @@
               </tr>
               <tr>
                 <td>Hora Fin Real de Alquiler</td>
-                <td>{{ alquiler.hora_fin_real_alquiler }}</td>
-              </tr>
-              <tr>
-                <td>Costo de Alquiler</td>
-                <td>{{ alquiler.costo_alquiler }}</td>
+                <td>{{ alquiler.hora_fin_real_alquiler|default:"No se ha registrado la hora de fin" }}</td>
               </tr>
               <tr>
                 <td>Calificación del Dueño</td>
-                <td>{{ alquiler.calificacion_dueno }}</td>
+                <td>{{ alquiler.calificacion_dueno|default:"No hay calificacion de dueño" }}</td>
               </tr>
               <tr>
                 <td>Calificación del Cliente</td>
-                <td>{{ alquiler.calificacion_cliente }}</td>
+                <td>{{ alquiler.calificacion_cliente|default:"No hay calificacion de Cliente" }}</td>
               </tr>
               <tr>
                 <td>Observación</td>
-                <td>{{ alquiler.observacion }}</td>
+                <td>{{ alquiler.observacion|default:"No hay observaciones" }}</td>
               </tr>
               <tr>
                 <td>Cantidad de Anticipo</td>
                 <td>{{ alquiler.cantidad_anticipo }}</td>
               </tr>
+              <tr>
+                <td>Costo de Alquiler</td>
+                <td>{{ alquiler.costo_alquiler }}</td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
-    </div>
-  </section>
-  <section class="py-5">
-    <div class="container">
-      <div class="row text-center pt-3 pb-3">
-        <div class="col-lg-6 m-auto">
-          <h1 class="h1">Servicios Seleccionados</h1>
-          <div class="d-flex flex-wrap gap-3 justify-content-center align-items-center">
+      <!-- Display Services Section -->
+      <div class="row text-center pt-5">
+        {% include 'core/components/utils/title.html' with titulo="Servicios Adicionales" texto="ofrecidos en este alquiler" %}
+        <div class="col-lg-12">
+          <div class="row">
             {% if servicios_with_fotos %}
               {% for servicio, foto_url in servicios_with_fotos %}
-                {% include 'core/components/utils/card.html' with nombre=servicio.servicio.nombre descripcion=servicio.servicio.descripcion imagen_url=foto_url id_item=servicio.servicio.id link_url='servicios:servicio_detalle' %}
+                <div class="col-md-3 mb-3">
+                  <div class="card" style="width: 14rem;">
+                    <img src="{% if foto_url %} {{ foto_url }} {% else %} {% static 'img/404.jpg' %} {% endif %}"
+                      class="card-img-top"
+                      alt="Imagen de servicio">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ servicio.servicio.nombre }}</h5>
+                      <!-- Mostrar cantidad en lugar de la descripción -->
+                      <p class="card-text">Cantidad: {{ servicio.cantidad }}</p>
+                    </div>
+                  </div>
+                </div>
               {% endfor %}
             {% else %}
-              <p>No hay servicios seleccionados</p>
+              <p>No hay servicios adicionales disponibles para este alquiler.</p>
             {% endif %}
           </div>
         </div>
       </div>
+      
+
+      <!-- Display Promotions Section -->
+      <div class="row text-center pt-5">
+        {% include 'core/components/utils/title.html' with titulo="Promociones Especiales" texto="para este alquiler" %}
+        <div class="col-lg-12">
+          <div class="row">
+        {% if promociones %}
+          {% for promocion in promociones %}
+            <div class="col-md-4 mb-3">
+          <div class="card" style="width: 18rem;">
+            <img src="{% if promocion.imagen.url %} {{ promocion.imagen.url }} {% else %} {% static 'img/404.jpg' %} {% endif %}"
+             class="card-img-top"
+             alt="Imagen de promoción">
+            <div class="card-body">
+              <h5 class="card-title">{{ promocion.nombre_promocion }}</h5>
+              <p class="card-text">{{ promocion.descripcion_promocion }}</p>
+            </div>
+          </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No hay promociones especiales disponibles para este alquiler.</p>
+        {% endif %}
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
+
+
   <script>
-  function enviarCorreoValidacion() {
-    const url = "{% url 'alquileres:enviar_correo_alquiler' alquiler.id %}"; 
-    console.log(url);
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
+    function enviarCorreoValidacion() {
+      const url = "{% url 'alquileres:enviar_correo_alquiler' alquiler.id %}"; 
+      fetch(url)
+        .then(response => response.json())
+        .catch(error => console.error(error));
+    }
+
+    document.getElementById("renviar").addEventListener("click", enviarCorreoValidacion);
+
+    function verificarCorreo() {
+      const url = "{% url 'alquileres:confirmar_alquiler' alquiler.id %}";
+      const formData = new FormData();
+      formData.append("codigo_confirmacion", document.getElementById("id_codigo_confirmacion").value);
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: formData
       })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-
-
-  document.getElementById("renviar").addEventListener("click", enviarCorreoValidacion);
-
-  console.log(document.getElementById("id_codigo_confirmacion").value);
-
-  function verificarCorreo() {
-    const url = "{% url 'alquileres:confirmar_alquiler' alquiler.id %}";
-    const formData = new FormData();
-    formData.append("codigo_confirmacion", document.getElementById("id_codigo_confirmacion").value);
-  
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-      },
-      body: formData
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          window.location.reload();
-        } else {
-          if (data.errors) {
-            console.log(data);
-
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            window.location.reload();
+          } else {
             let errorMessage = '';
             for (const error in data.errors) {
               errorMessage += data.errors[error].join(' ') + '\n';
             }
             alert('Error: ' + errorMessage);
           }
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Error al enviar el correo.');
-      });
-  }
-  
-  document.getElementById("verificar_correo").addEventListener("click", verificarCorreo);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al enviar el correo.');
+        });
+    }
 
+    document.getElementById("verificar_correo").addEventListener("click", verificarCorreo);
   </script>
 {% endblock %}

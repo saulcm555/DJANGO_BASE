@@ -81,7 +81,7 @@ def validar_correo(request):
 @login_required
 def perfil(request):
     usuario = request.user
-    perfil = PerfilUsuario.objects.get(usuario=usuario)
+    perfil = PerfilUsuario.objects.get_or_create(usuario=usuario)[0]
 
     formulario_validar_correo = ValidarCorreoFormulario()
 

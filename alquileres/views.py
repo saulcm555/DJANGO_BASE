@@ -210,7 +210,7 @@ def alquiler_detalle(request, id):
         ]
         evento = alquiler.evento
         servicios_with_fotos = zip(servicios_seleccionados, foto_servicios)
-
+        promociones = alquiler.promociones.all()
         return render(
             request,
             "alquileres/detalle_alquiler.html",
@@ -219,6 +219,7 @@ def alquiler_detalle(request, id):
                 "fotos": fotos,
                 "formulario": formulario,
                 "servicios_with_fotos": servicios_with_fotos,  
+                "promociones": promociones,
                 "evento": evento,
             },
         )
