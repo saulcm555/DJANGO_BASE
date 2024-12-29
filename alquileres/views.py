@@ -70,13 +70,12 @@ def nuevo_alquiler(request, item_id):
     if request.method == "POST":
         # Determinar si es una petición AJAX para servicios
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-            print(request.POST)
             if request.POST.get("agregar_servicio"):
                 return agregar_servicio(request, session_key)
             elif request.POST.get("eliminar_servicio"):
                 return eliminar_servicio(request, session_key)
 
-        # Si no es AJAX, procesar el formulario de alquiler
+        print(request)
         return procesar_alquiler(request, evento, session_key)
 
     # GET request - mostrar formulario
@@ -91,6 +90,7 @@ def nuevo_alquiler(request, item_id):
 def procesar_alquiler(request, evento, session_key):
     """Procesar la creación del alquiler con sus servicios"""
     formulario = AlquilerFormulario(request.POST)
+    print(request.POST)
     if not formulario.is_valid():
         messages.error(request, "Por favor corrija los errores en el formulario")
         return render(
@@ -110,6 +110,8 @@ def procesar_alquiler(request, evento, session_key):
             alquiler.cliente = request.user
             alquiler.evento = evento
             alquiler.save()
+            for promocion in request.POST.getlist("promociones"):
+                alquiler.promociones.add(promocion)
 
             # Agregar servicios seleccionados
             servicios_seleccionados = request.session.get(session_key, [])

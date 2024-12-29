@@ -27,6 +27,7 @@ class AlquilerFormulario(forms.ModelForm):
         widget=forms.NumberInput(attrs={"class": "form-control"}),
         required=False,
     )
+    
 
     class Meta:
         model = Alquiler
