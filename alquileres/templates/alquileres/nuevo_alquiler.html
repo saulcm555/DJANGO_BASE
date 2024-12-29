@@ -1,76 +1,64 @@
 {% extends "alquileres/layout/base.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
-
 {% block content %}
-<section class="py-5">
-    <div class="d-flex justify-content-center align-items-center">
-        <div class="card p-4 shadow-sm" style="width: 100%; max-width: 800px;">
-            <h2 class="text-center mb-4">Crear Reserva</h2>
-            
-            {% if messages %}
-            <div class="messages mb-4">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}" role="alert">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            <!-- Formulario principal de alquiler -->
-            <form method="post" id="alquilerForm" class="mb-4">
-                {% csrf_token %}
-                <h4 class="text-center mb-3">Detalles del Alquiler</h4>
-                {{ form|crispy }}
-                <button type="submit" class="btn btn-primary w-100 mt-3">Crear Reserva</button>
-            </form>
-
-            <!-- Sección de servicios -->
-            <div class="servicios-section mt-4">
-                <h4 class="text-center mb-3">Servicios Adicionales</h4>
-                
-                <!-- Formulario para agregar servicios -->
-                <form id="serviciosForm" class="mb-4">
+    <section class="py-5">
+        <div class="d-flex justify-content-center align-items-center">
+            <div class="card p-4 shadow-sm" style="width: 100%; max-width: 800px;">
+                <h2 class="text-center mb-4">Crear Reserva</h2>
+                {% if messages %}
+                    <div class="messages mb-4">
+                        {% for message in messages %}<div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>{% endfor %}
+                    </div>
+                {% endif %}
+                <!-- Formulario principal de alquiler -->
+                <form method="post" id="alquilerForm" class="mb-4">
                     {% csrf_token %}
-                    {{ formServicios|crispy }}
-                    <button type="submit" class="btn btn-success w-100">Agregar Servicio</button>
+                    <h4 class="text-center mb-3">Detalles del Alquiler</h4>
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Crear Reserva</button>
                 </form>
-
-                <!-- Lista de servicios seleccionados -->
-                <div id="serviciosLista" class="mt-4">
-                    <h5>Servicios Seleccionados:</h5>
-                    <div class="list-group">
-                        {% if servicios_seleccionados %}
-                            {% for servicio in servicios_seleccionados %}
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>{{ servicio.nombre }}</strong>
-                                    <span class="ms-2 text-muted">Cantidad: {{ servicio.cantidad }}</span>
-                                </div>
-                                <button class="btn btn-danger btn-sm" 
-                                        onclick="eliminarServicio({{ servicio.id }})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <p class="text-muted text-center">No hay servicios seleccionados</p>
-                        {% endif %}
+                <!-- Sección de servicios -->
+                <div class="servicios-section mt-4">
+                    <h4 class="text-center mb-3">Servicios Adicionales</h4>
+                    <!-- Formulario para agregar servicios -->
+                    <form id="serviciosForm" class="mb-4">
+                        {% csrf_token %}
+                        {{ formServicios|crispy }}
+                        <button type="submit" class="btn btn-success w-100">Agregar Servicio</button>
+                    </form>
+                    <!-- Lista de servicios seleccionados -->
+                    <div id="serviciosLista" class="mt-4">
+                        <h5>Servicios Seleccionados:</h5>
+                        <div class="list-group">
+                            {% if servicios_seleccionados %}
+                                {% for servicio in servicios_seleccionados %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ servicio.nombre }}</strong>
+                                            <span class="ms-2 text-muted">Cantidad: {{ servicio.cantidad }}</span>
+                                        </div>
+                                        <button class="btn btn-danger btn-sm"
+                                                onclick="eliminarServicio({{ servicio.id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted text-center">No hay servicios seleccionados</p>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
-{% block extra_js %}
-<script>
+    </section>
+    <script>
 document.getElementById('serviciosForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     const formData = new FormData(this);
-    formData.append('add_service', 'true');
+    formData.append('agregar_servicio', 'true');
 
     fetch(window.location.href, {
         method: 'POST',
@@ -142,6 +130,33 @@ function mostrarErrores(errors) {
     // Remover alerta después de 5 segundos
     setTimeout(() => alertDiv.remove(), 5000);
 }
-</script>
-{% endblock %}
+
+function eliminarServicio(servicioId) {
+    const formData = new FormData();
+    formData.append('eliminar_servicio', 'true');
+    formData.append('servicio_id', servicioId);
+
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            actualizarListaServicios(data.servicios);
+        } else {
+            alert('No se pudo eliminar el servicio.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al eliminar el servicio.');
+    });
+}
+
+    </script>
 {% endblock %}

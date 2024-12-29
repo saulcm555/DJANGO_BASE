@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import HttpResponseForbidden
 from django.db.models import Q
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.http import JsonResponse
-
+from django.db import transaction
 from utilidades import ValidadorUsuario
 from utilidades.ValidadorAlquiler import ValidadorAlquiler
 from utilidades import EmailEnviador
@@ -38,7 +39,7 @@ def alquileres(request):
         if primera_foto:
             imagen_url = primera_foto.foto.url
         else:
-            imagen_url = None
+            imagen_url = alquiler.evento.fotos.first().foto.url
         queryset.append(
             {
                 "alquiler": alquiler,
@@ -48,13 +49,6 @@ def alquileres(request):
 
     return render(request, "alquileres/alquileres.html", {"alquileres": queryset})
 
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from django.http import JsonResponse
-from django.db import transaction
-from django.views.decorators.http import require_http_methods
 
 def nuevo_alquiler(request, item_id):
     """Vista principal para crear un nuevo alquiler"""
@@ -76,29 +70,38 @@ def nuevo_alquiler(request, item_id):
     if request.method == "POST":
         # Determinar si es una petición AJAX para servicios
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-            return agregar_servicio(request, session_key)
-            
+            print(request.POST)
+            if request.POST.get("agregar_servicio"):
+                return agregar_servicio(request, session_key)
+            elif request.POST.get("eliminar_servicio"):
+                return eliminar_servicio(request, session_key)
+
         # Si no es AJAX, procesar el formulario de alquiler
         return procesar_alquiler(request, evento, session_key)
 
     # GET request - mostrar formulario
     context = {
-        'form': AlquilerFormulario(),
-        'formServicios': AlquilerServicioFormulario(),
-        'servicios_seleccionados': request.session.get(session_key, [])
+        "form": AlquilerFormulario(),
+        "formServicios": AlquilerServicioFormulario(),
+        "servicios_seleccionados": request.session.get(session_key, []),
     }
     return render(request, "alquileres/nuevo_alquiler.html", context)
+
 
 def procesar_alquiler(request, evento, session_key):
     """Procesar la creación del alquiler con sus servicios"""
     formulario = AlquilerFormulario(request.POST)
     if not formulario.is_valid():
         messages.error(request, "Por favor corrija los errores en el formulario")
-        return render(request, "alquileres/nuevo_alquiler.html", {
-            'form': formulario,
-            'formServicios': AlquilerServicioFormulario(),
-            'servicios_seleccionados': request.session.get(session_key, [])
-        })
+        return render(
+            request,
+            "alquileres/nuevo_alquiler.html",
+            {
+                "form": formulario,
+                "formServicios": AlquilerServicioFormulario(),
+                "servicios_seleccionados": request.session.get(session_key, []),
+            },
+        )
 
     try:
         with transaction.atomic():
@@ -115,13 +118,13 @@ def procesar_alquiler(request, evento, session_key):
                 AlquilerServicio.objects.create(
                     alquiler=alquiler,
                     servicio=servicio,
-                    cantidad=servicio_data["cantidad"]
+                    cantidad=servicio_data["cantidad"],
                 )
 
             # Limpiar sesión y enviar correo
             request.session.pop(session_key, None)
             EmailEnviador.enviar_codigo_confirmacion(alquiler)
-            
+
             messages.success(request, "Alquiler creado exitosamente")
             return redirect("alquileres:alquiler_detalle", id=alquiler.id)
 
@@ -129,42 +132,58 @@ def procesar_alquiler(request, evento, session_key):
         messages.error(request, f"Error al crear el alquiler: {str(e)}")
         return redirect("alquileres:nuevo_alquiler", item_id=evento.id)
 
+
 def agregar_servicio(request, session_key):
     """Procesar la adición de servicios vía AJAX"""
     form = AlquilerServicioFormulario(request.POST)
     if not form.is_valid():
-        return JsonResponse({
-            "success": False,
-            "errors": form.errors
-        })
+        return JsonResponse({"success": False, "errors": form.errors})
 
     servicio = form.cleaned_data["servicio"]
     cantidad = form.cleaned_data["cantidad"]
-    
+
     # Obtener o inicializar lista de servicios
     servicios = request.session.get(session_key, [])
-    
+
     # Verificar si el servicio ya existe
     if any(s["id"] == servicio.id for s in servicios):
-        return JsonResponse({
-            "success": False,
-            "errors": {"servicio": ["Este servicio ya ha sido agregado"]}
-        })
-    
+        return JsonResponse(
+            {
+                "success": False,
+                "errors": {"servicio": ["Este servicio ya ha sido agregado"]},
+            }
+        )
+
     # Agregar nuevo servicio
-    servicios.append({
-        "id": servicio.id,
-        "nombre": servicio.nombre,
-        "cantidad": cantidad
-    })
-    
+    servicios.append(
+        {"id": servicio.id, "nombre": servicio.nombre, "cantidad": cantidad}
+    )
+
     request.session[session_key] = servicios
     request.session.modified = True
 
-    return JsonResponse({
-        "success": True,
-        "servicios": servicios
-    })
+    return JsonResponse({"success": True, "servicios": servicios})
+
+
+def eliminar_servicio(request, session_key):
+    """Procesar la eliminación de un servicio vía AJAX"""
+    servicio_id = request.POST.get("servicio_id")
+
+    if not servicio_id:
+        return JsonResponse(
+            {
+                "success": False,
+                "errors": {"servicio": ["ID de servicio no proporcionado"]},
+            }
+        )
+
+    servicios = request.session.get(session_key, [])
+    servicios = [s for s in servicios if s["id"] != int(servicio_id)]
+
+    request.session[session_key] = servicios
+    request.session.modified = True
+
+    return JsonResponse({"success": True, "servicios": servicios})
 
 
 def alquiler_detalle(request, id):
@@ -175,9 +194,23 @@ def alquiler_detalle(request, id):
 
     if request.method == "GET":
         fotos = alquiler.fotos.all()
+        if not fotos:
+            fotos = alquiler.evento.fotos.all()
         formulario = ConfirmarAlquilerFormulario(alquiler=alquiler)
-        servicios_seleccionados = alquiler.servicios_reserva.all()
+        servicios_seleccionados = alquiler.servicios_reserva.select_related(
+            "servicio"
+        ).all()  # Optimized query
+        foto_servicios = [
+            (
+                servicio.servicio.fotos.first().foto.url
+                if servicio.servicio.fotos.exists()
+                else None
+            )
+            for servicio in servicios_seleccionados
+        ]
         evento = alquiler.evento
+        servicios_with_fotos = zip(servicios_seleccionados, foto_servicios)
+
         return render(
             request,
             "alquileres/detalle_alquiler.html",
@@ -185,7 +218,7 @@ def alquiler_detalle(request, id):
                 "alquiler": alquiler,
                 "fotos": fotos,
                 "formulario": formulario,
-                "servicios_seleccionados": servicios_seleccionados,
+                "servicios_with_fotos": servicios_with_fotos,  
                 "evento": evento,
             },
         )

@@ -10,17 +10,13 @@
                   align-items: start;
                   gap: 2em;
                   position: relative">
-        <div class=""
-             style="flex: auto;
-                    max-width: 500px;
-">
-{%  if fotos %}
-  {% include 'core/components/utils/carrucel.html' with fotos=fotos %}
-{% else %}
-  {% include 'core/components/utils/carrucel.html' with fotos=evento.fotos %}
-{% endif %}
-</div>
-
+        <div class="" style="flex: auto; max-width: 500px; ">
+          {% if fotos %}
+            {% include 'core/components/utils/carrucel.html' with fotos=fotos %}
+          {% else %}
+            {% include 'core/components/utils/carrucel.html' with fotos=evento.fotos %}
+          {% endif %}
+        </div>
         <div class="col-lg-7 mt-5">
           {% if  not request.user.is_superuser %}
             {% if alquiler.correo_electronico_verificado %}
@@ -137,31 +133,27 @@
       </div>
     </div>
   </section>
-
-  
-<section class="py-5">
-  <div class="container">
-    <div class="row text-center pt-3 pb-3">
-      <div class="col-lg-6 m-auto">
-        <h1 class="h1">Servicios Seleccionados</h1>
-        <div class="" style="display: flex; flex-wrap: wrap; gap: 2em; justify-content: center; align-items: center">
-          {% if servicios_seleccionados %}
-          {% for servicio in servicios_seleccionados %}
-              {% include 'core/components/utils/card.html' with nombre=servicio.servicio.nombre descripcion=servicio.servicio.descripcion imagen_url=servicio.servicio.imagen.url id_item=servicio.servicio.id link_url='servicios:servicio_detalle' %}
-          {% endfor %}
-        {% else %}
-          <p>No  hay servicios seleccionados</p>
-        {% endif %}
+  <section class="py-5">
+    <div class="container">
+      <div class="row text-center pt-3 pb-3">
+        <div class="col-lg-6 m-auto">
+          <h1 class="h1">Servicios Seleccionados</h1>
+          <div class="d-flex flex-wrap gap-3 justify-content-center align-items-center">
+            {% if servicios_with_fotos %}
+              {% for servicio, foto_url in servicios_with_fotos %}
+                {% include 'core/components/utils/card.html' with nombre=servicio.servicio.nombre descripcion=servicio.servicio.descripcion imagen_url=foto_url id_item=servicio.servicio.id link_url='servicios:servicio_detalle' %}
+              {% endfor %}
+            {% else %}
+              <p>No hay servicios seleccionados</p>
+            {% endif %}
+          </div>
         </div>
       </div>
-      
     </div>
-  </div>
-</section>
-
+  </section>
   <script>
   function enviarCorreoValidacion() {
-    const url = "{% url 'alquileres:enviar_correo_alquiler' alquiler.id %}";  // URL de la vista para validar el correo
+    const url = "{% url 'alquileres:enviar_correo_alquiler' alquiler.id %}"; 
     console.log(url);
     fetch(url)
       .then(response => response.json())
